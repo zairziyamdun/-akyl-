@@ -11,5 +11,8 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+   images: {
+    domains: ["atego36.ru"],
+  },
 };
 

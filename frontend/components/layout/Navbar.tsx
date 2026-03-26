@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { HOME_IMAGE_URL } from "@/lib/homeAssets";
+import Link from "next/link";
 
 type NavLink = { label: string; href: string };
 type MegaLink = { title: string; description: string; href: string };
@@ -47,7 +48,7 @@ const megaGroups: Array<{ title: string; items: MegaLink[] }> = [
       {
         title: "Финансовое управление",
         description: "Контроль доходов и расходов дома",
-        href: "/",
+        href: "/fin-ypr",
       },
       {
         title: "KPI",
@@ -129,14 +130,14 @@ export function Navbar() {
     >
       <Container className="py-3">
         <div className="flex items-center justify-between gap-3">
-          <a href="/" className="inline-flex items-center gap-3">
+          <Link href="/" className="inline-flex items-center gap-3">
             <img
               src={HOME_IMAGE_URL}
               alt="AKYL"
               className="h-6 w-auto"
               loading="eager"
             />
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
             {topLinks.map((l) => (
