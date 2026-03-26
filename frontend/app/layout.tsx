@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import { Footer } from "@/components/Footer";
-import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 
 export const metadata: Metadata = {
   title: "Frontend",
@@ -18,11 +18,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className="min-h-screen flex flex-col font-sans text-slate-900 antialiased">
         <Navbar />
-        <main className="flex-1">
-          <div className="mx-auto w-full max-w-6xl px-4 py-8">
-            {children}
-          </div>
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

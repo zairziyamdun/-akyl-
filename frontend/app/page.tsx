@@ -1,11 +1,27 @@
+import { CentralModelGallerySection } from "@/components/sections/CentralModelGallerySection";
+import { FinalCtaSection } from "@/components/sections/FinalCtaSection";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { ImplementationStepsSection } from "@/components/sections/ImplementationStepsSection";
+import { PillarsSection } from "@/components/sections/PillarsSection";
+import { PracticeTestimonialsSection } from "@/components/sections/PracticeTestimonialsSection";
+import { ProblemSection } from "@/components/sections/ProblemSection";
+import { ResourcesSection } from "@/components/sections/ResourcesSection";
+import { ResultsStatsSection } from "@/components/sections/ResultsStatsSection";
+import { SystemSection } from "@/components/sections/SystemSection";
+
 export default function Page() {
   return (
-    <section
-      aria-label="Page content"
-      className="rounded-3xl bg-white shadow-sm ring-1 ring-black/5 p-6 md:p-8"
-    >
-      {/* Intentionally empty: add your first feature content later. */}
-      <div className="h-[60vh]" />
-    </section>
+    <div>
+      <HeroSection />
+      <ProblemSection />
+      <PillarsSection />
+      <SystemSection />
+      <ResourcesSection />
+      <CentralModelGallerySection />
+      <ResultsStatsSection />
+      <PracticeTestimonialsSection />
+      <ImplementationStepsSection />
+      <FinalCtaSection />
+    </div>
   );
 }
