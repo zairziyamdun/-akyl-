@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Input } from "@/components/ui/Input";
 import { HOME_LOGO_URL } from "@/lib/homeAssets";
+import Link from "next/link";
 
 type LinkItem = { label: string; href: string };
 
@@ -39,9 +40,9 @@ export function Footer() {
       <Container className="py-12 md:py-16">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1fr] lg:gap-16">
           <div>
-            <a href="/" className="inline-flex items-center gap-3">
+            <Link href="/" className="inline-flex items-center gap-3">
               <img src={HOME_LOGO_URL} alt="AKYL" className="h-6 w-auto" />
-            </a>
+            </Link>
             <p className="mt-5 max-w-md text-sm leading-6 text-slate-600">
               Подпишитесь на обновления методологии и практики внедрения.
             </p>
@@ -78,12 +79,12 @@ export function Footer() {
                 <ul className="mt-4 space-y-2">
                   {c.links.map((l) => (
                     <li key={l.label}>
-                      <a
+                      <Link
                         href={l.href}
                         className="text-sm text-slate-600 hover:text-slate-900 hover:underline underline-offset-4"
                       >
                         {l.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -101,12 +102,12 @@ export function Footer() {
                   { label: "YouTube", href: "/" },
                 ].map((l) => (
                   <li key={l.label}>
-                    <a
+                    <Link
                       href={l.href}
                       className="text-sm text-slate-600 hover:text-slate-900 hover:underline underline-offset-4"
                     >
                       {l.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -119,19 +120,19 @@ export function Footer() {
           <p>© {year} AKYL. Все права защищены.</p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             <li>
-              <a href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
+              <Link href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
                 Privacy Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
+              <Link href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
                 Terms of Service
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
+              <Link href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
                 Cookies Settings
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

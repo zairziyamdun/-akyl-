@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="24" viewBox="0 0 120 24" fill="none">
-  <rect x="0.5" y="0.5" width="119" height="23" rx="11.5" fill="white" stroke="rgba(0,0,0,0.12)"/>
-  <path d="M18.2 16.8L12.9 7.2H15.4L18.9 13.8L22.4 7.2H24.9L19.6 16.8H18.2Z" fill="#0F172A"/>
-  <path d="M29.1 16.8V7.2H31.4V16.8H29.1Z" fill="#0F172A"/>
-  <path d="M36.1 16.8V7.2H38.4V11.1H42.4V7.2H44.7V16.8H42.4V12.9H38.4V16.8H36.1Z" fill="#0F172A"/>
-  <path d="M49.2 16.8L52.9 7.2H55.5L59.2 16.8H56.7L56 14.8H52.4L51.7 16.8H49.2ZM53 13H55.4L54.2 9.6L53 13Z" fill="#0F172A"/>
-  <text x="64" y="16" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#0F172A">AKYL</text>
-</svg>
-
