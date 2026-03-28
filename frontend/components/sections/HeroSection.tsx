@@ -7,8 +7,8 @@ import { HOME_IMAGE_URL } from "@/lib/homeAssets";
 
 export function HeroSection() {
   return (
-    <section className="relative py-12 md:py-16 lg:py-20">
-      <Container>
+    <section className="relative py-[19px]">
+      <Container className="!px-0">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-slate-950 shadow-[0_25px_80px_-20px_rgba(15,23,42,0.45)]">
           {/* Background */}
           <div className="absolute inset-0">

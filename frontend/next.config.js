@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: "atego36.ru",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "mmsmart.ru",
+        pathname: "/**",
+      },
     ],
   },
 };
