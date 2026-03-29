@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Container } from "@/components/ui/Container";
-import { HOME_HERO_BG_URL, HOME_LOGO_URL } from "@/lib/homeAssets";
+import { HOME_HERO_BG_URL} from "@/lib/homeAssets";
 import { cn } from "@/lib/cn";
 
 const floatingCards = [
