@@ -26,6 +26,9 @@ const BAR_COLORS = {
   fact: "#22c55e",
 };
 
+/** Avoid Recharts 3 first-paint warning (-1×-1) before ResizeObserver runs */
+const CHART_INITIAL = { width: 640, height: 360 } as const;
+
 const PIE_COLORS = [
   "#6366f1",
   "#22c55e",
@@ -75,8 +78,13 @@ export function BudgetCharts({ rows }: Props) {
           <p className="mt-1 text-sm text-slate-500">
             Сгруппированные столбцы (тыс. ₽ по оси для читаемости)
           </p>
-          <div className="mt-6 h-[320px] w-full md:h-[380px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="mt-6 h-[320px] w-full min-w-0 md:h-[380px]">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minWidth={0}
+              initialDimension={CHART_INITIAL}
+            >
               <BarChart
                 data={barData}
                 margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
@@ -138,8 +146,13 @@ export function BudgetCharts({ rows }: Props) {
           <p className="mt-1 text-sm text-slate-500">
             Распределение факта по статьям бюджета
           </p>
-          <div className="mt-6 h-[320px] w-full md:h-[380px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="mt-6 h-[320px] w-full min-w-0 md:h-[380px]">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minWidth={0}
+              initialDimension={CHART_INITIAL}
+            >
               <PieChart>
                 <Pie
                   data={pieData}
