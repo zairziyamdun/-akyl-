@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { BudgetAnalysisDashboard } from "@/components/tools/budget-analysis/BudgetAnalysisDashboard";
+import { BudgetAnalysisDashboard } from "@/components/sections/tools/budget-analysis/BudgetAnalysisDashboard";
 
 export const metadata: Metadata = {
   title: "Анализ бюджета | Инструменты AKYL",

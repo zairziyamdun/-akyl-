@@ -1,11 +1,11 @@
-import { ToolsHero } from "@/components/tools/ToolsHero";
-import { FeaturedTool } from "@/components/tools/FeaturedTool";
-import { ToolsGrid } from "@/components/tools/ToolsGrid";
-import { ToolsWorkflow } from "@/components/tools/ToolsWorkflow";
-import { ProblemsSolutions } from "@/components/tools/ProblemsSolutions";
-import { ToolsResults } from "@/components/tools/ToolsResults";
-import { SystemConnection } from "@/components/tools/SystemConnection";
-import { ToolsCta } from "@/components/tools/ToolsCta";
+import { ToolsHero } from "@/components/sections/tools/ToolsHero";
+import { FeaturedTool } from "@/components/sections/tools/FeaturedTool";
+import { ToolsGrid } from "@/components/sections/tools/ToolsGrid";
+import { ToolsWorkflow } from "@/components/sections/tools/ToolsWorkflow";
+import { ProblemsSolutions } from "@/components/sections/tools/ProblemsSolutions";
+import { ToolsResults } from "@/components/sections/tools/ToolsResults";
+import { SystemConnection } from "@/components/sections/tools/SystemConnection";
+import { ToolsCta } from "@/components/sections/tools/ToolsCta";
 
 export default function ToolsPage() {
   return (

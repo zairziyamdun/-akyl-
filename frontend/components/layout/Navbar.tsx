@@ -256,7 +256,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
                   alt="AKYL"
                   width={170}
                   height={56}
-                  className="h-10 w-auto object-contain sm:h-[46px] lg:h-[50px] xl:h-[54px]"
+                  className="h-10 w-auto object-contain sm:h-[46px] lg:h-[50px] xl:h-[50px] xl:w-[150px]"
                   priority
                 />
               </Link>
@@ -313,12 +313,12 @@ function NavbarInner({ pathname }: { pathname: string }) {
 
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <div className="hidden items-center gap-2 md:flex md:gap-3">
-                <Link
+                {/* <Link
                   href="/login"
                   className="rounded-full border border-white/10 px-3 py-2.5 text-xs font-semibold text-white transition hover:bg-white/6 sm:px-4 sm:py-3 sm:text-sm xl:px-5"
                 >
                   Войти
-                </Link>
+                </Link> */}
 
                 <Link
                   href="/contacts"
