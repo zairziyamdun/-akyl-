@@ -26,7 +26,7 @@ type MegaGroup = {
 
 const primaryLinks: NavItem[] = [
   { label: "Инструменты", href: "/tools" },
-  { label: "AKYL", href: "/akyl" },
+  { label: "МКД", href: "https://k.akyl.kz/" },
   { label: "Кейсы", href: "/cases" },
   { label: "Журнал", href: "/journal" },
   { label: "Контакты", href: "/contacts" },
