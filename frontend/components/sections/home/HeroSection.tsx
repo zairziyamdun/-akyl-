@@ -9,18 +9,22 @@ const floatingCards = [
   {
     title: "Индекс эффективности",
     line: "Сводная метрика зрелости и результативности управления МЖД.",
+    href: "/tools/index-efficiency",
   },
   {
     title: "Управленческие KPI",
     line: "Панель показателей для операционного и стратегического контроля.",
+    href: "/tools/kpi-templates",
   },
   {
     title: "Финансовый анализ",
     line: "План-факт, устойчивость и прозрачность финансовой модели дома.",
+    href: "/tools/budget-analysis",
   },
   {
     title: "Практика внедрения",
     line: "Пошаговая адаптация методологии под вашу организацию и портфель.",
+    href: "/tools/checklists",
   },
 ] as const;
 
@@ -108,14 +112,17 @@ export function HeroSection() {
                 <h2 className="sr-only">Ключевые направления</h2>
                 <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-1 lg:gap-3 xl:max-w-md xl:justify-self-end">
                 {floatingCards.map((card, i) => (
-                  <article
-                    key={card.title}
+                  <Link
+                    key={card.href}
+                    href={card.href}
                     className={cn(
-                      "rounded-2xl border border-white/[0.1] bg-white/[0.06] p-4 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.65)] backdrop-blur-xl transition hover:border-white/[0.14] hover:bg-white/[0.08] md:p-5",
+                      "block rounded-2xl border border-white/[0.1] bg-white/[0.06] p-4 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.65)] backdrop-blur-xl transition hover:border-white/[0.14] hover:bg-white/[0.08] md:p-5",
+                      "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8d5a3] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950",
                       i === 1 && "lg:translate-x-2 xl:translate-x-4",
                       i === 2 && "lg:-translate-x-1 xl:-translate-x-2",
                       i === 3 && "lg:translate-x-3 xl:translate-x-5",
                     )}
+                    aria-label={`Открыть раздел: ${card.title}`}
                   >
                     <div className="flex items-start gap-3">
                       <span
@@ -131,7 +138,7 @@ export function HeroSection() {
                         </p>
                       </div>
                     </div>
-                  </article>
+                  </Link>
                 ))}
                 </div>
               </div>
