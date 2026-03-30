@@ -1,8 +1,5 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { Container } from "@/components/ui/Container";
 import { HOME_HERO_BG_URL} from "@/lib/homeAssets";
@@ -28,19 +25,6 @@ const floatingCards = [
 ] as const;
 
 export function HeroSection() {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
-  useEffect(() => {
-    if (!mobileNavOpen) return;
-    const onResize = () => {
-      if (window.matchMedia("(min-width: 768px)").matches) {
-        setMobileNavOpen(false);
-      }
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [mobileNavOpen]);
-
   return (
     <section
       className="relative isolate min-h-[90vh] w-full overflow-hidden bg-slate-950 text-white"
