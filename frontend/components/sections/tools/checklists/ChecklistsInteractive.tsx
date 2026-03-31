@@ -2,7 +2,14 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  ClipboardList,
+  Gauge,
+  Layers3,
+} from "lucide-react";
 
 import {
   ANSWER_OPTIONS,
@@ -25,30 +32,72 @@ function pointsLabel(value: ChecklistAnswerValue): string {
   return "2 балла";
 }
 
+function percentFrom(value: number, max: number) {
+  if (max <= 0) return 0;
+  return Math.max(0, Math.min(100, Math.round((value / max) * 100)));
+}
+
 function ProgressBar({
   value,
   max,
   className,
+  barClassName,
 }: {
   value: number;
   max: number;
   className?: string;
+  barClassName?: string;
 }) {
-  const pct = max <= 0 ? 0 : Math.min(100, Math.round((value / max) * 100));
+  const pct = percentFrom(value, max);
+
   return (
     <div
-      className={cn("h-2 w-full overflow-hidden rounded-full bg-slate-200", className)}
+      className={cn(
+        "h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80",
+        className,
+      )}
       role="progressbar"
       aria-valuenow={pct}
       aria-valuemin={0}
       aria-valuemax={100}
     >
       <div
-        className="h-full rounded-full bg-slate-800 transition-[width] duration-300 ease-out"
+        className={cn(
+          "h-full rounded-full bg-slate-900 transition-[width] duration-300 ease-out",
+          barClassName,
+        )}
         style={{ width: `${pct}%` }}
       />
     </div>
   );
+}
+
+function scoreToneClasses(percent: number) {
+  if (percent >= 75) {
+    return {
+      badge:
+        "border-emerald-200 bg-emerald-50 text-emerald-700",
+      dot: "bg-emerald-500",
+      progress: "bg-emerald-600",
+      softCard: "border-emerald-200/70 bg-emerald-50/60",
+    };
+  }
+
+  if (percent >= 45) {
+    return {
+      badge: "border-amber-200 bg-amber-50 text-amber-700",
+      dot: "bg-amber-500",
+      progress: "bg-amber-500",
+      softCard: "border-amber-200/70 bg-amber-50/60",
+    };
+  }
+
+  return {
+    badge: "border-rose-200 bg-rose-50 text-rose-700",
+    dot: "bg-rose-500",
+    progress: "bg-rose-600",
+    softCard: "border-rose-200/70 bg-rose-50/60",
+  };
 }
 
 export function ChecklistsInteractive() {
@@ -68,6 +117,7 @@ export function ChecklistsInteractive() {
       const row = answers[c.id];
       let sum = 0;
       let answered = 0;
+
       for (let i = 0; i < row.length; i++) {
         const v = row[i];
         if (v !== null) {
@@ -76,32 +126,38 @@ export function ChecklistsInteractive() {
           sum += v;
         }
       }
+
       totalSum += sum;
-      const maxScore = 2 * c.questions.length;
-      const percent = maxScore === 0 ? 0 : Math.round((sum / maxScore) * 100);
-      const band = scoreBand(percent);
+
+      const maxScore = c.questions.length * 2;
+      const completionPercent = percentFrom(answered, c.questions.length);
+      const scorePercent = percentFrom(sum, maxScore);
+      const band = scoreBand(scorePercent);
+
       return {
         id: c.id,
         title: c.title,
+        description: c.description,
         answered,
         total: c.questions.length,
         sum,
         maxScore,
-        percent,
+        completionPercent,
+        scorePercent,
         band,
         statusLabel: bandLabelRu(band),
       };
     });
 
-    const overallPercent =
-      MAX_CHECKLIST_SCORE === 0
-        ? 0
-        : Math.round((totalSum / MAX_CHECKLIST_SCORE) * 100);
+    const overallPercent = percentFrom(totalSum, MAX_CHECKLIST_SCORE);
     const overallBand = scoreBand(overallPercent);
 
     const activeRow = answers[activeId];
     const activeAnswered = activeRow.filter((v) => v !== null).length;
     const activeTotal = activeCategory.questions.length;
+    const activeScore = activeRow.reduce((acc, item) => acc + (item ?? 0), 0);
+    const activeMaxScore = activeCategory.questions.length * 2;
+    const activeScorePercent = percentFrom(activeScore, activeMaxScore);
 
     return {
       perCategory,
@@ -111,6 +167,9 @@ export function ChecklistsInteractive() {
       answeredAll,
       activeAnswered,
       activeTotal,
+      activeScore,
+      activeMaxScore,
+      activeScorePercent,
       hasAnyAnswer: answeredAll > 0,
     };
   }, [answers, activeId, activeCategory.questions.length]);
@@ -120,100 +179,76 @@ export function ChecklistsInteractive() {
       setAnswers((prev) => {
         const row = prev[categoryId];
         if (!row) return prev;
+
         const nextRow = row.slice();
         nextRow[questionIndex] = value;
+
         return { ...prev, [categoryId]: nextRow };
       });
     },
     [],
   );
 
+  const resetActiveCategory = useCallback(() => {
+    setAnswers((prev) => {
+      const row = prev[activeId];
+      if (!row) return prev;
+      return {
+        ...prev,
+        [activeId]: row.map(() => null),
+      };
+    });
+  }, [activeId]);
+
+  const overallTone = scoreToneClasses(derived.overallPercent);
+  const activeTone = scoreToneClasses(derived.activeScorePercent);
+
   return (
     <section
       id="checklists-interactive"
-      className="scroll-mt-24 bg-gradient-to-b from-white via-slate-50/50 to-slate-50 pb-16 pt-10 md:pb-24 md:pt-12"
+      className="scroll-mt-24 bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.06),transparent_35%),linear-gradient(to_bottom,#f8fafc,white)] pb-16 pt-10 md:pb-24 md:pt-12"
       aria-labelledby="checklists-tool-heading"
     >
       <Container>
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="/tools"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-slate-900"
-          >
-            <ArrowLeft className="size-4" aria-hidden />
-            К инструментам
-          </Link>
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
-            Оценка · шкала 0–2 балла за вопрос
-          </p>
-        </div>
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <Link
+              href="/tools"
+              className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+            >
+              <ArrowLeft className="size-4" aria-hidden />
+              Назад к инструментам
+            </Link>
 
-        <div className="max-w-3xl">
-          <h2
-            id="checklists-tool-heading"
-            className="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl"
-          >
-            Интерактивные чек-листы
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
-            Выберите направление слева (на мобильном — вкладки сверху), отметьте
-            ответы. Прогресс обновляется по активной категории и по всем
-            чек-листам вместе.
-          </p>
-        </div>
+            <div className="mt-5 max-w-3xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 shadow-sm">
+                <ClipboardList className="size-3.5" />
+                Диагностика управления
+              </div>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,280px)_1fr] lg:items-start">
-          {/* Categories */}
-          <nav
-            className="lg:sticky lg:top-24"
-            aria-label="Направления оценки"
-          >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 lg:mb-4">
-              Категории
-            </p>
-            <ul className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
-              {derived.perCategory.map((c) => {
-                const isActive = c.id === activeId;
-                const catMeta = CHECKLIST_CATEGORIES.find((x) => x.id === c.id)!;
-                return (
-                  <li key={c.id} className="min-w-[220px] shrink-0 lg:min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => setActiveId(c.id)}
-                      className={cn(
-                        "flex w-full flex-col rounded-2xl border px-4 py-3 text-left transition",
-                        isActive
-                          ? "border-slate-900 bg-white shadow-md ring-1 ring-slate-900/10"
-                          : "border-black/10 bg-white/80 hover:border-slate-300 hover:bg-white",
-                      )}
-                    >
-                      <span className="text-sm font-semibold text-slate-900">
-                        {c.title}
-                      </span>
-                      <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
-                        {catMeta.description}
-                      </span>
-                      <span className="mt-3 text-xs tabular-nums text-slate-600">
-                        {c.answered}/{c.total} · {c.percent}%
-                      </span>
-                      <ProgressBar
-                        value={c.answered}
-                        max={c.total}
-                        className="mt-2"
-                      />
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+              <h2
+                id="checklists-tool-heading"
+                className="mt-4 text-3xl font-bold tracking-tight text-slate-950 md:text-5xl"
+              >
+                Интерактивные чек-листы оценки
+              </h2>
 
-            <div className="mt-6 rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Общий прогресс заполнения
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
+                Оцените текущее состояние процессов, отметьте уровень выполнения
+                по каждому вопросу и получите сводную картину по направлениям
+                управления.
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-slate-900">
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Заполнено
+              </p>
+              <p className="mt-2 text-2xl font-bold tabular-nums text-slate-950">
                 {derived.answeredAll}
-                <span className="text-lg font-medium text-slate-400">
+                <span className="text-base font-medium text-slate-400">
                   {" "}
                   / {TOTAL_CHECKLIST_QUESTIONS}
                 </span>
@@ -223,187 +258,480 @@ export function ChecklistsInteractive() {
                 max={TOTAL_CHECKLIST_QUESTIONS}
                 className="mt-3"
               />
-              <p className="mt-3 text-xs text-slate-500">
-                Итоговый процент считается по сумме баллов ко всем вопросам;
-                неотвеченные дают 0 баллов.
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Общая оценка
+              </p>
+              <p className="mt-2 text-2xl font-bold tabular-nums text-slate-950">
+                {derived.overallPercent}%
+              </p>
+              <p
+                className={cn(
+                  "mt-3 inline-flex rounded-full border px-3 py-1 text-xs font-medium",
+                  overallTone.badge,
+                )}
+              >
+                {bandLabelRu(derived.overallBand)}
               </p>
             </div>
-          </nav>
 
-          {/* Active checklist */}
-          <div className="min-w-0 space-y-6">
-            <div className="rounded-3xl border border-black/10 bg-white p-6 shadow-sm md:p-8">
-              <div className="flex flex-col gap-4 border-b border-black/5 pb-6 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                    Активный чек-лист
-                  </p>
-                  <h3 className="mt-2 text-2xl font-bold text-slate-950">
-                    {activeCategory.title}
-                  </h3>
-                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-                    {activeCategory.description}
-                  </p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Категорий
+              </p>
+              <p className="mt-2 text-2xl font-bold tabular-nums text-slate-950">
+                {CHECKLIST_CATEGORIES.length}
+              </p>
+              <p className="mt-3 text-sm text-slate-500">
+                По ключевым направлениям оценки
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-8 xl:grid-cols-[340px_minmax(0,1fr)]">
+          <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 text-white shadow-[0_20px_60px_-30px_rgba(15,23,42,0.55)]">
+              <div className="border-b border-white/10 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-11 items-center justify-center rounded-2xl bg-white/10">
+                    <Gauge className="size-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                      Общая диагностика
+                    </p>
+                    <p className="mt-1 text-2xl font-bold">
+                      {derived.overallPercent}%
+                    </p>
+                  </div>
                 </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-xs text-slate-500">Прогресс по разделу</p>
-                  <p className="mt-1 text-lg font-semibold tabular-nums text-slate-900">
-                    {derived.activeAnswered}/{derived.activeTotal}
-                  </p>
+
+                <ProgressBar
+                  value={derived.totalSum}
+                  max={MAX_CHECKLIST_SCORE}
+                  className="mt-6 bg-white/10"
+                  barClassName={overallTone.progress}
+                />
+
+                <p className="mt-4 text-sm leading-relaxed text-slate-300">
+                  {overallNarrativeRu(derived.overallBand)}
+                </p>
+
+                <div
+                  className={cn(
+                    "mt-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium",
+                    overallTone.badge,
+                  )}
+                >
+                  <span className={cn("size-2 rounded-full", overallTone.dot)} />
+                  {bandLabelRu(derived.overallBand)}
                 </div>
               </div>
-              <ProgressBar
-                value={derived.activeAnswered}
-                max={derived.activeTotal}
-                className="mt-6"
-              />
 
-              <ol className="mt-8 space-y-8">
-                {activeCategory.questions.map((q, index) => {
-                  const value = answers[activeCategory.id][index];
-                  return (
-                    <li key={q.id}>
-                      <div
-                        role="group"
-                        aria-labelledby={`checklist-q-${q.id}`}
-                        className="rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 md:p-6"
+              <div className="p-6">
+                <div className="mb-4 flex items-center gap-2">
+                  <Layers3 className="size-4 text-slate-400" />
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                    Направления оценки
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {derived.perCategory.map((c) => {
+                    const isActive = c.id === activeId;
+                    const tone = scoreToneClasses(c.scorePercent);
+
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => setActiveId(c.id)}
+                        className={cn(
+                          "w-full rounded-2xl border p-4 text-left transition",
+                          isActive
+                            ? "border-white/20 bg-white/10 shadow-lg"
+                            : "border-white/10 bg-white/[0.04] hover:bg-white/[0.08]",
+                        )}
                       >
-                        <p
-                          id={`checklist-q-${q.id}`}
-                          className="text-sm font-medium leading-relaxed text-slate-900 md:text-base"
-                        >
-                          <span className="mr-2 tabular-nums text-slate-400">
-                            {index + 1}.
-                          </span>
-                          {q.text}
-                        </p>
-                        <div
-                          className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3"
-                          role="radiogroup"
-                          aria-label={q.text}
-                        >
-                          {ANSWER_OPTIONS.map((opt) => {
-                            const selected = value === opt.value;
-                            return (
-                              <button
-                                key={opt.value}
-                                type="button"
-                                role="radio"
-                                aria-checked={selected}
-                                onClick={() =>
-                                  setAnswer(activeCategory.id, index, opt.value)
-                                }
-                                className={cn(
-                                  "rounded-xl border px-3 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400",
-                                  selected
-                                    ? "border-slate-900 bg-slate-900 text-white shadow-sm"
-                                    : "border-black/10 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
-                                )}
-                              >
-                                {opt.label}
-                                <span className="mt-0.5 block text-xs font-normal opacity-80">
-                                  {pointsLabel(opt.value)}
-                                </span>
-                              </button>
-                            );
-                          })}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-white">
+                              {c.title}
+                            </p>
+                            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-400">
+                              {c.description}
+                            </p>
+                          </div>
+
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-bold tabular-nums text-white">
+                              {c.scorePercent}%
+                            </p>
+                            <p className="mt-1 text-[11px] text-slate-400">
+                              {c.answered}/{c.total}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ol>
+
+                        <ProgressBar
+                          value={c.sum}
+                          max={c.maxScore}
+                          className="mt-4 bg-white/10"
+                          barClassName={tone.progress}
+                        />
+
+                        <div className="mt-3 flex items-center justify-between gap-2">
+                          <span
+                            className={cn(
+                              "inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium",
+                              tone.badge,
+                            )}
+                          >
+                            {c.statusLabel}
+                          </span>
+
+                          <span className="text-[11px] text-slate-400">
+                            заполнение {c.completionPercent}%
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <div className="min-w-0 space-y-6">
+            <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="border-b border-slate-200 p-6 md:p-8">
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                  <div className="max-w-3xl">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                      Активный раздел
+                    </p>
+                    <h3 className="mt-2 text-2xl font-bold text-slate-950 md:text-3xl">
+                      {activeCategory.title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-600 md:text-base">
+                      {activeCategory.description}
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[320px]">
+                    <div
+                      className={cn(
+                        "rounded-2xl border p-4",
+                        activeTone.softCard,
+                      )}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        Оценка раздела
+                      </p>
+                      <p className="mt-2 text-2xl font-bold tabular-nums text-slate-950">
+                        {derived.activeScorePercent}%
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        Отвечено
+                      </p>
+                      <p className="mt-2 text-2xl font-bold tabular-nums text-slate-950">
+                        {derived.activeAnswered}
+                        <span className="text-base font-medium text-slate-400">
+                          {" "}
+                          / {derived.activeTotal}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <ProgressBar
+                  value={derived.activeScore}
+                  max={derived.activeMaxScore}
+                  className="mt-6"
+                  barClassName={activeTone.progress}
+                />
+              </div>
+
+              <div className="p-6 md:p-8">
+                <ol className="space-y-4">
+                  {activeCategory.questions.map((q, index) => {
+                    const value = answers[activeCategory.id][index];
+
+                    return (
+                      <li key={q.id}>
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 transition hover:border-slate-300 hover:bg-white md:p-6">
+                          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="min-w-0">
+                              <div className="flex items-start gap-3">
+                                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-sm font-bold text-white">
+                                  {index + 1}
+                                </div>
+
+                                <div>
+                                  <p className="text-sm font-semibold leading-relaxed text-slate-900 md:text-base">
+                                    {q.text}
+                                  </p>
+
+                                  {value !== null ? (
+                                    <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                                      <CheckCircle2 className="size-3.5" />
+                                      Ответ выбран
+                                    </div>
+                                  ) : (
+                                    <div className="mt-3 inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-500">
+                                      Ответ не выбран
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            className="mt-5 grid gap-2 md:grid-cols-3"
+                            role="radiogroup"
+                            aria-label={q.text}
+                          >
+                            {ANSWER_OPTIONS.map((opt) => {
+                              const selected = value === opt.value;
+
+                              return (
+                                <button
+                                  key={opt.value}
+                                  type="button"
+                                  role="radio"
+                                  aria-checked={selected}
+                                  onClick={() =>
+                                    setAnswer(activeCategory.id, index, opt.value)
+                                  }
+                                  className={cn(
+                                    "group rounded-2xl border px-4 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400",
+                                    selected
+                                      ? "border-slate-900 bg-slate-900 text-white shadow-sm"
+                                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
+                                  )}
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <p className="text-sm font-semibold">
+                                        {opt.label}
+                                      </p>
+                                      <p
+                                        className={cn(
+                                          "mt-1 text-xs",
+                                          selected
+                                            ? "text-slate-300"
+                                            : "text-slate-500",
+                                        )}
+                                      >
+                                        {pointsLabel(opt.value)}
+                                      </p>
+                                    </div>
+
+                                    <div
+                                      className={cn(
+                                        "mt-0.5 size-4 rounded-full border transition",
+                                        selected
+                                          ? "border-white bg-white"
+                                          : "border-slate-300 bg-transparent group-hover:border-slate-400",
+                                      )}
+                                    />
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button variant="secondary" type="button" onClick={resetActiveCategory}>
+                    Очистить текущий раздел
+                  </Button>
+
+                  <Button asChild>
+                    <Link href="#checklists-summary">
+                      К итоговой сводке
+                      <ArrowRight className="ml-2 size-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
 
             {derived.hasAnyAnswer ? (
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                  Сводка по оценке
-                </p>
-                <div className="mt-4 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <p className="text-sm text-slate-600">Общий результат</p>
-                    <p className="mt-1 text-4xl font-bold tabular-nums tracking-tight text-slate-950">
-                      {derived.overallPercent}%
+              <section
+                id="checklists-summary"
+                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+                aria-labelledby="checklists-summary-heading"
+              >
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="max-w-xl">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                      Итоговая сводка
                     </p>
-                    <p className="mt-2 text-base font-semibold text-slate-800">
-                      {bandLabelRu(derived.overallBand)}
+                    <h3
+                      id="checklists-summary-heading"
+                      className="mt-2 text-2xl font-bold text-slate-950 md:text-3xl"
+                    >
+                      Общий результат диагностики
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-600 md:text-base">
+                      На основе выбранных ответов система показывает уровень
+                      зрелости управления и помогает увидеть проблемные зоны по
+                      отдельным направлениям.
                     </p>
                   </div>
-                  <div className="max-w-xl flex-1">
-                    <ProgressBar
-                      value={derived.totalSum}
-                      max={MAX_CHECKLIST_SCORE}
-                    />
-                    <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                      {overallNarrativeRu(derived.overallBand)}
-                    </p>
+
+                  <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[360px]">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        Общий процент
+                      </p>
+                      <p className="mt-2 text-4xl font-bold tracking-tight text-slate-950">
+                        {derived.overallPercent}%
+                      </p>
+                    </div>
+
+                    <div
+                      className={cn(
+                        "rounded-2xl border p-5",
+                        overallTone.softCard,
+                      )}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                        Статус
+                      </p>
+                      <p className="mt-2 text-lg font-semibold text-slate-950">
+                        {bandLabelRu(derived.overallBand)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-8 border-t border-black/5 pt-8">
-                  <p className="text-sm font-semibold text-slate-900">
-                    По направлениям
-                  </p>
-                  <ul className="mt-4 space-y-3">
-                    {derived.perCategory.map((c) => (
-                      <li
+                <ProgressBar
+                  value={derived.totalSum}
+                  max={MAX_CHECKLIST_SCORE}
+                  className="mt-8"
+                  barClassName={overallTone.progress}
+                />
+
+                <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600">
+                  {overallNarrativeRu(derived.overallBand)}
+                </p>
+
+                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                  {derived.perCategory.map((c) => {
+                    const tone = scoreToneClasses(c.scorePercent);
+
+                    return (
+                      <div
                         key={c.id}
-                        className="flex flex-col gap-2 rounded-2xl border border-black/5 bg-slate-50/80 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+                        className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4"
                       >
-                        <span className="text-sm font-medium text-slate-800">
-                          {c.title}
-                        </span>
-                        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-                          <span className="text-sm tabular-nums text-slate-600">
-                            {c.percent}%
-                          </span>
-                          <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-slate-700">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-slate-900">
+                              {c.title}
+                            </p>
+                            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                              {c.description}
+                            </p>
+                          </div>
+
+                          <div className="shrink-0 text-right">
+                            <p className="text-lg font-bold tabular-nums text-slate-950">
+                              {c.scorePercent}%
+                            </p>
+                            <p className="text-xs text-slate-400">
+                              {c.sum}/{c.maxScore}
+                            </p>
+                          </div>
+                        </div>
+
+                        <ProgressBar
+                          value={c.sum}
+                          max={c.maxScore}
+                          className="mt-4"
+                          barClassName={tone.progress}
+                        />
+
+                        <div className="mt-3 flex items-center justify-between gap-3">
+                          <span
+                            className={cn(
+                              "inline-flex rounded-full border px-2.5 py-1 text-xs font-medium",
+                              tone.badge,
+                            )}
+                          >
                             {c.statusLabel}
                           </span>
+
+                          <span className="text-xs text-slate-500">
+                            заполнено {c.answered}/{c.total}
+                          </span>
                         </div>
-                      </li>
-                    ))}
-                  </ul>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <div className="mt-8">
-                  <p className="text-sm font-semibold text-slate-900">
-                    Рекомендуемые шаги
+                <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-950 p-6 text-white">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                    Следующие шаги
                   </p>
-                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-slate-600">
-                    <li>
-                      <Link
-                        href="/tools/index-efficiency"
-                        className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
-                      >
-                        Перейти к индексу эффективности
-                      </Link>{" "}
-                      — сводная метрика и структура зрелости управления.
-                    </li>
-                    <li>
-                      <Link
-                        href="/tools/budget-analysis"
-                        className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
-                      >
-                        Выполнить анализ бюджета
-                      </Link>{" "}
-                      — план-факт и прозрачность расходов.
-                    </li>
-                    <li>
-                      <Link
-                        href="/tools/kpi-templates"
-                        className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
-                      >
-                        Использовать KPI-шаблоны
-                      </Link>{" "}
-                      — закрепить контрольные показатели и регулярную отчётность.
-                    </li>
-                  </ul>
+
+                  <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    <Link
+                      href="/tools/index-efficiency"
+                      className="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                    >
+                      <p className="text-sm font-semibold text-white">
+                        Индекс эффективности
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                        Перейти к сводной метрике зрелости и качества управления.
+                      </p>
+                    </Link>
+
+                    <Link
+                      href="/tools/budget-analysis"
+                      className="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                    >
+                      <p className="text-sm font-semibold text-white">
+                        Анализ бюджета
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                        Сравнить план и факт, выявить отклонения и слабые места.
+                      </p>
+                    </Link>
+
+                    <Link
+                      href="/tools/kpi-templates"
+                      className="rounded-2xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                    >
+                      <p className="text-sm font-semibold text-white">
+                        KPI-шаблоны
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                        Зафиксировать показатели и усилить регулярную отчётность.
+                      </p>
+                    </Link>
+                  </div>
+
                   <div className="mt-6 flex flex-wrap gap-3">
                     <Button asChild>
                       <Link href="/tools/index-efficiency">
-                        Индекс эффективности
+                        Перейти к индексу эффективности
                       </Link>
                     </Button>
                     <Button variant="secondary" asChild>
@@ -411,7 +739,7 @@ export function ChecklistsInteractive() {
                     </Button>
                   </div>
                 </div>
-              </div>
+              </section>
             ) : null}
           </div>
         </div>
