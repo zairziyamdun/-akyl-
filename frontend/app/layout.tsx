@@ -5,8 +5,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 
 export const metadata: Metadata = {
-  title: "Frontend",
-  description: "Production-ready Next.js scaffold",
+  title: "AKYL - система управления МЖД",
+  description: "AKYL - это платформа для системного управления МЖД",
 };
 
 export default function RootLayout({
