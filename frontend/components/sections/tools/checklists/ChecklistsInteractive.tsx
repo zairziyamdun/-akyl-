@@ -110,30 +110,24 @@ export function ChecklistsInteractive() {
   );
 
   const derived = useMemo(() => {
-    let totalSum = 0;
-    let answeredAll = 0;
-
     const perCategory = CHECKLIST_CATEGORIES.map((c) => {
-      const row = answers[c.id];
+      const row = answers[c.id] ?? [];
+  
       let sum = 0;
       let answered = 0;
-
-      for (let i = 0; i < row.length; i++) {
-        const v = row[i];
+  
+      for (const v of row) {
         if (v !== null) {
           answered += 1;
-          answeredAll += 1;
           sum += v;
         }
       }
-
-      totalSum += sum;
-
+  
       const maxScore = c.questions.length * 2;
       const completionPercent = percentFrom(answered, c.questions.length);
       const scorePercent = percentFrom(sum, maxScore);
       const band = scoreBand(scorePercent);
-
+  
       return {
         id: c.id,
         title: c.title,
@@ -148,17 +142,28 @@ export function ChecklistsInteractive() {
         statusLabel: bandLabelRu(band),
       };
     });
-
+  
+    const totalSum = perCategory.reduce((acc, category) => acc + category.sum, 0);
+    const answeredAll = perCategory.reduce(
+      (acc, category) => acc + category.answered,
+      0,
+    );
+  
     const overallPercent = percentFrom(totalSum, MAX_CHECKLIST_SCORE);
     const overallBand = scoreBand(overallPercent);
-
-    const activeRow = answers[activeId];
-    const activeAnswered = activeRow.filter((v) => v !== null).length;
+  
+    const activeRow = answers[activeId] ?? [];
+    const activeAnswered = activeRow.filter(
+      (v): v is ChecklistAnswerValue => v !== null,
+    ).length;
     const activeTotal = activeCategory.questions.length;
-    const activeScore = activeRow.reduce((acc, item) => acc + (item ?? 0), 0);
+    const activeScore = activeRow.reduce<number>(
+      (acc, item) => acc + (item ?? 0),
+      0,
+    );
     const activeMaxScore = activeCategory.questions.length * 2;
     const activeScorePercent = percentFrom(activeScore, activeMaxScore);
-
+  
     return {
       perCategory,
       totalSum,
@@ -173,7 +178,7 @@ export function ChecklistsInteractive() {
       hasAnyAnswer: answeredAll > 0,
     };
   }, [answers, activeId, activeCategory.questions.length]);
-
+  
   const setAnswer = useCallback(
     (categoryId: string, questionIndex: number, value: ChecklistAnswerValue) => {
       setAnswers((prev) => {
