@@ -88,13 +88,13 @@ const megaGroups: MegaGroup[] = [
     items: [
       {
         title: "Библиотека знаний",
-        description: "Материалы, статьи, шаблоны и исследования",
+        description: "Систематизированные материалы и практические знания",
         href: "/library",
       },
       {
-        title: "Аналитика и статьи",
-        description: "Экспертные публикации и обзоры отрасли",
-        href: "/library/articles",
+        title: "Книги автора",
+        description: "Публикации и книги по управлению многоквартирными домами",
+        href: "/library/books",
       },
       {
         title: "Научные исследования",
@@ -102,9 +102,9 @@ const megaGroups: MegaGroup[] = [
         href: "/library/research",
       },
       {
-        title: "Шаблоны",
-        description: "Готовые документы и инструменты для практики",
-        href: "/library/templates",
+        title: "Нормативные документы",
+        description: "Законы, постановления и официальные нормативные акты",
+        href: "/library/regulations",
       },
     ],
   },
