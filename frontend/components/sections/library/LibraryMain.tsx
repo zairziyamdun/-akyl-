@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
   Download,
   FileText,
-  Filter,
   Folder,
   ScrollText,
   Search,
@@ -45,196 +44,259 @@ export function LibraryMain() {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredItems = libraryItems.filter((item) => {
-    const matchesType = activeType === "all" || item.type === activeType;
-    const matchesTopic = !activeTopic || item.topic === activeTopic;
-    const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesType && matchesTopic && matchesSearch;
-  });
+  const filteredItems = useMemo(() => {
+    return libraryItems.filter((item) => {
+      const matchesType = activeType === "all" || item.type === activeType;
+      const matchesTopic = !activeTopic || item.topic === activeTopic;
+      const query = searchQuery.trim().toLowerCase();
+
+      const matchesSearch =
+        query.length === 0 ||
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query) ||
+        item.topic.toLowerCase().includes(query);
+
+      return matchesType && matchesTopic && matchesSearch;
+    });
+  }, [activeType, activeTopic, searchQuery]);
 
   return (
     <section className="bg-background">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Поиск по библиотеке…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-              />
-            </div>
+        <div className="mb-10 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card via-card to-muted/40">
+          <div className="grid gap-8 px-6 py-8 md:px-8 md:py-10 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
+            <div>
+              <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground">
+                Библиотека знаний AKYL
+              </span>
 
-            <div className="mb-8">
-              <h3 className="font-semibold text-foreground mb-4">Тип материала</h3>
-              <div className="space-y-1">
-                {contentTypes.map((type) => (
-                  <button
-                    key={type.id}
-                    type="button"
-                    onClick={() => setActiveType(type.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                      activeType === type.id
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
-                  >
-                    <span>{type.name}</span>
-                    <span className="opacity-70">{type.count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+              <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+                Материалы, исследования и инструменты для профессионального
+                управления МЖД
+              </h1>
 
-            <div className="mb-8">
-              <h3 className="font-semibold text-foreground mb-4">Темы</h3>
-              <div className="space-y-1">
-                {topics.map((topic) => (
-                  <button
-                    key={topic.name}
-                    type="button"
-                    onClick={() =>
-                      setActiveTopic(activeTopic === topic.name ? null : topic.name)
-                    }
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                      activeTopic === topic.name
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
-                  >
-                    <span>{topic.name}</span>
-                    <span className="opacity-70">{topic.count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-muted rounded-xl p-5">
-              <h4 className="font-semibold text-foreground mb-2">Будьте в курсе</h4>
-              <p className="text-sm text-muted-foreground mb-4">
-                Узнавайте о новых исследованиях и материалах первыми.
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
+                Единое пространство для методологии, аналитики, нормативных
+                материалов, шаблонов и практических решений. Всё, что помогает
+                перейти от хаотичного управления к системной модели.
               </p>
-              <div className="space-y-2">
-                <input
-                  type="email"
-                  placeholder="Ваш email"
-                  className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-                <Button className="w-full" size="sm">
-                  Подписаться
-                </Button>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-background/80 p-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-2xl font-semibold text-foreground">
+                    {libraryItems.length}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    материалов в библиотеке
+                  </p>
+                </div>
+                <div>
+                  <p className="text-2xl font-semibold text-foreground">
+                    {topics.length}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    тематических направлений
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-muted-foreground">
-                Показано: {filteredItems.length}
-              </p>
-              <Button variant="secondary" size="sm" className="gap-2">
-                <Filter className="w-4 h-4" />
-                Сортировка
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {filteredItems.map((item) => {
-                const TypeIcon = getTypeIcon(item.type);
-                return (
-                  <div
-                    key={item.id}
-                    className="group bg-card border border-border rounded-xl p-6 hover:border-accent/50 transition-colors"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-accent/10 transition-colors">
-                        <TypeIcon className="w-6 h-6 text-accent" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-medium text-accent">
-                            {typeLabelsRu[item.type]}
-                          </span>
-                          <span className="text-xs text-muted-foreground">·</span>
-                          <span className="text-xs text-muted-foreground">
-                            {item.topic}
-                          </span>
-                          <span className="text-xs text-muted-foreground">·</span>
-                          <span className="text-xs text-muted-foreground">
-                            {item.date}
-                          </span>
-                        </div>
-                        <h3 className="font-semibold text-foreground mb-2 group-hover:text-accent transition-colors">
-                          {item.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {item.description}
-                        </p>
-                        <div className="mt-4 flex items-center gap-4">
-                          {item.readTime ? (
-                            <span className="text-xs text-muted-foreground">
-                              {item.readTime}
-                            </span>
-                          ) : null}
-                          {item.duration ? (
-                            <span className="text-xs text-muted-foreground">
-                              {item.duration}
-                            </span>
-                          ) : null}
-                          {item.format ? (
-                            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                              {item.format}
-                            </span>
-                          ) : null}
-                          <button
-                            type="button"
-                            className="text-xs text-accent font-medium hover:underline ml-auto flex items-center gap-1"
-                          >
-                            {item.type === "template" ? "Скачать" : "Подробнее"}
-                            <ArrowRight className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {filteredItems.length === 0 ? (
-              <div className="text-center py-16">
-                <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">
-                  По вашему запросу ничего не найдено.
-                </p>
+        <div className="mb-8 rounded-2xl border border-border bg-card p-4 md:p-5">
+          <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-start">
+            <div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Поиск по библиотеке, темам и материалам…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none transition focus:border-accent"
+                />
               </div>
-            ) : null}
 
-            <div className="mt-8 flex items-center justify-center gap-2">
-              <Button variant="secondary" size="sm" disabled>
-                Назад
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-accent text-accent-foreground"
-              >
-                1
-              </Button>
-              <Button variant="secondary" size="sm">
-                2
-              </Button>
-              <Button variant="secondary" size="sm">
-                3
-              </Button>
-              <Button variant="secondary" size="sm">
-                Вперёд
-              </Button>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {contentTypes.map((type) => {
+                  const isActive = activeType === type.id;
+
+                  return (
+                    <button
+                      key={type.id}
+                      type="button"
+                      onClick={() => setActiveType(type.id)}
+                      className={`rounded-full border px-3 py-2 text-sm transition ${
+                        isActive
+                          ? "border-foreground/15 bg-foreground/10 text-foreground"
+                          : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      {type.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex flex-wrap gap-2">
+                {topics.map((topic) => {
+                  const isActive = activeTopic === topic.name;
+
+                  return (
+                    <button
+                      key={topic.name}
+                      type="button"
+                      onClick={() =>
+                        setActiveTopic(isActive ? null : topic.name)
+                      }
+                      className={`rounded-full border px-3 py-2 text-sm transition ${
+                        isActive
+                          ? "border-foreground/15 bg-foreground/10 text-foreground"
+                          : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      {topic.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-6 flex flex-col gap-3 border-b border-border pb-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">
+              Найдено материалов:{" "}
+              <span className="font-medium text-foreground">
+                {filteredItems.length}
+              </span>
+            </p>
+          </div>
+
+          {(activeType !== "all" || activeTopic || searchQuery) && (
+            <button
+              type="button"
+              onClick={() => {
+                setActiveType("all");
+                setActiveTopic(null);
+                setSearchQuery("");
+              }}
+              className="text-sm font-medium text-accent hover:underline"
+            >
+              Сбросить фильтры
+            </button>
+          )}
+        </div>
+
+        {filteredItems.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {filteredItems.map((item) => {
+              const TypeIcon = getTypeIcon(item.type);
+
+              return (
+                <article
+                  key={item.id}
+                  className="group flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40"
+                >
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted transition group-hover:bg-accent/10">
+                      <TypeIcon className="h-5 w-5 text-accent" />
+                    </div>
+
+                    <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                      {typeLabelsRu[item.type]}
+                    </span>
+                  </div>
+
+                  <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    <span>{item.topic}</span>
+                    <span>•</span>
+                    <span>{item.date}</span>
+                  </div>
+
+                  <h3 className="text-base font-semibold leading-6 text-foreground transition group-hover:text-accent">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                    {item.description}
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {item.readTime ? (
+                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
+                        {item.readTime}
+                      </span>
+                    ) : null}
+
+                    {item.duration ? (
+                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
+                        {item.duration}
+                      </span>
+                    ) : null}
+
+                    {item.format ? (
+                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
+                        {item.format}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-auto pt-6">
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+                    >
+                      {item.type === "template" ? "Скачать материал" : "Открыть материал"}
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-16 text-center">
+            <BookOpen className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <h3 className="text-lg font-semibold text-foreground">
+              Ничего не найдено
+            </h3>
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+              Попробуйте изменить поисковый запрос, сбросить фильтры или выбрать
+              другую тему материалов.
+            </p>
+          </div>
+        )}
+
+        <div className="mt-10 rounded-3xl border border-border bg-muted/50 p-6 md:p-8">
+          <div className="grid gap-6 lg:grid-cols-[1fr_340px] lg:items-center">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                Получайте новые материалы первыми
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+                Подпишитесь на обновления библиотеки, чтобы следить за новыми
+                исследованиями, методическими материалами и практическими
+                инструментами по управлению МЖД.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="space-y-3">
+                <input
+                  type="email"
+                  placeholder="Ваш email"
+                  className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none transition focus:border-accent"
+                />
+                <Button className="h-11 w-full" size="sm">
+                  Подписаться
+                </Button>
+              </div>
             </div>
           </div>
         </div>
