@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Download, Library } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 
+const SECTION_BG_SRC =
+  "/background/library-book-background.jpg";
+
 type Book = {
   id: number;
   image: string;
-  tone: string;
-  /** Короткий alt для доступности */
   alt: string;
 };
 
@@ -19,19 +20,16 @@ const featuredBooks: Book[] = [
   {
     id: 1,
     image: "/books/book-1.png",
-    tone: "from-slate-900 via-slate-800 to-slate-700",
     alt: "Обложка издания AKYL, основной том",
   },
   {
     id: 2,
     image: "/books/book-2.png",
-    tone: "from-slate-800 to-slate-600",
     alt: "Обложка издания AKYL, том I",
   },
   {
     id: 3,
     image: "/books/book-3.png",
-    tone: "from-stone-800 to-stone-600",
     alt: "Обложка издания AKYL, том II",
   },
 ];
@@ -50,25 +48,36 @@ const stats = [
 ];
 
 export function LibraryFeaturedBook() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
       id="featured-books"
-      className="relative overflow-hidden border-t border-border bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.08),transparent_32%),linear-gradient(180deg,#0b1120_0%,#111827_48%,#0f172a_100%)]"
+      className="relative isolate overflow-hidden border-t border-white/[0.06] bg-neutral-950"
     >
-      <div className="absolute inset-0 opacity-[0.06]">
-        <div className="h-full w-full bg-[linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] bg-[size:44px_44px]" />
+      {/* Фон: фото */}
+      <div className="absolute inset-0" aria-hidden>
+        <Image
+          src={SECTION_BG_SRC}
+          alt=""
+          fill
+          className="object-cover object-center brightness-[0.42]"
+          sizes="100vw"
+          quality={88}
+          priority={false}
+          
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/35" />
       </div>
 
-      <div className="absolute -left-16 top-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-      <div className="absolute right-0 top-1/3 h-72 w-72 rounded-full bg-slate-400/10 blur-3xl" />
-
-      <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
         <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
           <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.65 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-slate-300 backdrop-blur">
               <Library className="h-3.5 w-3.5" />
@@ -137,42 +146,51 @@ export function LibraryFeaturedBook() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 32, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
             <div className="relative mx-auto min-h-[640px] max-w-[640px]">
-              {/* левая книга */}
               <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                animate={reduceMotion ? undefined : { y: [0, -5, 0] }}
+                transition={{
+                  duration: 8,
+                  repeat: reduceMotion ? 0 : Infinity,
+                  ease: "easeInOut",
+                }}
                 className="absolute left-0 top-20 z-10 w-[210px] rotate-[-14deg]"
               >
                 <BookCard book={featuredBooks[1]} />
               </motion.div>
 
-              {/* правая книга */}
               <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                animate={reduceMotion ? undefined : { y: [0, 5, 0] }}
+                transition={{
+                  duration: 9,
+                  repeat: reduceMotion ? 0 : Infinity,
+                  ease: "easeInOut",
+                }}
                 className="absolute right-0 top-6 z-10 w-[210px] rotate-[12deg]"
               >
                 <BookCard book={featuredBooks[2]} />
               </motion.div>
 
-              {/* центральная книга */}
               <motion.div
-                whileHover={{ y: -10, rotate: -1, scale: 1.03 }}
-                transition={{ duration: 0.35 }}
+                whileHover={
+                  reduceMotion ? undefined : { y: -4, rotate: -0.5, scale: 1.012 }
+                }
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 className="absolute left-1/2 top-1/2 z-20 w-[300px] -translate-x-1/2 -translate-y-1/2"
               >
                 <BookCard book={featuredBooks[0]} featured />
               </motion.div>
 
-              {/* тень */}
-              <div className="absolute inset-x-12 bottom-0 h-24 rounded-full bg-black/50 blur-3xl" />
+              <div
+                className="pointer-events-none absolute inset-x-16 bottom-2 h-20 rounded-[100%] bg-black/45 blur-2xl"
+                aria-hidden
+              />
             </div>
           </motion.div>
         </div>
@@ -188,34 +206,30 @@ function BookCard({
   book: Book;
   featured?: boolean;
 }) {
+  const shadow = featured
+    ? "shadow-[0_32px_64px_-8px_rgba(0,0,0,0.58),0_12px_24px_-6px_rgba(0,0,0,0.35)]"
+    : "shadow-[0_24px_48px_-10px_rgba(0,0,0,0.52),0_8px_16px_-4px_rgba(0,0,0,0.3)]";
+
   return (
-    <div
-      className={[
-        "group relative aspect-[3/4] w-full overflow-hidden rounded-2xl border border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.45)] sm:rounded-[26px]",
-        featured ? "shadow-[0_30px_90px_rgba(0,0,0,0.55)]" : "",
-      ].join(" ")}
-    >
-      <Image
-        src={book.image}
-        alt={book.alt}
-        fill
-        sizes={
-          featured
-            ? "(max-width: 1024px) 90vw, 300px"
-            : "(max-width: 1024px) 42vw, 210px"
-        }
-        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-        priority={featured}
-      />
-
-      <div
-        className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${book.tone} opacity-30 mix-blend-overlay`}
-        aria-hidden
-      />
-
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.06),transparent_40%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-white/10" />
+    <div className={`group w-full ${shadow}`}>
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-none bg-neutral-950 ring-1 ring-black/25">
+        <Image
+          src={book.image}
+          alt={book.alt}
+          fill
+          sizes={
+            featured
+              ? "(max-width: 1024px) 90vw, 300px"
+              : "(max-width: 1024px) 42vw, 210px"
+          }
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.008]"
+          priority={featured}
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.08] via-transparent to-black/[0.03]"
+          aria-hidden
+        />
+      </div>
     </div>
   );
 }
