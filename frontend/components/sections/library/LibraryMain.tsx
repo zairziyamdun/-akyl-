@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
+  Check,
   Download,
   FileText,
   Folder,
@@ -21,6 +22,15 @@ import {
   typeLabelsRu,
   type LibraryItemType,
 } from "./libraryContent";
+
+const filterChipBase =
+  "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-[color,background-color,border-color,box-shadow] duration-200";
+
+const filterChipActive =
+  "border-2 border-foreground/80 bg-foreground text-background shadow-sm";
+
+const filterChipInactive =
+  "border border-border bg-background text-muted-foreground hover:border-muted-foreground/30 hover:bg-muted hover:text-foreground";
 
 function getTypeIcon(type: LibraryItemType) {
   switch (type) {
@@ -127,13 +137,18 @@ export function LibraryMain() {
                     <button
                       key={type.id}
                       type="button"
+                      aria-pressed={isActive}
                       onClick={() => setActiveType(type.id)}
-                      className={`rounded-full border px-3 py-2 text-sm transition ${
-                        isActive
-                          ? "border-foreground/15 bg-foreground/10 text-foreground"
-                          : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
+                      className={`${filterChipBase} ${
+                        isActive ? filterChipActive : filterChipInactive
                       }`}
                     >
+                      {isActive ? (
+                        <Check
+                          className="size-3.5 shrink-0 stroke-[2.5]"
+                          aria-hidden
+                        />
+                      ) : null}
                       {type.name}
                     </button>
                   );
@@ -150,15 +165,20 @@ export function LibraryMain() {
                     <button
                       key={topic.name}
                       type="button"
+                      aria-pressed={isActive}
                       onClick={() =>
                         setActiveTopic(isActive ? null : topic.name)
                       }
-                      className={`rounded-full border px-3 py-2 text-sm transition ${
-                        isActive
-                          ? "border-foreground/15 bg-foreground/10 text-foreground"
-                          : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
+                      className={`${filterChipBase} ${
+                        isActive ? filterChipActive : filterChipInactive
                       }`}
                     >
+                      {isActive ? (
+                        <Check
+                          className="size-3.5 shrink-0 stroke-[2.5]"
+                          aria-hidden
+                        />
+                      ) : null}
                       {topic.name}
                     </button>
                   );
@@ -192,7 +212,7 @@ export function LibraryMain() {
             </button>
           )}
         </div>
-
+        {/* Список материалов */}
         {filteredItems.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredItems.map((item) => {
@@ -272,7 +292,7 @@ export function LibraryMain() {
             </p>
           </div>
         )}
-
+        {/* Подписка на обновления */}
         <div className="mt-10 rounded-3xl border border-border bg-muted/50 p-6 md:p-8">
           <div className="grid gap-6 lg:grid-cols-[1fr_340px] lg:items-center">
             <div>
