@@ -1,13 +1,16 @@
 import Image from "next/image";
 
+import { cn } from "@/lib/cn";
 import type { AuthorBook } from "@/data/books";
 
 export function BookCoverPlaceholder({
   book,
   size = "md",
+  className,
 }: {
   book: AuthorBook;
   size?: "sm" | "md";
+  className?: string;
 }) {
   const aspect = size === "sm" ? "aspect-[3/4]" : "aspect-[3/4]";
   const w =
@@ -15,7 +18,12 @@ export function BookCoverPlaceholder({
 
   return (
     <div
-      className={`${w} ${aspect} relative overflow-hidden border border-border bg-neutral-950`}
+      className={cn(
+        w,
+        aspect,
+        "relative overflow-hidden border border-border bg-neutral-950",
+        className,
+      )}
     >
       <Image
         src={book.image}

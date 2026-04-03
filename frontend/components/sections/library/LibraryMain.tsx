@@ -21,7 +21,7 @@ import {
   topics,
   typeLabelsRu,
   type LibraryItemType,
-} from "./libraryContent";
+} from "@/data/libraryContent";
 
 const filterChipBase =
   "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-[color,background-color,border-color,box-shadow] duration-200";
