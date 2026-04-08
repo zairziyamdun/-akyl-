@@ -88,7 +88,7 @@ const megaGroups: MegaGroup[] = [
     title: "Библиотека",
     items: [
       {
-        title: "Библиотека знаний",
+        title: "База знаний",
         description: "Систематизированные материалы и практические знания",
         href: "/library",
       },
