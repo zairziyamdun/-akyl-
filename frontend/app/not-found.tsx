@@ -3,73 +3,64 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 
 export const metadata: Metadata = {
-  title: "404 — страница пока не готова",
+  title: "Модуль в разработке | AKYL",
   description:
-    "Такой страницы пока нет. Возможно, она ещё в разработке или просто решила не спешить.",
+    "Раздел цифровой модели управления ещё не активирован. Следите за обновлениями платформы AKYL.",
 };
 
 export default function NotFound() {
   return (
-    <section
-      className="relative flex min-h-[calc(100vh-12rem)] flex-col justify-center py-16 sm:py-24"
+    <Section
+      size="hero"
+      className="relative isolate flex min-h-[calc(100vh-12rem)] flex-col justify-center overflow-hidden bg-[#060a0f] text-white"
       aria-labelledby="not-found-heading"
     >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-3 opacity-90"
-        style={{
-          background:
-            "repeating-linear-gradient(-45deg, #fbbf24 0 12px, #0f172a 12px 24px)",
-        }}
-        aria-hidden
-      />
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(212,186,122,0.12),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_30%,rgba(255,255,255,0.04),transparent_40%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      </div>
 
-      <Container>
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="font-mono text-sm font-semibold uppercase tracking-[0.35em] text-amber-600">
-            ошибка 404
-          </p>
+      <Container className="relative z-10">
+        <div className="mx-auto max-w-xl text-center">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-8 py-10 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.65)] backdrop-blur-md md:px-10 md:py-12">
+            <p className="text-[11px] font-medium uppercase tracking-[0.26em] text-[#d4ba7a]/85">
+              Код 404
+            </p>
 
-          <h1
-            id="not-found-heading"
-            className="mt-4 text-5xl font-black tracking-tight text-slate-900 sm:text-6xl"
-          >
-            Здесь пока{" "}
-            <span className="relative inline-block">
-              тишина
-              <span
-                className="absolute -bottom-1 left-0 right-0 h-2 rounded-sm bg-amber-300/80"
-                aria-hidden
-              />
-            </span>
-          </h1>
+            <h1
+              id="not-found-heading"
+              className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-white md:text-4xl lg:text-5xl lg:leading-tight"
+            >
+              Модуль системы находится в разработке
+            </h1>
 
-          <p className="mt-6 text-lg leading-relaxed text-slate-600">
-            Похоже, этой страницы пока нет. Возможно, она ещё в разработке,
-            на согласовании или просто, как это иногда бывает, решила не
-            торопить события.
-          </p>
+            <p className="mt-6 text-sm leading-relaxed text-white/68 md:text-base md:leading-7">
+              В рамках построения цифровой модели управления данный раздел ещё
+              не активирован. Следите за обновлениями платформы.
+            </p>
 
-          <p className="mt-4 text-base leading-relaxed text-slate-500">
-            Ничего страшного: на сайте всё идёт по плану. Просто не каждый
-            раздел любит появляться раньше времени.
-          </p>
-
-          <p className="mt-4 text-sm italic text-slate-400">
-            Можно сказать, страница взяла небольшую производственную паузу.
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild variant="primary">
-              <Link href="/">На главную</Link>
-            </Button>
-            <Button asChild variant="secondary">
-              <Link href="/tools">К инструментам</Link>
-            </Button>
+            <div className="mt-10 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:justify-center">
+              <Button
+                asChild
+                className="h-11 rounded-full border-0 bg-[#d4ba7a] px-6 text-sm font-medium text-[#0b1320] shadow-none transition hover:bg-[#e0ca8a]"
+              >
+                <Link href="/">На главную</Link>
+              </Button>
+              <Button
+                asChild
+                variant="secondary"
+                className="h-11 rounded-full border border-white/12 bg-white/[0.04] px-6 text-sm font-medium text-white shadow-none hover:bg-white/[0.08]"
+              >
+                <Link href="/methodology">Методология</Link>
+              </Button>
+            </div>
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }
