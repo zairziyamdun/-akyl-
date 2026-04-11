@@ -10,12 +10,13 @@ import {
   ResultsSection,
   SystemSection,
   ToolsSection,
+  ManagementDefinitionSection,
 } from "@/components/sections/home";
-
 export default function Page() {
   return (
     <div>
       <HeroSection />
+      <ManagementDefinitionSection />
       <BookSection />
       <LearningSection />
       <ImplementationSection />

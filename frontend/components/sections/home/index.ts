@@ -1,5 +1,6 @@
 export { ArchitectureSection } from "./ArchitectureSection";
 export { BookSection } from "./BookSection";
+export { CurrentModelProblemsSection } from "./CurrentModelProblemsSection";
 export { CasesSection } from "./CasesSection";
 export { FinalCtaSection } from "./FinalCtaSection";
 export { ImplementationSection } from "./ImplementationSection";
@@ -9,3 +10,4 @@ export { ResultsSection } from "./ResultsSection";
 export { SystemSection } from "./SystemSection";
 export { ToolsSection } from "./ToolsSection";
 export { HeroSection } from "./HeroSection";
+export { ManagementDefinitionSection } from "./ManagementDefinitionSection";
