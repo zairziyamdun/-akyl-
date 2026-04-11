@@ -85,7 +85,7 @@ export function LibraryFeaturedBook() {
             </div>
 
             <h2 className="mt-6 max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-5xl">
-              Не просто книги, а интеллектуальный фонд методологии управления
+              Не просто книги, а интеллектуальный фонд системного управления
               МЖД
             </h2>
 

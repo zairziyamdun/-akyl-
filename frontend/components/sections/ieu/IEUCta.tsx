@@ -40,7 +40,7 @@ export function IEUCta() {
               className="border-white/25 bg-transparent text-white ring-white/20 hover:bg-white/10"
               asChild
             >
-              <Link href="/methodology">Начать внедрение системы</Link>
+              <Link href="/contacts">Начать внедрение системы</Link>
             </Button>
           </div>
         </div>

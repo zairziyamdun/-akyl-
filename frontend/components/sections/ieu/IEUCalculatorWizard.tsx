@@ -427,7 +427,7 @@ export function IEUCalculatorWizard() {
                   <Link href="/contacts">Обсудить с экспертом</Link>
                 </Button>
                 <Button variant="secondary" asChild>
-                  <Link href="/methodology">Методология AKYL</Link>
+                  <Link href="/library">База знаний</Link>
                 </Button>
               </div>
             </section>

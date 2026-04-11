@@ -55,7 +55,7 @@ export default function NotFound() {
                 variant="secondary"
                 className="h-11 rounded-full border border-white/12 bg-white/[0.04] px-6 text-sm font-medium text-white shadow-none hover:bg-white/[0.08]"
               >
-                <Link href="/methodology">Методология</Link>
+                <Link href="/library">База знаний</Link>
               </Button>
             </div>
           </div>

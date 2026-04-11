@@ -14,7 +14,7 @@ const columns: Array<{ title: string; links: LinkItem[] }> = [
   {
     title: "Разделы",
     links: [
-      { label: "Методология", href: "/" },
+      { label: "База знаний", href: "/library" },
       { label: "Платформа", href: "/" },
       { label: "Практика", href: "/" },
       { label: "Контакты", href: "/" },
@@ -44,7 +44,7 @@ export function Footer() {
               <img src={HOME_LOGO_URL} alt="AKYL" className="h-6 w-auto" />
             </Link>
             <p className="mt-5 max-w-md text-sm leading-6 text-slate-600">
-              Подпишитесь на обновления методологии и практики внедрения.
+              Подпишитесь на обновления материалов и практики внедрения.
             </p>
 
             <form

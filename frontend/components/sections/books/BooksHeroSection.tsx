@@ -52,7 +52,7 @@ export function BooksHeroSection() {
               <h1 className="text-4xl font-semibold tracking-[-0.04em] text-white md:text-5xl lg:text-[60px] lg:leading-[0.98]">
                 Система управления МЖД
                 <span className="mt-2 block text-white/48">
-                  через книги, методологию и внедрение
+                  через книги, базу знаний и внедрение
                 </span>
               </h1>
 

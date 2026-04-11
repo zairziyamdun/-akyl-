@@ -22,7 +22,7 @@ export function FinalCtaSection() {
             align="center"
             eyebrow="Следующий шаг"
             title="Системное управление начинается с разговора по существу"
-            description="Обсудим ваш контекст — портфель, объект или этап ввода — и предложим рабочий маршрут: методология, обучение, инструменты, внедрение."
+            description="Обсудим ваш контекст — портфель, объект или этап ввода — и предложим рабочий маршрут: материалы, обучение, инструменты, внедрение."
             className="mx-auto max-w-2xl"
           />
           <div className="mt-10 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -38,7 +38,7 @@ export function FinalCtaSection() {
               variant="ghost"
               className="h-12 rounded-xl border border-white/20 bg-white/[0.06] px-7 text-sm font-semibold text-white hover:bg-white/[0.1]"
             >
-              <Link href="/methodology">Изучить методологию</Link>
+              <Link href="/library">Открыть базу знаний</Link>
             </Button>
           </div>
         </div>

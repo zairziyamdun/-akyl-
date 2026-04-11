@@ -23,7 +23,7 @@ type BookItem = {
 const books: BookItem[] = [
   {
     id: "book-1",
-    category: "Методология",
+    category: "Системный подход",
     title: "Управление МЖД как система",
     shortLabel: "AKYL",
     description:

@@ -3,7 +3,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/cn";
 
 const layers = [
-  { id: "L5", label: "Методология AKYL", sub: "Единая логика и язык управления" },
+  { id: "L5", label: "Логика AKYL", sub: "Единая модель и язык управления" },
   { id: "L4", label: "Роли и ответственность", sub: "Кто принимает какие решения" },
   { id: "L3", label: "Процессы", sub: "Сквозные цепочки и регламенты" },
   { id: "L2", label: "Финансы и KPI", sub: "Планирование, контроль, отчётность" },
@@ -12,7 +12,7 @@ const layers = [
 
 const cards = [
   {
-    title: "Методология",
+    title: "Модель управления",
     line: "Связка теории, практики и измеримых критериев зрелости.",
   },
   {
@@ -54,7 +54,7 @@ export function ArchitectureSection() {
           align="center"
           eyebrow="Архитектура"
           title="Единая модель вместо разрозненных инструментов"
-          description="AKYL собирает управление МЖД в согласованную структуру: от методологии до цифрового контура. Каждый слой опирается на нижележащий — без «висящих» модулей."
+          description="AKYL собирает управление МЖД в согласованную структуру: от единой модели до цифрового контура. Каждый слой опирается на нижележащий — без «висящих» модулей."
           className="mx-auto max-w-3xl"
         />
 
@@ -62,7 +62,7 @@ export function ArchitectureSection() {
           <div
             className="rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.8)] backdrop-blur-sm md:p-8"
             role="img"
-            aria-label="Схема слоёв архитектуры управления: от цифровой системы до методологии"
+            aria-label="Схема слоёв архитектуры управления: от цифровой системы до логики AKYL"
           >
             <ol className="flex flex-col gap-3">
               {[...layers].reverse().map((layer, idx) => (

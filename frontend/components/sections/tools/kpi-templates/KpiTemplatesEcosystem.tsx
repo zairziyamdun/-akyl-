@@ -4,14 +4,9 @@ import { Container } from "@/components/ui/Container";
 
 const cards = [
   {
-    title: "Методология",
-    text: "Объясняет логику KPI: зачем измерять, как связать цели дома с показателями и циклом управления.",
-    href: "/methodology",
-  },
-  {
-    title: "Атлас",
-    text: "Показывает процессы и связи между ролями — основа для выбора процессных KPI и точек контроля.",
-    href: "/atlas",
+    title: "База знаний",
+    text: "Статьи и материалы о логике KPI: зачем измерять, как связать цели дома с показателями и циклом управления.",
+    href: "/library",
   },
   {
     title: "Инструменты",
@@ -45,7 +40,7 @@ export function KpiTemplatesEcosystem() {
           </p>
         </div>
 
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card) => (
             <li key={card.title}>
               <Link

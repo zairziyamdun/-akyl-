@@ -10,19 +10,18 @@ export function BooksCtaSection() {
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
             <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">
-              Изучайте методологию AKYL и собирайте управление в систему
+              Соберите управление в систему на базе материалов AKYL
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-300 md:text-base md:leading-8">
-              Перейдите в методологию, откройте библиотеку знаний, получите
-              консультацию и свяжитесь с Центром AKYL — мы поможем
-              адаптировать модель под вашу организацию.
+              Откройте базу знаний, получите консультацию и свяжитесь с Центром
+              AKYL — мы поможем адаптировать модель под вашу организацию.
             </p>
           </div>
 
           <div className="lg:col-span-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
               <Button asChild className="rounded-full px-6">
-                <Link href="/methodology">Изучить методологию</Link>
+                <Link href="/library">База знаний</Link>
               </Button>
               <Button
                 asChild
