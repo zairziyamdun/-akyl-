@@ -1,13 +1,14 @@
-export { ArchitectureSection } from "./ArchitectureSection";
-export { BookSection } from "./BookSection";
-export { CurrentModelProblemsSection } from "./CurrentModelProblemsSection";
-export { CasesSection } from "./CasesSection";
-export { FinalCtaSection } from "./FinalCtaSection";
-export { ImplementationSection } from "./ImplementationSection";
-export { LearningSection } from "./LearningSection";
-export { ProblemsSection } from "./ProblemsSection";
-export { ResultsSection } from "./ResultsSection";
-export { SystemSection } from "./SystemSection";
-export { ToolsSection } from "./ToolsSection";
 export { HeroSection } from "./HeroSection";
-export { ManagementDefinitionSection } from "./ManagementDefinitionSection";
+
+export { HomeWhyNewSystemSection } from "./HomeWhyNewSystemSection";
+export { HomeProfessionalManagementSection } from "./HomeProfessionalManagementSection";
+export { HomePhotoSplitSection } from "./HomePhotoSplitSection";
+export { HomePlatformDirectionsSection } from "./HomePlatformDirectionsSection";
+export { HomeImplementationPracticeSection } from "./HomeImplementationPracticeSection";
+export { HomeUrbanCaseSection } from "./HomeUrbanCaseSection";
+export { HomeAudienceSection } from "./HomeAudienceSection";
+export { HomeAnalyticsShowcaseSection } from "./HomeAnalyticsShowcaseSection";
+export { HomeEducationSpotlightSection } from "./HomeEducationSpotlightSection";
+export { HomeKnowledgeLibrarySection } from "./HomeKnowledgeLibrarySection";
+export { HomeJournalSpotlightSection } from "./HomeJournalSpotlightSection";
+export { HomeClosingCtaSection } from "./HomeClosingCtaSection";

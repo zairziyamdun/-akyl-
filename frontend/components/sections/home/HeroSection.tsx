@@ -36,7 +36,7 @@ const slides: HeroSlide[] = [
       href: "/akyl/consulting",
     },
     image:
-      "https://photocentra.ru/images/main109/1092096_main.jpg",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1800&q=80",
   },
   {
     id: 2,
@@ -362,14 +362,14 @@ export function HeroSection() {
               style={{ backgroundImage: `url(${activeSlide.image})` }}
             />
 
-            <div className="absolute inset-0 bg-black/45" />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/72 via-slate-950/42 to-slate-950/22" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-slate-950/12" />
+            <div className="absolute inset-0 bg-slate-950/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900/65 via-slate-800/35 to-slate-900/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-white/10" />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="relative mx-auto flex min-h-[min(78svh,720px)] w-full max-w-7xl items-center px-4 py-10 sm:min-h-[min(82svh,780px)] sm:px-6 sm:py-12 md:py-14 lg:min-h-[88svh] lg:px-8 lg:py-16 xl:py-[4.5rem]">
+      <div className="relative mx-auto flex min-h-[min(76svh,700px)] w-full max-w-7xl items-center px-4 py-12 sm:min-h-[min(80svh,760px)] sm:px-6 sm:py-14 md:py-16 lg:min-h-[86svh] lg:px-8 lg:py-16 xl:py-20">
         <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-8 sm:gap-9 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(260px,1fr)] lg:gap-9 xl:grid-cols-[minmax(0,1fr)_minmax(300px,430px)] xl:gap-12">
           <div className="min-w-0 max-w-full lg:max-w-3xl">
             <AnimatePresence mode="wait">
