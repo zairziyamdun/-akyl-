@@ -1,6 +1,35 @@
 # Ignore duplicated/auxiliary repo folders
 /akyl-competence-center-center-for-expertise-akyl (3)/
-
-# Ignore duplicated/auxiliary repo folders
 /akyl-competence-center-center-for-expertise-akyl (3)
 
+# --- Frontend (Next.js) ---
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/coverage/
+frontend/.vercel
+frontend/*.tsbuildinfo
+
+# Env (корень и frontend)
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+
+# Logs & debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+frontend/npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE (локальные настройки; при необходимости уберите строку)
+.idea/
