@@ -36,7 +36,7 @@ const slides: HeroSlide[] = [
       href: "/akyl/consulting",
     },
     image:
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1800&q=80",
+      "https://photocentra.ru/images/main109/1092096_main.jpg",
   },
   {
     id: 2,
