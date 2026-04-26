@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Input } from "@/components/ui/Input";
 import { HOME_LOGO_URL } from "@/lib/homeAssets";
+import Image from "next/image";
 import Link from "next/link";
 
 type LinkItem = { label: string; href: string };
@@ -41,7 +42,13 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1fr] lg:gap-16">
           <div>
             <Link href="/" className="inline-flex items-center gap-3">
-              <img src={HOME_LOGO_URL} alt="AKYL" className="h-6 w-auto" />
+              <Image
+                src={HOME_LOGO_URL}
+                alt="AKYL"
+                width={170}
+                height={56}
+                className="h-6 w-auto object-contain"
+              />
             </Link>
             <p className="mt-5 max-w-md text-sm leading-6 text-slate-600">
               Подпишитесь на обновления материалов и практики внедрения.
