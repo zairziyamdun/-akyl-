@@ -40,7 +40,7 @@ export type ReportMetricId =
   | "kpiPlanExecution"
   | "kpiTransparency";
 
-export type MetricKind = "currency" | "percent" | "count" | "hours" | "score";
+type MetricKind = "currency" | "percent" | "count" | "hours" | "score";
 
 export type ReportMetric = {
   id: ReportMetricId;
@@ -57,7 +57,7 @@ export type ReportMetric = {
   scoreMax?: number;
 };
 
-export type ReportSection = {
+type ReportSection = {
   id: ReportSectionId;
   title: string;
   description: string;
@@ -308,7 +308,7 @@ export function formatMetricValueRu(metric: ReportMetric): string {
   }
 }
 
-export type ReportStatusKey =
+type ReportStatusKey =
   | "stable"
   | "needsControl"
   | "needsSystemCorrection";

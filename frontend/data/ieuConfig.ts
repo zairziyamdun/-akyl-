@@ -1,6 +1,6 @@
 import type { IEUBlockKey, IEUInput } from "@/types/ieu";
 
-export type IEUFieldConfig = {
+type IEUFieldConfig = {
   key: keyof IEUInput;
   label: string;
   description: string;
@@ -9,7 +9,7 @@ export type IEUFieldConfig = {
   step?: number;
 };
 
-export type IEUStepConfig = {
+type IEUStepConfig = {
   key: IEUBlockKey;
   stepNumber: number;
   title: string;

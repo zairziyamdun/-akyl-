@@ -1,11 +1,11 @@
 export type ChecklistAnswerValue = 0 | 1 | 2;
 
-export type ChecklistQuestion = {
+type ChecklistQuestion = {
   id: string;
   text: string;
 };
 
-export type ChecklistCategory = {
+type ChecklistCategory = {
   id: string;
   title: string;
   description: string;
@@ -191,7 +191,7 @@ export const TOTAL_CHECKLIST_QUESTIONS = CHECKLIST_CATEGORIES.reduce(
 
 export const MAX_CHECKLIST_SCORE = TOTAL_CHECKLIST_QUESTIONS * 2;
 
-export type BandKey = "low" | "mid" | "high";
+type BandKey = "low" | "mid" | "high";
 
 export function scoreBand(percent: number): BandKey {
   if (percent < 40) return "low";

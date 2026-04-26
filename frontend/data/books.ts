@@ -8,21 +8,21 @@ export type AuthorBook = {
   coverTone: string;
 };
 
-export type Book1 = AuthorBook & {
+type Book1 = AuthorBook & {
   whatReveals: string[];
   audience: string[];
   primaryCta: string;
   secondaryCta: string;
 };
 
-export type Book2 = AuthorBook & {
+type Book2 = AuthorBook & {
   topics: string[];
   value: string[];
   primaryCta: string;
   secondaryCta: string;
 };
 
-export type Book3 = AuthorBook & {
+type Book3 = AuthorBook & {
   readerGets: string[];
   educationText: string;
   primaryCta: string;

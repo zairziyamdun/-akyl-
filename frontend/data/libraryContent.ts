@@ -8,7 +8,7 @@ export type LibraryItemType =
   | "template"
   | "video";
 
-export type LibraryItem = {
+type LibraryItem = {
   id: number;
   type: LibraryItemType;
   title: string;
@@ -20,7 +20,7 @@ export type LibraryItem = {
   format?: string;
 };
 
-export type ContentTypeFilter = {
+type ContentTypeFilter = {
   id: string;
   name: string;
   count: number;

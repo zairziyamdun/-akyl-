@@ -7,7 +7,7 @@ export type BudgetRowInput = {
   fact: number;
 };
 
-export type BudgetStatus = "stable" | "attention" | "risk";
+type BudgetStatus = "stable" | "attention" | "risk";
 
 export type BudgetRowComputed = BudgetRowInput & {
   deviation: number;
