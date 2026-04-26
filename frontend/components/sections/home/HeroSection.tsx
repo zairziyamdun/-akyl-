@@ -40,23 +40,6 @@ const slides: HeroSlide[] = [
   },
   {
     id: 2,
-    eyebrow: "Архитектура управления",
-    title: "Дом — это система, а не набор разрозненных процессов",
-    description:
-      "Связь эксплуатации, финансов, подрядчиков, жителей и управленческих решений в единой архитектуре управления.",
-    primaryCta: {
-      label: "Посмотреть атлас",
-      href: "/atlas",
-    },
-    secondaryCta: {
-      label: "Структура",
-      href: "/methodology/architecture",
-    },
-    image:
-      "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1800&q=80",
-  },
-  {
-    id: 3,
     eyebrow: "Индекс эффективности",
     title: "Управление должно быть измеримым",
     description:
@@ -148,42 +131,6 @@ function SystemDiagramPanel() {
   );
 }
 
-function ProcessArchitecturePanel() {
-  const steps = ["Данные", "Анализ", "Решение", "Контроль"];
-
-  return (
-    <div
-      className={`flex h-full min-h-0 w-full items-center justify-center overflow-hidden ${panelInnerPad}`}
-    >
-      <div className="grid w-full min-h-0 max-w-full gap-2.5 sm:gap-3">
-        {steps.map((step, index) => (
-          <motion.div
-            key={step}
-            className="relative min-w-0"
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08, duration: 0.35 }}
-          >
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/16 bg-white/12 text-[10px] font-semibold text-white sm:h-9 sm:w-9 sm:text-xs md:h-10 md:w-10">
-                0{index + 1}
-              </div>
-
-              <div className="min-w-0 flex-1 rounded-xl border border-white/12 bg-white/10 px-3 py-2.5 backdrop-blur-md sm:rounded-2xl sm:px-4 sm:py-3">
-                <span className="text-xs font-medium text-white sm:text-sm">{step}</span>
-              </div>
-            </div>
-
-            {index < steps.length - 1 ? (
-              <div className="ml-4 mt-1.5 h-4 w-px bg-white/16 sm:ml-5 sm:mt-2 sm:h-5 md:ml-5" />
-            ) : null}
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function IndexDashboardPanel() {
   const kpis = [
     { label: "Финансы", value: 82 },
@@ -258,16 +205,6 @@ function HeroVisualPanel({ activeIndex }: { activeIndex: number }) {
           ) : null}
 
           {activeIndex === 1 ? (
-            <motion.div
-              key="process"
-              className="absolute inset-0 overflow-hidden"
-              {...panelMotion}
-            >
-              <ProcessArchitecturePanel />
-            </motion.div>
-          ) : null}
-
-          {activeIndex === 2 ? (
             <motion.div
               key="index"
               className="absolute inset-0 overflow-hidden"
