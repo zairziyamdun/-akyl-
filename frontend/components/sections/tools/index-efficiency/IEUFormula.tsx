@@ -1,5 +1,5 @@
 import { Container } from "@/components/ui/Container";
-import { IEU_WEIGHTS } from "@/lib/ieu/ieuConfig";
+import { IEU_WEIGHTS } from "@/data/ieuConfig";
 
 export function IEUFormula() {
   return (

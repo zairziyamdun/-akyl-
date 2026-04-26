@@ -1,4 +1,4 @@
-import { REPORT_SECTIONS } from "@/lib/managementReportData";
+import { REPORT_SECTIONS } from "@/data/managementReportData";
 import { Container } from "@/components/ui/Container";
 
 export function ManagementReportOverviewCards() {

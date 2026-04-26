@@ -1,5 +1,5 @@
 import { Container } from "@/components/ui/Container";
-import { IEU_BLOCK_CRITERIA } from "@/lib/ieu/ieuConfig";
+import { IEU_BLOCK_CRITERIA } from "@/data/ieuConfig";
 import type { IEUBlockKey } from "@/types/ieu";
 
 const order: IEUBlockKey[] = [

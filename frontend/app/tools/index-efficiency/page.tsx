@@ -1,4 +1,4 @@
-import { IEUBlockAccordions, IEUCalculatorWizard, IEUCta, IEUFormula, IEUHero, IEUNotJustNumber, IEUWhatIs, IEUWhatShows, IEUWhyMatters } from "@/components/sections/ieu";
+import { IEUBlockAccordions, IEUCalculatorWizard, IEUCta, IEUFormula, IEUHero, IEUNotJustNumber, IEUWhatIs, IEUWhatShows, IEUWhyMatters } from "@/components/sections/tools/index-efficiency";
 
 export default function IndexEfficiencyPage() {
   return (

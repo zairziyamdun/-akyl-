@@ -16,7 +16,7 @@ import {
   statusKeyFromAvgKpi,
   statusLabelRu,
   statusNarrativeRu,
-} from "@/lib/managementReportData";
+} from "@/data/managementReportData";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";

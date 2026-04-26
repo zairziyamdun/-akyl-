@@ -21,7 +21,7 @@ import {
   createInitialAnswers,
   overallNarrativeRu,
   scoreBand,
-} from "@/lib/checklistsData";
+} from "@/data/checklistsData";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";

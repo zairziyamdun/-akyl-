@@ -11,7 +11,7 @@ import {
   getIEUBand,
   calculateIEU,
 } from "@/lib/ieu/calculateIEU";
-import { IEU_INITIAL_INPUT, IEU_STEPS } from "@/lib/ieu/ieuConfig";
+import { IEU_INITIAL_INPUT, IEU_STEPS } from "@/data/ieuConfig";
 import type { IEUInput } from "@/types/ieu";
 
 function progressBarClass(totalPercent: number): string {
