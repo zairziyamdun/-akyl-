@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-import { HOME_LOGO_URL } from "@/lib/homeAssets";
 import { Container } from "@/components/ui/Container";
+import { HOME_LOGO_URL } from "@/lib/homeAssets";
+import { cn } from "@/lib/cn";
 
 type NavItem = {
   label: string;
@@ -25,10 +26,6 @@ const secondaryLinks: NavItem[] = [
   { label: "Журнал", href: "https://esocium.tpro.space/" },
   { label: "Старый сайт", href: "https://akyl.kz/" },
 ];
-
-function cn(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -85,8 +82,6 @@ export function Navbar() {
 }
 
 function NavbarInner({ pathname }: { pathname: string }) {
-  const menuId = useId();
-
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
