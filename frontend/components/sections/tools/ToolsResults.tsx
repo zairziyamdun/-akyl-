@@ -1,43 +1,51 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 import { Container } from "@/components/ui/Container";
 
-const stats = [
-  { value: "+30%", label: "Рост эффективности управления" },
-  { value: "-20%", label: "Снижение издержек" },
-  { value: "+40%", label: "Ускорение процессов" },
-  { value: "-50%", label: "Снижение конфликтов и потерь" },
-];
+const audiences = [
+  {
+    title: "Акимат",
+    text: "Мониторинг качества управления домами",
+  },
+  {
+    title: "Управляющая компания",
+    text: "Контроль KPI, бюджета и процессов",
+  },
+  {
+    title: "ОСИ / Совет дома",
+    text: "Прозрачность расходов и отчетности",
+  },
+  {
+    title: "Эксперт / консультант",
+    text: "Аудит и внедрение методологии",
+  },
+] as const;
 
 export function ToolsResults() {
   return (
-    <section className="bg-slate-950 py-16 text-white md:py-20">
+    <section className="bg-white py-16 md:py-20">
       <Container>
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">
-            Результаты
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-            Инструменты должны давать измеримый эффект
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
+            Для кого эти инструменты
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-300">
-            AKYL не ограничивается теорией. Инструменты помогают переводить
-            управление из хаотичной модели в контролируемую и прозрачную
-            систему.
-          </p>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-3xl border border-white/10 bg-white/5 p-6"
+        <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-2">
+          {audiences.map((item, index) => (
+            <motion.article
+              key={item.title}
+              className="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 shadow-sm"
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.35, delay: index * 0.06 }}
             >
-              <div className="text-3xl font-bold text-white md:text-4xl">
-                {stat.value}
-              </div>
-              <p className="mt-3 text-sm leading-6 text-slate-300">
-                {stat.label}
-              </p>
-            </div>
+              <h3 className="text-lg font-semibold tracking-tight text-slate-900">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+            </motion.article>
           ))}
         </div>
       </Container>

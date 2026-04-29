@@ -1,67 +1,46 @@
-import Link from "next/link";
+"use client";
+
+import { motion } from "framer-motion";
+
 import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
+
+const systemSteps = [
+  { title: "Чек-листы", text: "Чек-листы собирают факты" },
+  { title: "Анализ бюджета", text: "Бюджет показывает финансовые отклонения" },
+  { title: "Индекс эффективности", text: "Индекс переводит состояние управления в оценку 0-100" },
+  { title: "Управленческий отчет", text: "Отчет собирает выводы" },
+  { title: "Решения", text: "Решения запускают улучшения" },
+] as const;
 
 export function FeaturedTool() {
   return (
-    <section className="py-16 md:py-20">
+    <section className="bg-sky-50/70 py-16 md:py-20">
       <Container>
-        <div className="grid items-center gap-8 rounded-3xl border border-black/10 bg-slate-900 p-6 text-white shadow-sm md:grid-cols-2 md:p-10 lg:p-12">
-          <div>
-            <div className="mb-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">
-              Главный инструмент платформы
-            </div>
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
+            Инструменты AKYL работают как единая система
+          </h2>
+        </div>
 
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-              Индекс эффективности управления
-            </h2>
-
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">
-              IEU помогает быстро оценить качество управления домом по ключевым
-              блокам: процессы, финансы, контроль, KPI, взаимодействие и уровень
-              цифровизации. Это не просто цифра, а управленческий ориентир для
-              принятия решений.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/tools/index-efficiency">
-                <Button>Открыть инструмент</Button>
-              </Link>
-              <Link href="/contacts">
-                <Button variant="secondary">Запросить демонстрацию</Button>
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-sm text-slate-400">Что оценивается</p>
-              <p className="mt-2 text-lg font-semibold">
-                Финансы, процессы, роли, KPI, цифровизация
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-sm text-slate-400">Результат</p>
-              <p className="mt-2 text-lg font-semibold">
-                Понятная оценка состояния системы управления
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-sm text-slate-400">Для кого</p>
-              <p className="mt-2 text-lg font-semibold">
-                УК, ОСИ, девелоперы, консультанты, акиматы
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-sm text-slate-400">Цель</p>
-              <p className="mt-2 text-lg font-semibold">
-                Найти слабые места и точки роста
-              </p>
-            </div>
-          </div>
+        <div className="mt-10 grid gap-3 md:grid-cols-5">
+          {systemSteps.map((step, index) => (
+            <motion.div
+              key={step.title}
+              className="relative rounded-2xl border border-sky-100 bg-white p-4 shadow-sm"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.35, delay: index * 0.06 }}
+            >
+              <p className="text-sm font-semibold text-slate-900">{step.title}</p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">{step.text}</p>
+              {index < systemSteps.length - 1 && (
+                <span className="pointer-events-none absolute -right-2 top-1/2 hidden -translate-y-1/2 text-sky-400 md:block">
+                  {"->"}
+                </span>
+              )}
+            </motion.div>
+          ))}
         </div>
       </Container>
     </section>
