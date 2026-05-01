@@ -25,6 +25,7 @@ const secondaryLinks: NavItem[] = [
   { label: "Обучение", href: "/education" },
   { label: "Журнал", href: "https://esocium.tpro.space/" },
   { label: "Старый сайт", href: "https://akyl.kz/" },
+  { label: "Инструменты", href: "/tools" },
 ];
 
 function isActive(pathname: string, href: string) {
