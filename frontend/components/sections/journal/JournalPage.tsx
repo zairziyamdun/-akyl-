@@ -1,0 +1,173 @@
+"use client";
+
+import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { Lock } from "lucide-react";
+
+import { Container } from "@/components/ui/Container";
+import { Button } from "@/components/ui/Button";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { cn } from "@/lib/cn";
+import {
+  JOURNAL_ACCESS_HREF,
+  journalEditorialDirections,
+  journalIssues,
+} from "@/lib/journalData";
+
+import { JournalCover } from "./JournalCover";
+import { JournalHero } from "./JournalHero";
+import { journalReveal, journalStagger, journalStaggerItem } from "./journalMotion";
+
+function JournalAllIssues() {
+  const reduced = useReducedMotion();
+
+  return (
+    <Section id="journal-all-issues" className="scroll-mt-24 bg-white">
+      <Container>
+        <motion.div {...journalReveal}>
+          <SectionHeading
+            eyebrow="Архив"
+            title="Все выпуски"
+            description="Пять тематических выпусков экспертного журнала AKYL — открытые и закрытые издания."
+          />
+          <motion.div
+            className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            variants={journalStagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.08 }}
+          >
+            {journalIssues.map((issue) => (
+              <motion.article
+                key={issue.id}
+                variants={journalStaggerItem}
+                whileHover={reduced ? undefined : { y: -4 }}
+                className="flex flex-col items-center rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <JournalCover issue={issue} size="card" />
+                <div className="mt-4 w-full max-w-[200px] text-center">
+                  <p className="text-xs font-medium text-sky-700">
+                    {issue.category}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">
+                    {issue.subtitle}
+                  </p>
+                  {issue.isLocked ? (
+                    <Link
+                      href={JOURNAL_ACCESS_HREF}
+                      className="mt-3 inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-800 transition hover:border-sky-200"
+                    >
+                      Получить доступ
+                    </Link>
+                  ) : (
+                    <a
+                      href={issue.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex min-h-[40px] w-full items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white transition hover:bg-slate-800"
+                    >
+                      Читать PDF
+                    </a>
+                  )}
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+        </motion.div>
+      </Container>
+    </Section>
+  );
+}
+
+function JournalEditorial() {
+  return (
+    <Section className="bg-slate-50/80">
+      <Container>
+        <motion.div {...journalReveal}>
+          <SectionHeading
+            eyebrow="Редакция"
+            title="Редакционные направления"
+            description="Материалы журнала группируются по ключевым темам профессионального управления МЖД."
+          />
+          <motion.div
+            className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            variants={journalStagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.08 }}
+          >
+            {journalEditorialDirections.map((dir, i) => (
+              <motion.div
+                key={dir.title}
+                variants={journalStaggerItem}
+                className={cn(
+                  "rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm transition hover:border-sky-200/80 hover:shadow-md",
+                  i === 0 && "sm:col-span-2 lg:col-span-1",
+                )}
+              >
+                <span className="text-[11px] font-semibold tracking-wider text-sky-600 uppercase">
+                  Направление
+                </span>
+                <h3 className="mt-2 text-lg font-semibold text-slate-900">
+                  {dir.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {dir.description}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </Container>
+    </Section>
+  );
+}
+
+function JournalAccessCta() {
+  const reduced = useReducedMotion();
+
+  return (
+    <Section className="bg-white pb-20 md:pb-28">
+      <Container>
+        <motion.div
+          {...journalReveal}
+          className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 px-6 py-12 text-center shadow-xl sm:px-12 sm:py-16"
+        >
+          <div
+            className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-sky-500/20 blur-3xl"
+            aria-hidden
+          />
+          <Lock className="relative mx-auto h-10 w-10 text-sky-300/90" />
+          <h2 className="relative mt-4 font-[family-name:var(--font-sora)] text-2xl font-semibold text-white sm:text-3xl">
+            Хотите получить доступ к закрытым выпускам?
+          </h2>
+          <p className="relative mx-auto mt-3 max-w-lg text-base text-white/70">
+            Оформите консультацию — расскажем о полном архиве журнала и
+            методологии AKYL для вашей организации.
+          </p>
+          <motion.div
+            className="relative mt-8"
+            whileHover={reduced ? undefined : { scale: 1.03 }}
+            whileTap={reduced ? undefined : { scale: 0.98 }}
+          >
+            <Button asChild className="bg-white text-slate-900 hover:bg-slate-100">
+              <Link href={JOURNAL_ACCESS_HREF}>Получить доступ</Link>
+            </Button>
+          </motion.div>
+        </motion.div>
+      </Container>
+    </Section>
+  );
+}
+
+export function JournalPage() {
+  return (
+    <div className="bg-white [overflow-x:clip]">
+      <JournalHero />
+      <JournalAllIssues />
+      <JournalEditorial />
+      <JournalAccessCta />
+    </div>
+  );
+}

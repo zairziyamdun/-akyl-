@@ -25,7 +25,7 @@ const posts = [
   },
 ];
 
-const JOURNAL_URL = "https://esocium.tpro.space/";
+const JOURNAL_URL = "/journal";
 
 export function HomeJournalSpotlightSection() {
   return (
@@ -51,8 +51,6 @@ export function HomeJournalSpotlightSection() {
           </motion.div>
           <Link
             href={JOURNAL_URL}
-            target="_blank"
-            rel="noreferrer"
             className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900"
           >
             Все материалы
@@ -71,8 +69,6 @@ export function HomeJournalSpotlightSection() {
             >
               <Link
                 href={JOURNAL_URL}
-                target="_blank"
-                rel="noreferrer"
                 className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-slate-300 hover:shadow-md"
               >
                 <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">

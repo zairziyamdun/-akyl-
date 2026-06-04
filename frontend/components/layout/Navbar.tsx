@@ -23,7 +23,7 @@ const primaryLinks: NavItem[] = [
 
 const secondaryLinks: NavItem[] = [
   { label: "Обучение", href: "/education" },
-  { label: "Журнал", href: "https://esocium.tpro.space/" },
+  { label: "Журнал", href: "/journal" },
   { label: "Старый сайт", href: "https://akyl.kz/" },
   { label: "Инструменты", href: "/tools" },
 ];
