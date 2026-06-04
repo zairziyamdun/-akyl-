@@ -7,6 +7,7 @@ export type JournalIssue = {
   year: string;
   category: string;
   coverImage: string;
+  backgroundImage: string;
   pdfUrl: string;
   isLocked: boolean;
 };
@@ -22,7 +23,9 @@ export const journalIssues: JournalIssue[] = [
     year: "2026",
     category: "Аналитика",
     coverImage:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=900&q=85",
+    backgroundImage:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=2400&q=85",
     pdfUrl: "/journals/akyl-journal-01.pdf",
     isLocked: false,
   },
@@ -36,7 +39,9 @@ export const journalIssues: JournalIssue[] = [
     year: "2026",
     category: "Цифровизация",
     coverImage:
-      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1486406146926-c627a92fd1f2?auto=format&fit=crop&w=900&q=85",
+    backgroundImage:
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2400&q=85",
     pdfUrl: "/journals/akyl-journal-02.pdf",
     isLocked: false,
   },
@@ -50,7 +55,9 @@ export const journalIssues: JournalIssue[] = [
     year: "2026",
     category: "Практика",
     coverImage:
-      "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=85",
+    backgroundImage:
+      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=2400&q=85",
     pdfUrl: "/journals/akyl-journal-03.pdf",
     isLocked: false,
   },
@@ -64,7 +71,9 @@ export const journalIssues: JournalIssue[] = [
     year: "2026",
     category: "Методология",
     coverImage:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1518005020954-ecccfcbd162b?auto=format&fit=crop&w=900&q=85",
+    backgroundImage:
+      "https://images.unsplash.com/photo-1487952259944-121ef4ee9b06?auto=format&fit=crop&w=2400&q=85",
     pdfUrl: "/journals/akyl-journal-04.pdf",
     isLocked: true,
   },
@@ -78,15 +87,15 @@ export const journalIssues: JournalIssue[] = [
     year: "2026",
     category: "Энергоэффективность",
     coverImage:
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=85",
+      "https://images.unsplash.com/photo-1508516312351-9fe814d21934?auto=format&fit=crop&w=900&q=85",
+    backgroundImage:
+      "https://images.unsplash.com/photo-1497440001374-f26997328e1c?auto=format&fit=crop&w=2400&q=85",
     pdfUrl: "/journals/akyl-journal-05.pdf",
     isLocked: true,
   },
 ];
 
-/** Фон hero — жилой комплекс / офис */
-export const journalHeroBackgroundImage =
-  "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=2400&q=85";
+export const JOURNAL_SLIDE_DURATION_MS = 5000;
 
 export const journalHeroBenefits = [
   "Экспертные материалы",

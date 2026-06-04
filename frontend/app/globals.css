@@ -9,3 +9,16 @@
     @apply bg-slate-50 text-slate-900 antialiased;
   }
 }
+
+@keyframes journalProgress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-journal-progress {
+  animation: journalProgress 5000ms linear forwards;
+}

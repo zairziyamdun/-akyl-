@@ -28,14 +28,14 @@ export function JournalIssueSlider({
               aria-current={isActive}
               className="group flex min-w-0 flex-1 flex-col items-center gap-2 touch-manipulation"
             >
-              <span
-                className={cn(
-                  "block h-[3px] w-full rounded-full transition-all duration-300",
-                  isActive
-                    ? "bg-white shadow-[0_0_12px_rgba(255,255,255,0.35)]"
-                    : "bg-white/25 group-hover:bg-white/45",
-                )}
-              />
+              <span className="relative block h-[3px] w-full overflow-hidden rounded-full bg-white/25">
+                {isActive ? (
+                  <span
+                    key={activeIndex}
+                    className="animate-journal-progress absolute top-0 left-0 h-full rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.35)]"
+                  />
+                ) : null}
+              </span>
               <span
                 className={cn(
                   "text-[11px] font-medium tabular-nums transition-colors sm:text-xs",

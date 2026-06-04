@@ -10,7 +10,7 @@ import { JournalCover } from "@/components/sections/journal/JournalCover";
 import { JournalIssueSlider } from "@/components/sections/journal/JournalIssueSlider";
 import {
   getLatestOpenIssue,
-  journalHeroBackgroundImage,
+  JOURNAL_SLIDE_DURATION_MS,
   journalHeroBenefits,
   journalIssues,
 } from "@/lib/journalData";
@@ -32,6 +32,7 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
 export function JournalHero() {
   const [activeIndex, setActiveIndex] = useState(0);
   const reduced = useReducedMotion();
+
   const activeIssue = useMemo(
     () => journalIssues[activeIndex],
     [activeIndex],
@@ -51,6 +52,14 @@ export function JournalHero() {
   }, []);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % journalIssues.length);
+    }, JOURNAL_SLIDE_DURATION_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [activeIndex]);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
@@ -65,31 +74,30 @@ export function JournalHero() {
   return (
     <section className="relative isolate min-h-[100svh] overflow-hidden bg-slate-950">
       <div className="absolute inset-0">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="sync">
           <motion.div
             key={activeIssue.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.65, ease: "easeInOut" }}
             className="absolute inset-0"
           >
             <Image
-              src={journalHeroBackgroundImage}
+              src={activeIssue.backgroundImage}
               alt=""
               fill
               className="object-cover"
               sizes="100vw"
-              priority
+              priority={activeIndex === 0}
             />
           </motion.div>
         </AnimatePresence>
-        <div className="absolute inset-0 bg-slate-950/55" />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/92 via-slate-900/75 to-slate-950/45" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-900/30" />
+        <div className="pointer-events-none absolute inset-0 bg-slate-950/60" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/92 via-slate-900/78 to-slate-950/50" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-slate-900/35" />
       </div>
 
-      {/* Стрелки */}
       <button
         type="button"
         onClick={prev}
@@ -110,7 +118,6 @@ export function JournalHero() {
       <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-4 pb-28 pt-20 sm:px-6 sm:pb-32 sm:pt-24 lg:px-8">
         <div className="flex flex-1 flex-col items-center justify-center">
           <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
-            {/* Левая колонка — статичный контент */}
             <motion.div
               initial={reduced ? false : { opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
@@ -162,7 +169,6 @@ export function JournalHero() {
               </div>
             </motion.div>
 
-            {/* Правая колонка — обложка текущего выпуска */}
             <div className="flex min-w-0 justify-center lg:justify-end">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -180,13 +186,11 @@ export function JournalHero() {
           </div>
         </div>
 
-        {/* Линии навигации — по центру внизу hero */}
         <div className="absolute bottom-8 left-0 right-0 flex justify-center sm:bottom-10">
           <JournalIssueSlider activeIndex={activeIndex} onSelect={goTo} />
         </div>
       </div>
 
-      {/* Мобильные стрелки снизу (дополнительно) */}
       <div className="pointer-events-none absolute bottom-24 left-0 right-0 flex justify-center gap-4 sm:hidden">
         <span className="text-[10px] text-white/40">← → листайте выпуски</span>
       </div>
