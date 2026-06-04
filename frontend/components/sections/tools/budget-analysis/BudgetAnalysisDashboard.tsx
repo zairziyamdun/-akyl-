@@ -80,7 +80,7 @@ export function BudgetAnalysisDashboard() {
           <BudgetInsights rows={computed} totals={totals} />
 
           <div className="flex flex-wrap justify-center gap-3 pt-4">
-            <Link href="/contacts">
+            <Link href="/consultation">
               <Button>Получить сопровождение</Button>
             </Link>
             <Link href="/tools">

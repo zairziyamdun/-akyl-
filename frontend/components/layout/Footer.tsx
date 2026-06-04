@@ -18,7 +18,7 @@ const columns: Array<{ title: string; links: LinkItem[] }> = [
       { label: "База знаний", href: "/library" },
       { label: "Платформа", href: "/" },
       { label: "Практика", href: "/" },
-      { label: "Контакты", href: "/" },
+      { label: "Консультация", href: "/consultation" },
     ],
   },
   {

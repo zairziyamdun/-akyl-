@@ -740,7 +740,7 @@ export function ChecklistsInteractive() {
                       </Link>
                     </Button>
                     <Button variant="secondary" asChild>
-                      <Link href="/contacts">Обсудить с экспертом</Link>
+                      <Link href="/consultation">Обсудить с экспертом</Link>
                     </Button>
                   </div>
                 </div>

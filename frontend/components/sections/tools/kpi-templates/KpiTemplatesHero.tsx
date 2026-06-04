@@ -72,7 +72,7 @@ export function KpiTemplatesHero() {
                 <Link href="/library/templates">Скачать шаблоны</Link>
               </Button>
               <Button variant="secondary" asChild>
-                <Link href="/contacts">Получить консультацию</Link>
+                <Link href="/consultation">Получить консультацию</Link>
               </Button>
             </div>
           </div>

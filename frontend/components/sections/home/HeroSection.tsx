@@ -33,7 +33,7 @@ const slides: HeroSlide[] = [
     },
     secondaryCta: {
       label: "Консультация",
-      href: "/akyl/consulting",
+      href: "/consultation",
     },
     image:
       "https://photocentra.ru/images/main109/1092096_main.jpg",

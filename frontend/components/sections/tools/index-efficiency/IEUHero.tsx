@@ -24,7 +24,7 @@ export function IEUHero() {
               <Link href="#ieu-calculator">Рассчитать индекс</Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link href="/contacts">Получить консультацию</Link>
+              <Link href="/consultation">Получить консультацию</Link>
             </Button>
           </div>
         </div>

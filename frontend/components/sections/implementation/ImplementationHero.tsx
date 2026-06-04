@@ -58,7 +58,7 @@ export function ImplementationHero() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button asChild>
-                <Link href="/contacts">Запросить внедрение</Link>
+                <Link href="/consultation">Запросить внедрение</Link>
               </Button>
               <Button variant="secondary" asChild>
                 <Link href="#roadmap">Посмотреть этапы</Link>

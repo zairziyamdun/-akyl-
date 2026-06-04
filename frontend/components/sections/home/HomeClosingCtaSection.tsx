@@ -25,7 +25,7 @@ export function HomeClosingCtaSection() {
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
             <Link
-              href="/contacts"
+              href="/consultation"
               className="inline-flex min-h-[48px] w-full max-w-xs items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 sm:w-auto"
             >
               Запросить консультацию

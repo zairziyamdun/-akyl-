@@ -28,7 +28,7 @@ export function BooksCtaSection() {
                 variant="secondary"
                 className="rounded-full px-6 border border-white/15 bg-white/8 text-white hover:bg-white/12"
               >
-                <Link href="/contacts">Связаться с Центром AKYL</Link>
+                <Link href="/consultation">Связаться с Центром AKYL</Link>
               </Button>
             </div>
           </div>

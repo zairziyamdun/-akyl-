@@ -336,7 +336,7 @@ export function ManagementReportConstructor() {
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
             <Link
-              href="/contacts"
+              href="/consultation"
               className="text-sm font-medium text-slate-600 transition hover:text-slate-900"
             >
               Нужна помощь с отчетом?

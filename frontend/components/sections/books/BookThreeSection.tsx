@@ -145,7 +145,7 @@ export function BookThreeSection() {
                     asChild
                     className="group h-12 rounded-full bg-[#161616] px-6 text-white hover:bg-black/85"
                   >
-                    <Link href="/contacts">
+                    <Link href="/consultation">
                       {book.secondaryCta}
                       <ArrowUpRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </Link>

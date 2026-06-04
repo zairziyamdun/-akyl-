@@ -26,21 +26,21 @@ export function IEUCta() {
               className="bg-white text-slate-900 hover:bg-slate-100"
               asChild
             >
-              <Link href="/contacts">Получить консультацию</Link>
+              <Link href="/consultation">Получить консультацию</Link>
             </Button>
             <Button
               variant="secondary"
               className="border-white/25 bg-white/10 text-white ring-white/20 hover:bg-white/15"
               asChild
             >
-              <Link href="/contacts">Заказать аудит управления</Link>
+              <Link href="/consultation">Заказать аудит управления</Link>
             </Button>
             <Button
               variant="secondary"
               className="border-white/25 bg-transparent text-white ring-white/20 hover:bg-white/10"
               asChild
             >
-              <Link href="/contacts">Начать внедрение системы</Link>
+              <Link href="/consultation">Начать внедрение системы</Link>
             </Button>
           </div>
         </div>

@@ -178,7 +178,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
             </div>
 
             <Link
-              href="/contacts"
+              href="/consultation"
               className="hidden md:inline-flex rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:scale-[1.02]"
             >
               Консультация
@@ -228,7 +228,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
               ))}
 
               <Link
-                href="/contacts"
+                href="/consultation"
                 className="mt-4 rounded-xl bg-white px-4 py-3 text-center text-black font-semibold"
               >
                 Консультация

@@ -424,7 +424,7 @@ export function IEUCalculatorWizard() {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild>
-                  <Link href="/contacts">Обсудить с экспертом</Link>
+                  <Link href="/consultation">Обсудить с экспертом</Link>
                 </Button>
                 <Button variant="secondary" asChild>
                   <Link href="/library">База знаний</Link>

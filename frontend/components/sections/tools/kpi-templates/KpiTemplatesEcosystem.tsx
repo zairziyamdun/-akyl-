@@ -16,7 +16,7 @@ const cards = [
   {
     title: "AKYL",
     text: "Помогает внедрить и сопроводить: от настройки набора показателей до регулярного разбора отклонений.",
-    href: "/contacts",
+    href: "/consultation",
   },
 ] as const;
 

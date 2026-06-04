@@ -31,7 +31,7 @@ export function ImplementationFinalCta() {
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Button asChild>
-                  <Link href="/contacts">Запросить консультацию</Link>
+                  <Link href="/consultation">Запросить консультацию</Link>
                 </Button>
                 <Button variant="secondary" asChild>
                   <Link href="/tools">Перейти к инструментам</Link>

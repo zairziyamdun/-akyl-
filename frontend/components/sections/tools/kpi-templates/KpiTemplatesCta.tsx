@@ -26,7 +26,7 @@ export function KpiTemplatesCta() {
               <Link href="/library/templates">Скачать шаблоны</Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link href="/contacts">Запросить консультацию</Link>
+              <Link href="/consultation">Запросить консультацию</Link>
             </Button>
           </div>
         </div>

@@ -9,6 +9,20 @@ const nextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
+  async redirects() {
+    return [
+      {
+        source: "/contacts",
+        destination: "/consultation",
+        permanent: true,
+      },
+      {
+        source: "/contacts/:path*",
+        destination: "/consultation",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
