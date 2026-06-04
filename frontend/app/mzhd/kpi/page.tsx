@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { MzhdKpiPage } from "@/components/sections/mzhd-kpi";
+import { MzhdKpiPage } from "@/components/sections/mzhd/mzhd-kpi";
 
 export const metadata: Metadata = {
   title: "KPI и эффективность управления | AKYL",

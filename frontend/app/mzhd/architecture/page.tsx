@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { MzhdArchitecturePage } from "@/components/sections/mzhd-architecture";
+import { MzhdArchitecturePage } from "@/components/sections/mzhd/mzhd-architecture";
 
 export const metadata: Metadata = {
   title: "Архитектура системы управления | AKYL",

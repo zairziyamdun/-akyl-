@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { MzhdFinancePage } from "@/components/sections/mzhd-finance";
+import { MzhdFinancePage } from "@/components/sections/mzhd/mzhd-finance";
 
 export const metadata: Metadata = {
   title: "Финансовое управление МЖД | AKYL",

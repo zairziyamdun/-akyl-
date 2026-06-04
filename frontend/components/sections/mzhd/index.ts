@@ -1,8 +1,8 @@
-export { MzhdHeroSection } from "./MzhdHeroSection";
-export { MzhdProblemsSection } from "./MzhdProblemsSection";
-export { MzhdSystemSection } from "./MzhdSystemSection";
-export { MzhdMethodologySection } from "./MzhdMethodologySection";
-export { MzhdArchitecturePreviewSection } from "./MzhdArchitecturePreviewSection";
-export { MzhdIeuSection } from "./MzhdIeuSection";
-export { MzhdAudienceSection } from "./MzhdAudienceSection";
-export { MzhdCtaSection } from "./MzhdCtaSection";
+export * from "./mzhd";
+export * from "./mzhd-theory";
+export * from "./mzhd-architecture";
+export * from "./mzhd-roles";
+export * from "./mzhd-processes";
+export * from "./mzhd-finance";
+export * from "./mzhd-kpi";
+export * from "./mzhd-standards";

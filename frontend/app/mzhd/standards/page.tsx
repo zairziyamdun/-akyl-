@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { MzhdStandardsPage } from "@/components/sections/mzhd-standards";
+import { MzhdStandardsPage } from "@/components/sections/mzhd/mzhd-standards";
 
 export const metadata: Metadata = {
   title: "Принципы и стандарты | AKYL",

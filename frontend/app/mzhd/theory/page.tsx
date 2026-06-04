@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { MzhdTheoryPage } from "@/components/sections/mzhd-theory";
+import { MzhdTheoryPage } from "@/components/sections/mzhd/mzhd-theory";
 
 export const metadata: Metadata = {
   title: "Теория управления МЖД | AKYL",
