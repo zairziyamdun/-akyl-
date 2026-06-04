@@ -10,7 +10,7 @@ import {
   JOURNAL_ACCESS_HREF,
   journalCoverSpine,
   type JournalIssue,
-} from "@/lib/journalData";
+} from "@/data/journalData";
 
 type JournalCoverProps = {
   issue: JournalIssue;

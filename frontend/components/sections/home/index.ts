@@ -3,6 +3,7 @@ export { HeroSection } from "./HeroSection";
 export { HomeWhyNewSystemSection } from "./HomeWhyNewSystemSection";
 export { HomeProfessionalManagementSection } from "./HomeProfessionalManagementSection";
 export { HomePhotoSplitSection } from "./HomePhotoSplitSection";
+export { HomeSystemViewSection } from "./HomeSystemViewSection";
 export { HomePlatformDirectionsSection } from "./HomePlatformDirectionsSection";
 export { HomeImplementationPracticeSection } from "./HomeImplementationPracticeSection";
 export { HomeUrbanCaseSection } from "./HomeUrbanCaseSection";

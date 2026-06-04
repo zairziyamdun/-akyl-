@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/cn";
-import { journalIssues } from "@/lib/journalData";
+import { journalIssues } from "@/data/journalData";
 
 type JournalIssueSliderProps = {
   activeIndex: number;

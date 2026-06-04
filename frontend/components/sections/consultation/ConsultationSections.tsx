@@ -17,7 +17,7 @@ import {
   consultationProblems,
   consultationResults,
   consultationSteps,
-} from "@/lib/consultationData";
+} from "@/data/consultationData";
 
 import {
   consultationCardHover,

@@ -13,7 +13,7 @@ import {
   JOURNAL_SLIDE_DURATION_MS,
   journalHeroBenefits,
   journalIssues,
-} from "@/lib/journalData";
+} from "@/data/journalData";
 
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   return (

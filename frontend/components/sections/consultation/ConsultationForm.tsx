@@ -18,7 +18,7 @@ import { cn } from "@/lib/cn";
 import {
   consultationImages,
   roleOptions,
-} from "@/lib/consultationData";
+} from "@/data/consultationData";
 
 import { consultationSectionMotion } from "./consultationMotion";
 

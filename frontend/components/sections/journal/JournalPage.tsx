@@ -13,7 +13,7 @@ import {
   JOURNAL_ACCESS_HREF,
   journalEditorialDirections,
   journalIssues,
-} from "@/lib/journalData";
+} from "@/data/journalData";
 
 import { JournalCover } from "./JournalCover";
 import { JournalHero } from "./JournalHero";

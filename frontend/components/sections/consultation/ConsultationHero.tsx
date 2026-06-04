@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import {
   consultationImages,
   heroKpiRows,
-} from "@/lib/consultationData";
+} from "@/data/consultationData";
 
 import {
   consultationFloatPanel,
