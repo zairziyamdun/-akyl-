@@ -16,7 +16,7 @@ export async function createConsultationRequest(
       name: input.name,
       phone: input.phone ?? null,
       email: input.email && input.email.length > 0 ? input.email : null,
-      organization: input.organization ?? null,
+      organization: input.organization,
       role: input.role ?? null,
       message: input.message,
       status: "new",

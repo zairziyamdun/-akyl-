@@ -6,7 +6,7 @@ export const createConsultationSchema = z.object({
   email: z
     .union([z.string().trim().email(), z.literal("")])
     .optional(),
-  organization: z.string().trim().optional(),
+  organization: z.string().trim().min(1, "Organization is required"),
   role: z.string().trim().optional(),
   message: z.string().trim().min(1, "Message is required"),
 });

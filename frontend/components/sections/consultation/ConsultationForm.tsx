@@ -261,6 +261,7 @@ export function ConsultationForm() {
                       <Input
                         id="organization"
                         name="organization"
+                        required
                         value={form.organization}
                         onChange={(e) =>
                           update("organization", e.target.value)
