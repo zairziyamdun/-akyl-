@@ -11,6 +11,13 @@ frontend/coverage/
 frontend/.vercel
 frontend/*.tsbuildinfo
 
+# --- Backend (Express) ---
+backend/node_modules/
+backend/dist/
+backend/.env
+backend/.env.*
+!backend/.env.example
+
 # Env (корень и frontend)
 .env
 .env.*
