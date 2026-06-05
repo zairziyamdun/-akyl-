@@ -2,7 +2,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 
-import healthRouter from "./routes/health.routes.js";
+import healthRoutes from "./routes/health.routes.js";
+import consultationRoutes from "./modules/consultation/consultation.routes.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 
 dotenv.config();
@@ -18,10 +19,11 @@ app.use(
 );
 app.use(express.json());
 
-app.use("/health", healthRouter);
+app.use("/health", healthRoutes);
+app.use("/api/consultation", consultationRoutes);
 
 app.use(errorMiddleware);
 
 app.listen(port, () => {
-  console.log(`AKYL backend listening on http://localhost:${port}`);
+  console.log(`AKYL Backend running on port ${port}`);
 });

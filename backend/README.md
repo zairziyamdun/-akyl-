@@ -30,7 +30,7 @@ cp .env.example .env
 ```env
 PORT=4000
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_SECRET_KEY=your-secret-key
 FRONTEND_URL=http://localhost:3000
 ```
 
@@ -84,3 +84,55 @@ Expected response when Supabase credentials are valid:
 ```
 
 If Supabase env variables are missing or invalid, the endpoint returns HTTP 500 with a clear error message.
+
+## Database setup
+
+Before using consultation API, run SQL from:
+
+```bash
+backend/docs/consultation_requests.sql
+```
+
+Apply it manually in Supabase SQL Editor.
+
+## Consultation API
+
+Create a consultation request:
+
+```bash
+curl -X POST http://localhost:4000/api/consultation \
+-H "Content-Type: application/json" \
+-d '{
+  "name":"Test User",
+  "email":"test@test.com",
+  "organization":"ОСИ дома №12",
+  "message":"Test message"
+}'
+```
+
+Success response (HTTP 201):
+
+```json
+{
+  "success": true,
+  "message": "Consultation request created"
+}
+```
+
+Validation error (HTTP 400):
+
+```json
+{
+  "success": false,
+  "message": "Validation error"
+}
+```
+
+Database error (HTTP 500):
+
+```json
+{
+  "success": false,
+  "message": "Database error"
+}
+```
