@@ -1,50 +1,11 @@
-import dotenv from "dotenv";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-dotenv.config();
+import { env } from "./env.js";
 
 let supabaseClient: SupabaseClient | null = null;
 
-function normalizeSupabaseUrl(url: string): string {
-  let normalized = url.trim().replace(/\/+$/, "");
-
-  // Some dashboards copy the REST endpoint instead of the project URL.
-  normalized = normalized.replace(/\/rest\/v1\/?$/i, "");
-
-  return normalized;
-}
-
-function getRequiredEnv(name: "SUPABASE_URL"): string {
-  const value = process.env[name]?.trim();
-
-  if (!value) {
-    throw new Error(
-      `Missing required environment variable: ${name}. Copy .env.example to .env and set Supabase credentials.`,
-    );
-  }
-
-  return normalizeSupabaseUrl(value);
-}
-
-function getSupabaseSecretKey(): string {
-  const secretKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
-    process.env.SUPABASE_SECRET_KEY?.trim();
-
-  if (!secretKey) {
-    throw new Error(
-      "Missing required environment variable: SUPABASE_SECRET_KEY. Copy .env.example to .env and set Supabase credentials.",
-    );
-  }
-
-  return secretKey;
-}
-
 function createSupabaseClient(): SupabaseClient {
-  const supabaseUrl = getRequiredEnv("SUPABASE_URL");
-  const secretKey = getSupabaseSecretKey();
-
-  return createClient(supabaseUrl, secretKey, {
+  return createClient(env.SUPABASE_URL, env.supabaseKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

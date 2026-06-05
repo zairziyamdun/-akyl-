@@ -1,17 +1,10 @@
+import { DatabaseError } from "../../common/errors.js";
 import { supabase } from "../../config/supabase.js";
 
 import type {
   ConsultationRequestRecord,
   CreateConsultationInput,
 } from "./consultation.schema.js";
-
-export class ConsultationDatabaseError extends Error {
-  constructor(cause?: unknown) {
-    super("Database error");
-    this.name = "ConsultationDatabaseError";
-    this.cause = cause;
-  }
-}
 
 export async function createConsultationRequest(
   input: CreateConsultationInput,
@@ -31,15 +24,7 @@ export async function createConsultationRequest(
     .single();
 
   if (error) {
-    if (process.env.NODE_ENV !== "production") {
-      console.error("[consultation] Supabase insert failed:", {
-        code: error.code,
-        message: error.message,
-        hint: error.hint,
-      });
-    }
-
-    throw new ConsultationDatabaseError(error);
+    throw new DatabaseError("Database error", error);
   }
 
   return data as ConsultationRequestRecord;

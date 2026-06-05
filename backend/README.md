@@ -29,8 +29,9 @@ cp .env.example .env
 
 ```env
 PORT=4000
+NODE_ENV=development
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SECRET_KEY=your-secret-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 FRONTEND_URL=http://localhost:3000
 ```
 
@@ -51,6 +52,30 @@ npm run build
 npm start
 ```
 
+## API response format
+
+All endpoints return a unified JSON shape.
+
+Success:
+
+```json
+{
+  "success": true,
+  "message": "Optional message",
+  "data": {}
+}
+```
+
+Error:
+
+```json
+{
+  "success": false,
+  "message": "Error message",
+  "errors": [{ "path": "field", "message": "Details" }]
+}
+```
+
 ## Health checks
 
 Basic health:
@@ -63,8 +88,11 @@ Expected response:
 
 ```json
 {
-  "status": "ok",
-  "service": "akyl-backend"
+  "success": true,
+  "data": {
+    "status": "ok",
+    "service": "akyl-backend"
+  }
 }
 ```
 
@@ -78,12 +106,15 @@ Expected response when Supabase credentials are valid:
 
 ```json
 {
-  "status": "ok",
-  "supabase": "connected"
+  "success": true,
+  "data": {
+    "status": "ok",
+    "supabase": "connected"
+  }
 }
 ```
 
-If Supabase env variables are missing or invalid, the endpoint returns HTTP 500 with a clear error message.
+If Supabase env variables are missing or invalid, the endpoint returns HTTP 503 with a unified error response.
 
 ## Database setup
 
@@ -124,7 +155,10 @@ Validation error (HTTP 400):
 ```json
 {
   "success": false,
-  "message": "Validation error"
+  "message": "Validation error",
+  "errors": [
+    { "path": "name", "message": "Name is required" }
+  ]
 }
 ```
 

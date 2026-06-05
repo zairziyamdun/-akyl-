@@ -1,28 +1,24 @@
+import { ExternalServiceError } from "../common/errors.js";
 import { supabase } from "../config/supabase.js";
 
-export type HealthResponse = {
+export type HealthData = {
   status: "ok";
   service: "akyl-backend";
 };
 
-export type SupabaseHealthResponse = {
+export type SupabaseHealthData = {
   status: "ok";
   supabase: "connected" | "client_created";
 };
 
-export function getHealth(): HealthResponse {
+export function getHealth(): HealthData {
   return {
     status: "ok",
     service: "akyl-backend",
   };
 }
 
-export async function getSupabaseHealth(): Promise<SupabaseHealthResponse> {
-  // Client is created lazily on first access — throws if env is missing.
-  if (!supabase) {
-    throw new Error("Supabase client was not created");
-  }
-
+export async function getSupabaseHealth(): Promise<SupabaseHealthData> {
   const { error } = await supabase
     .from("_akyl_health_check")
     .select("*", { head: true, count: "exact" });
@@ -56,7 +52,10 @@ export async function getSupabaseHealth(): Promise<SupabaseHealthResponse> {
     message.includes("enotfound") ||
     message.includes("invalid path")
   ) {
-    throw new Error(`Supabase connection failed: ${error.message}`);
+    throw new ExternalServiceError(
+      "Supabase connection failed",
+      error,
+    );
   }
 
   if (
@@ -66,7 +65,10 @@ export async function getSupabaseHealth(): Promise<SupabaseHealthResponse> {
     message.includes("unauthorized") ||
     message.includes("permission denied")
   ) {
-    throw new Error(`Supabase authentication failed: ${error.message}`);
+    throw new ExternalServiceError(
+      "Supabase authentication failed",
+      error,
+    );
   }
 
   return {
