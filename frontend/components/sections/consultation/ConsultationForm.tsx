@@ -75,15 +75,64 @@ function FieldLabel({
 export function ConsultationForm() {
   const [form, setForm] = useState<FormState>(initialState);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const reduced = useReducedMotion();
+
+  const apiBaseUrl =
+    process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ??
+    "http://localhost:4000";
 
   const update = (field: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    if (submitError) {
+      setSubmitError(null);
+    }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/consultation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          organization: form.organization,
+          role: form.role,
+          message: form.message,
+        }),
+      });
+
+      const data = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+      };
+
+      if (!response.ok || !data.success) {
+        setSubmitError(
+          data.message ??
+            "Не удалось отправить заявку. Попробуйте ещё раз или свяжитесь с нами другим способом.",
+        );
+        return;
+      }
+
+      setForm(initialState);
+      setSubmitted(true);
+    } catch {
+      setSubmitError(
+        "Не удалось связаться с сервером. Проверьте подключение и попробуйте снова.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -246,11 +295,21 @@ export function ConsultationForm() {
                       <Textarea
                         id="message"
                         name="message"
+                        required
                         value={form.message}
                         onChange={(e) => update("message", e.target.value)}
                         placeholder="Кратко опишите задачу или контекст объекта"
                       />
                     </div>
+
+                    {submitError ? (
+                      <p
+                        className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                        role="alert"
+                      >
+                        {submitError}
+                      </p>
+                    ) : null}
 
                     <motion.div
                       whileHover={reduced ? undefined : { scale: 1.02 }}
@@ -258,9 +317,10 @@ export function ConsultationForm() {
                     >
                       <Button
                         type="submit"
+                        disabled={isSubmitting}
                         className="w-full bg-sky-600 hover:bg-sky-700 sm:w-auto"
                       >
-                        Отправить заявку
+                        {isSubmitting ? "Отправка..." : "Отправить заявку"}
                       </Button>
                     </motion.div>
                   </motion.form>

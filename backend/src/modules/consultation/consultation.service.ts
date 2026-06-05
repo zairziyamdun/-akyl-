@@ -1,5 +1,6 @@
 import { DatabaseError } from "../../common/errors.js";
 import { supabase } from "../../config/supabase.js";
+import { notifyConsultationRequest } from "../../services/telegram.service.js";
 
 import type {
   ConsultationRequestRecord,
@@ -26,6 +27,8 @@ export async function createConsultationRequest(
   if (error) {
     throw new DatabaseError("Database error", error);
   }
+
+  await notifyConsultationRequest(input);
 
   return data as ConsultationRequestRecord;
 }
