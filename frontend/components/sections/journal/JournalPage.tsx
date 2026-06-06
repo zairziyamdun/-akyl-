@@ -9,75 +9,13 @@ import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/cn";
-import {
-  JOURNAL_ACCESS_HREF,
-  journalEditorialDirections,
-  journalIssues,
-} from "@/data/journalData";
-
-import { JournalCover } from "./JournalCover";
-import { JournalHero } from "./JournalHero";
+import { JOURNAL_ACCESS_HREF, journalEditorialDirections } from "@/data/journalData";
+import { PublicJournalIssuesGrid } from "@/components/journal/PublicJournalIssuesGrid";
+import { JournalHeroConnected } from "./JournalHeroConnected";
 import { journalReveal, journalStagger, journalStaggerItem } from "./journalMotion";
 
 function JournalAllIssues() {
-  const reduced = useReducedMotion();
-
-  return (
-    <Section id="journal-all-issues" className="scroll-mt-24 bg-white">
-      <Container>
-        <motion.div {...journalReveal}>
-          <SectionHeading
-            eyebrow="Архив"
-            title="Все выпуски"
-            description="Пять тематических выпусков экспертного журнала AKYL — открытые и закрытые издания."
-          />
-          <motion.div
-            className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
-            variants={journalStagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.08 }}
-          >
-            {journalIssues.map((issue) => (
-              <motion.article
-                key={issue.id}
-                variants={journalStaggerItem}
-                whileHover={reduced ? undefined : { y: -4 }}
-                className="flex flex-col items-center rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <JournalCover issue={issue} size="card" />
-                <div className="mt-4 w-full max-w-[200px] text-center">
-                  <p className="text-xs font-medium text-sky-700">
-                    {issue.category}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">
-                    {issue.subtitle}
-                  </p>
-                  {issue.isLocked ? (
-                    <Link
-                      href={JOURNAL_ACCESS_HREF}
-                      className="mt-3 inline-flex min-h-[40px] w-full items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-800 transition hover:border-sky-200"
-                    >
-                      Получить доступ
-                    </Link>
-                  ) : (
-                    <a
-                      href={issue.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 inline-flex min-h-[40px] w-full items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white transition hover:bg-slate-800"
-                    >
-                      Читать PDF
-                    </a>
-                  )}
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-        </motion.div>
-      </Container>
-    </Section>
-  );
+  return <PublicJournalIssuesGrid />;
 }
 
 function JournalEditorial() {
@@ -164,7 +102,7 @@ function JournalAccessCta() {
 export function JournalPage() {
   return (
     <div className="bg-white [overflow-x:clip]">
-      <JournalHero />
+      <JournalHeroConnected />
       <JournalAllIssues />
       <JournalEditorial />
       <JournalAccessCta />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
+import { PublicUserMenu } from "@/components/dashboard/Topbar";
 import { Container } from "@/components/ui/Container";
 import { HOME_LOGO_URL } from "@/lib/homeAssets";
 import { cn } from "@/lib/cn";
@@ -177,6 +178,8 @@ function NavbarInner({ pathname }: { pathname: string }) {
               </button>
             </div>
 
+            <PublicUserMenu />
+
             <Link
               href="/consultation"
               className="hidden md:inline-flex rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:scale-[1.02]"
@@ -228,8 +231,16 @@ function NavbarInner({ pathname }: { pathname: string }) {
               ))}
 
               <Link
+                href="/login"
+                className="rounded-xl border border-white/15 px-4 py-3 text-center text-sm font-medium text-white"
+                onClick={() => setMobileOpen(false)}
+              >
+                Войти
+              </Link>
+
+              <Link
                 href="/consultation"
-                className="mt-4 rounded-xl bg-white px-4 py-3 text-center text-black font-semibold"
+                className="mt-2 rounded-xl bg-white px-4 py-3 text-center text-black font-semibold"
               >
                 Консультация
               </Link>

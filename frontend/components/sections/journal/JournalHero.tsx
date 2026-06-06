@@ -9,10 +9,10 @@ import { Check } from "lucide-react";
 import { JournalCover } from "@/components/sections/journal/JournalCover";
 import { JournalIssueSlider } from "@/components/sections/journal/JournalIssueSlider";
 import {
-  getLatestOpenIssue,
   JOURNAL_SLIDE_DURATION_MS,
   journalHeroBenefits,
   journalIssues,
+  type JournalIssue,
 } from "@/data/journalData";
 
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
@@ -29,35 +29,41 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   );
 }
 
-export function JournalHero() {
+type JournalHeroProps = {
+  issues?: JournalIssue[];
+};
+
+export function JournalHero({ issues: issuesProp }: JournalHeroProps = {}) {
+  const issues = issuesProp?.length ? issuesProp : journalIssues;
   const [activeIndex, setActiveIndex] = useState(0);
   const reduced = useReducedMotion();
 
   const activeIssue = useMemo(
-    () => journalIssues[activeIndex],
-    [activeIndex],
+    () => issues[activeIndex] ?? issues[0],
+    [activeIndex, issues],
   );
-  const latestOpen = getLatestOpenIssue();
+  const latestOpen = issues.find((i) => !i.isLocked) ?? issues[0];
 
   const goTo = useCallback((index: number) => {
     setActiveIndex(index);
   }, []);
 
   const prev = useCallback(() => {
-    setActiveIndex((i) => (i - 1 + journalIssues.length) % journalIssues.length);
-  }, []);
+    setActiveIndex((i) => (i - 1 + issues.length) % issues.length);
+  }, [issues.length]);
 
   const next = useCallback(() => {
-    setActiveIndex((i) => (i + 1) % journalIssues.length);
-  }, []);
+    setActiveIndex((i) => (i + 1) % issues.length);
+  }, [issues.length]);
 
   useEffect(() => {
+    if (issues.length <= 1) return;
     const timer = window.setTimeout(() => {
-      setActiveIndex((prev) => (prev + 1) % journalIssues.length);
+      setActiveIndex((prev) => (prev + 1) % issues.length);
     }, JOURNAL_SLIDE_DURATION_MS);
 
     return () => window.clearTimeout(timer);
-  }, [activeIndex]);
+  }, [activeIndex, issues.length]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -187,7 +193,7 @@ export function JournalHero() {
         </div>
 
         <div className="absolute bottom-8 left-0 right-0 flex justify-center sm:bottom-10">
-          <JournalIssueSlider activeIndex={activeIndex} onSelect={goTo} />
+          <JournalIssueSlider issues={issues} activeIndex={activeIndex} onSelect={goTo} />
         </div>
       </div>
 

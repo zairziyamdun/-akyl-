@@ -3,21 +3,23 @@
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/cn";
-import { journalIssues } from "@/data/journalData";
+import type { JournalIssue } from "@/data/journalData";
 
 type JournalIssueSliderProps = {
+  issues: JournalIssue[];
   activeIndex: number;
   onSelect: (index: number) => void;
 };
 
 export function JournalIssueSlider({
+  issues,
   activeIndex,
   onSelect,
 }: JournalIssueSliderProps) {
   return (
     <div className="w-full max-w-2xl px-4">
       <div className="flex items-end gap-2 sm:gap-3">
-        {journalIssues.map((item, index) => {
+        {issues.map((item, index) => {
           const isActive = index === activeIndex;
           return (
             <button
@@ -54,7 +56,7 @@ export function JournalIssueSlider({
         animate={{ opacity: 1, y: 0 }}
         className="mt-4 text-center text-xs text-white/50"
       >
-        {journalIssues[activeIndex].title}
+        {issues[activeIndex]?.title}
       </motion.p>
     </div>
   );

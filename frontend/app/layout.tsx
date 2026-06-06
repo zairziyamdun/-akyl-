@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
 import "./globals.css";
 
-import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
+import { AppChrome } from "@/components/layout/AppChrome";
+import { MockAuthProvider } from "@/lib/auth/MockAuthProvider";
+import { JournalIssuesProvider } from "@/lib/journal/JournalIssuesProvider";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -31,9 +32,11 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${inter.variable} ${sora.variable}`}>
       <body className="flex min-h-screen flex-col antialiased">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <MockAuthProvider>
+          <JournalIssuesProvider>
+            <AppChrome>{children}</AppChrome>
+          </JournalIssuesProvider>
+        </MockAuthProvider>
       </body>
     </html>
   );
