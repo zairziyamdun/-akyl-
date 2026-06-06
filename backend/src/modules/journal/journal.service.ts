@@ -1,22 +1,56 @@
 import { getSupabaseAdmin } from "../../config/supabase.js";
-import { DatabaseError, ForbiddenError, UnauthorizedError } from "../../common/errors.js";
+import {
+  DatabaseError,
+  ForbiddenError,
+  UnauthorizedError,
+  ValidationError,
+} from "../../common/errors.js";
 import type { ProfileRole } from "../auth/auth.types.js";
 import {
   assertStatusTransition,
   canViewUnpublished,
 } from "./journal.permissions.js";
+import { createSignedPdfUrl } from "./journal.storage.js";
 import type {
   CreateJournalIssueInput,
   JournalIssue,
+  JournalIssueWithAuthor,
   JournalStatus,
   UpdateJournalIssueInput,
 } from "./journal.types.js";
+
+async function enrichWithAuthorNames(
+  issues: JournalIssue[],
+): Promise<JournalIssueWithAuthor[]> {
+  if (issues.length === 0) return [];
+
+  const userIds = [
+    ...new Set(issues.map((i) => i.created_by).filter(Boolean)),
+  ] as string[];
+
+  const supabase = getSupabaseAdmin();
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .in("id", userIds);
+
+  const nameById = new Map(
+    (profiles ?? []).map((p) => [p.id as string, (p.full_name as string | null) ?? null]),
+  );
+
+  return issues.map((issue) => ({
+    ...issue,
+    author_name: issue.created_by ? nameById.get(issue.created_by) ?? null : null,
+  }));
+}
 
 function mapIssue(row: JournalIssue): JournalIssue {
   return row;
 }
 
-export async function listJournalIssues(role?: ProfileRole): Promise<JournalIssue[]> {
+export async function listJournalIssues(
+  role?: ProfileRole,
+): Promise<JournalIssueWithAuthor[]> {
   const supabase = getSupabaseAdmin();
   let query = supabase.from("journal_issues").select("*").order("updated_at", { ascending: false });
 
@@ -30,13 +64,13 @@ export async function listJournalIssues(role?: ProfileRole): Promise<JournalIssu
     throw new DatabaseError("Failed to fetch journal issues", error);
   }
 
-  return (data ?? []).map(mapIssue);
+  return enrichWithAuthorNames((data ?? []).map(mapIssue));
 }
 
 export async function getJournalIssueById(
   id: string,
   role?: ProfileRole,
-): Promise<JournalIssue> {
+): Promise<JournalIssueWithAuthor> {
   const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase
@@ -55,13 +89,14 @@ export async function getJournalIssueById(
     throw new ForbiddenError("Issue is not published");
   }
 
-  return issue;
+  const [enriched] = await enrichWithAuthorNames([issue]);
+  return enriched;
 }
 
 export async function createJournalIssue(
   input: CreateJournalIssueInput,
   userId: string,
-): Promise<JournalIssue> {
+): Promise<JournalIssueWithAuthor> {
   const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase
@@ -83,14 +118,15 @@ export async function createJournalIssue(
     throw new DatabaseError("Failed to create journal issue", error);
   }
 
-  return mapIssue(data as JournalIssue);
+  const [enriched] = await enrichWithAuthorNames([mapIssue(data as JournalIssue)]);
+  return enriched;
 }
 
 export async function updateJournalIssue(
   id: string,
   input: UpdateJournalIssueInput,
   role: ProfileRole,
-): Promise<JournalIssue> {
+): Promise<JournalIssueWithAuthor> {
   const existing = await getJournalIssueById(id, role);
 
   if (input.status && input.status !== existing.status) {
@@ -115,7 +151,8 @@ export async function updateJournalIssue(
     throw new DatabaseError("Failed to update journal issue", error);
   }
 
-  return mapIssue(data as JournalIssue);
+  const [enriched] = await enrichWithAuthorNames([mapIssue(data as JournalIssue)]);
+  return enriched;
 }
 
 export async function deleteJournalIssue(id: string): Promise<void> {
@@ -132,7 +169,7 @@ export async function transitionJournalIssue(
   id: string,
   toStatus: JournalStatus,
   role: ProfileRole,
-): Promise<JournalIssue> {
+): Promise<JournalIssueWithAuthor> {
   const existing = await getJournalIssueById(id, role);
   assertStatusTransition(existing.status, toStatus, role);
   return updateJournalIssue(id, { status: toStatus }, role);
@@ -152,4 +189,31 @@ export function assertAuthenticated(userId?: string): asserts userId is string {
   if (!userId) {
     throw new UnauthorizedError();
   }
+}
+
+export async function getIssuePdfSignedUrl(
+  id: string,
+  role?: ProfileRole,
+): Promise<string> {
+  const issue = await getJournalIssueById(id, role);
+
+  if (!issue.pdf_url) {
+    throw new ValidationError("PDF is not available for this issue");
+  }
+
+  const isEditor = role === "journalist" || role === "admin";
+
+  if (isEditor) {
+    return createSignedPdfUrl(issue.pdf_url);
+  }
+
+  if (issue.status !== "published") {
+    throw new ForbiddenError("Issue is not published");
+  }
+
+  if (issue.access_type !== "free") {
+    throw new ForbiddenError("Нужен доступ");
+  }
+
+  return createSignedPdfUrl(issue.pdf_url);
 }

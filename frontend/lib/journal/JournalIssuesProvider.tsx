@@ -4,53 +4,112 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
 
-import { initialJournalIssues } from "@/data/journalIssuesMock";
 import { useAuth } from "@/lib/auth/AuthProvider";
 
+import { fromApiIssue, toApiCreatePayload, toApiUpdatePayload } from "./apiAdapters";
+import {
+  archiveJournalIssueApi,
+  createJournalIssueApi,
+  deleteJournalIssueApi,
+  fetchIssuePdfUrl,
+  fetchJournalIssue,
+  fetchJournalIssues,
+  publishJournalIssueApi,
+  revisionJournalIssueApi,
+  submitJournalIssueApi,
+  updateJournalIssueApi,
+  uploadCoverApi,
+  uploadPdfApi,
+} from "./journalApi";
 import type {
   CreateJournalIssuePayload,
   JournalIssueFilter,
   JournalIssueRecord,
-  JournalIssueStatus,
 } from "./types";
-import { generateIssueId } from "./utils";
 
 type JournalIssuesContextValue = {
   issues: JournalIssueRecord[];
   isLoading: boolean;
+  error: string | null;
+  refresh: () => Promise<void>;
   getIssue: (id: string) => JournalIssueRecord | undefined;
+  fetchIssue: (id: string) => Promise<JournalIssueRecord | null>;
   getPublishedIssues: () => JournalIssueRecord[];
   filterIssues: (filter: JournalIssueFilter) => JournalIssueRecord[];
-  createIssue: (payload: CreateJournalIssuePayload, asDraft?: boolean) => string;
-  updateIssue: (id: string, payload: Partial<JournalIssueRecord>) => void;
-  submitForReview: (id: string) => void;
-  approveIssue: (id: string) => void;
-  rejectIssue: (id: string, note?: string) => void;
-  requestRevision: (id: string, note?: string) => void;
-  archiveIssue: (id: string) => void;
-  publishIssue: (id: string) => void;
-  deleteIssue: (id: string) => void;
+  createIssue: (payload: CreateJournalIssuePayload, asDraft?: boolean) => Promise<string>;
+  updateIssue: (id: string, payload: Partial<JournalIssueRecord>) => Promise<void>;
+  submitForReview: (id: string) => Promise<void>;
+  approveIssue: (id: string) => Promise<void>;
+  requestRevision: (id: string) => Promise<void>;
+  archiveIssue: (id: string) => Promise<void>;
+  publishIssue: (id: string) => Promise<void>;
+  deleteIssue: (id: string) => Promise<void>;
+  uploadCover: (file: File) => Promise<{ url: string; path: string }>;
+  uploadPdf: (file: File) => Promise<{ path: string; fileName: string; size: number }>;
+  openIssuePdf: (id: string) => Promise<void>;
 };
 
 const JournalIssuesContext = createContext<JournalIssuesContextValue | null>(null);
 
-function nowIso() {
-  return new Date().toISOString();
+function upsertIssue(
+  list: JournalIssueRecord[],
+  issue: JournalIssueRecord,
+): JournalIssueRecord[] {
+  const idx = list.findIndex((i) => i.id === issue.id);
+  if (idx === -1) return [issue, ...list];
+  const next = [...list];
+  next[idx] = issue;
+  return next;
 }
 
 export function JournalIssuesProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
-  const [issues, setIssues] = useState<JournalIssueRecord[]>(initialJournalIssues);
-  const [isLoading] = useState(false);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const [issues, setIssues] = useState<JournalIssueRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await fetchJournalIssues();
+      setIssues(data.map(fromApiIssue));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Не удалось загрузить выпуски");
+      setIssues([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    void refresh();
+  }, [authLoading, isAuthenticated, refresh]);
 
   const getIssue = useCallback(
     (id: string) => issues.find((i) => i.id === id),
     [issues],
+  );
+
+  const fetchIssue = useCallback(
+    async (id: string) => {
+      try {
+        const data = await fetchJournalIssue(id);
+        const record = fromApiIssue(data);
+        setIssues((prev) => upsertIssue(prev, record));
+        return record;
+      } catch {
+        return null;
+      }
+    },
+    [],
   );
 
   const getPublishedIssues = useCallback(
@@ -69,129 +128,141 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
     [issues],
   );
 
-  const patchIssue = useCallback(
-    (id: string, patch: Partial<JournalIssueRecord>) => {
-      setIssues((prev) =>
-        prev.map((issue) =>
-          issue.id === id
-            ? { ...issue, ...patch, updatedAt: nowIso() }
-            : issue,
-        ),
-      );
+  const createIssue = useCallback(
+    async (payload: CreateJournalIssuePayload, asDraft = true) => {
+      const created = await createJournalIssueApi(toApiCreatePayload(payload));
+      let record = fromApiIssue(created);
+
+      if (payload.pdfFileName) {
+        record = {
+          ...record,
+          pdfFileName: payload.pdfFileName,
+          pdfSizeBytes: payload.pdfSizeBytes ?? record.pdfSizeBytes,
+        };
+      }
+
+      if (!asDraft) {
+        const submitted = await submitJournalIssueApi(record.id);
+        record = fromApiIssue(submitted);
+        if (payload.pdfFileName) {
+          record = {
+            ...record,
+            pdfFileName: payload.pdfFileName,
+            pdfSizeBytes: payload.pdfSizeBytes ?? record.pdfSizeBytes,
+          };
+        }
+      }
+
+      setIssues((prev) => upsertIssue(prev, record));
+      return record.id;
     },
     [],
   );
 
-  const createIssue = useCallback(
-    (payload: CreateJournalIssuePayload, asDraft = true) => {
-      const id = generateIssueId();
-      const timestamp = nowIso();
-      const record: JournalIssueRecord = {
-        id,
-        title: payload.title,
-        issueNumber: payload.issueNumber,
-        description: payload.description,
-        coverUrl: payload.coverUrl ?? "",
-        coverFileName: payload.coverFileName,
-        pdfUrl: payload.pdfUrl ?? "",
-        pdfFileName: payload.pdfFileName ?? "",
-        pdfSizeBytes: payload.pdfSizeBytes ?? 0,
-        accessType: payload.accessType,
-        status: asDraft ? "DRAFT" : "REVIEW",
-        authorId: user?.id ?? "",
-        authorName: user?.name ?? "",
-        createdAt: timestamp,
-        updatedAt: timestamp,
-        pdfUploadedAt: payload.pdfUrl ? timestamp : "",
-      };
-      setIssues((prev) => [record, ...prev]);
-      return id;
-    },
-    [user],
-  );
-
   const updateIssue = useCallback(
-    (id: string, payload: Partial<JournalIssueRecord>) => {
-      patchIssue(id, payload);
+    async (id: string, payload: Partial<JournalIssueRecord>) => {
+      const updated = await updateJournalIssueApi(id, toApiUpdatePayload(payload));
+      let record = fromApiIssue(updated);
+      if (payload.pdfFileName) {
+        record = {
+          ...record,
+          pdfFileName: payload.pdfFileName,
+          pdfSizeBytes: payload.pdfSizeBytes ?? record.pdfSizeBytes,
+        };
+      }
+      setIssues((prev) => upsertIssue(prev, record));
     },
-    [patchIssue],
+    [],
   );
 
-  const submitForReview = useCallback(
-    (id: string) => patchIssue(id, { status: "REVIEW", rejectionNote: undefined }),
-    [patchIssue],
-  );
+  const submitForReview = useCallback(async (id: string) => {
+    const updated = await submitJournalIssueApi(id);
+    setIssues((prev) => upsertIssue(prev, fromApiIssue(updated)));
+  }, []);
 
-  const setStatus = useCallback(
-    (id: string, status: JournalIssueStatus, rejectionNote?: string) => {
-      patchIssue(id, { status, rejectionNote });
-    },
-    [patchIssue],
-  );
+  const approveIssue = useCallback(async (id: string) => {
+    const updated = await publishJournalIssueApi(id);
+    setIssues((prev) => upsertIssue(prev, fromApiIssue(updated)));
+  }, []);
 
-  const approveIssue = useCallback(
-    (id: string) => setStatus(id, "PUBLISHED", undefined),
-    [setStatus],
-  );
+  const publishIssue = approveIssue;
 
-  const rejectIssue = useCallback(
-    (id: string, note?: string) =>
-      setStatus(id, "ARCHIVED", note ?? "Выпуск отклонён администратором"),
-    [setStatus],
-  );
+  const requestRevision = useCallback(async (id: string) => {
+    const updated = await revisionJournalIssueApi(id);
+    setIssues((prev) => upsertIssue(prev, fromApiIssue(updated)));
+  }, []);
 
-  const requestRevision = useCallback(
-    (id: string, note?: string) =>
-      setStatus(id, "DRAFT", note ?? "Требуется доработка"),
-    [setStatus],
-  );
+  const archiveIssue = useCallback(async (id: string) => {
+    const updated = await archiveJournalIssueApi(id);
+    setIssues((prev) => upsertIssue(prev, fromApiIssue(updated)));
+  }, []);
 
-  const archiveIssue = useCallback(
-    (id: string) => setStatus(id, "ARCHIVED"),
-    [setStatus],
-  );
-
-  const publishIssue = useCallback(
-    (id: string) => setStatus(id, "PUBLISHED"),
-    [setStatus],
-  );
-
-  const deleteIssue = useCallback((id: string) => {
+  const deleteIssue = useCallback(async (id: string) => {
+    await deleteJournalIssueApi(id);
     setIssues((prev) => prev.filter((i) => i.id !== id));
+  }, []);
+
+  const uploadCover = useCallback(async (file: File) => {
+    const result = await uploadCoverApi(file);
+    return { url: result.url, path: result.path };
+  }, []);
+
+  const uploadPdf = useCallback(async (file: File) => {
+    const result = await uploadPdfApi(file);
+    return {
+      path: result.path,
+      fileName: result.fileName,
+      size: result.size,
+    };
+  }, []);
+
+  const openIssuePdf = useCallback(async (id: string) => {
+    const url = await fetchIssuePdfUrl(id);
+    window.open(url, "_blank", "noopener,noreferrer");
   }, []);
 
   const value = useMemo(
     () => ({
       issues,
       isLoading,
+      error,
+      refresh,
       getIssue,
+      fetchIssue,
       getPublishedIssues,
       filterIssues,
       createIssue,
       updateIssue,
       submitForReview,
       approveIssue,
-      rejectIssue,
       requestRevision,
       archiveIssue,
       publishIssue,
       deleteIssue,
+      uploadCover,
+      uploadPdf,
+      openIssuePdf,
     }),
     [
       issues,
       isLoading,
+      error,
+      refresh,
       getIssue,
+      fetchIssue,
       getPublishedIssues,
       filterIssues,
       createIssue,
       updateIssue,
       submitForReview,
       approveIssue,
-      rejectIssue,
       requestRevision,
       archiveIssue,
       publishIssue,
       deleteIssue,
+      uploadCover,
+      uploadPdf,
+      openIssuePdf,
     ],
   );
 
@@ -209,3 +280,5 @@ export function useJournalIssues() {
   }
   return ctx;
 }
+
+export { JournalApiError } from "./journalApi";

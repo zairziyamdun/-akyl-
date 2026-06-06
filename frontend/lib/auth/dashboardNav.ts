@@ -27,6 +27,7 @@ export const adminNav: NavSection[] = [
     title: "Контент",
     items: [
       { label: "Журнал", href: "/admin/journal", icon: "▤" },
+      { label: "Создать выпуск", href: "/admin/journal/new", icon: "＋" },
       { label: "Библиотека", href: "/admin/library", icon: "▣" },
     ],
   },

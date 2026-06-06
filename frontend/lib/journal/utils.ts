@@ -49,3 +49,34 @@ export const publicAccessBadgeLabels: Record<JournalAccessType, string> = {
 export function generateIssueId(): string {
   return `issue_${Date.now()}`;
 }
+
+export function fileNameFromStoragePath(path: string): string {
+  const base = path.split("/").pop() ?? path;
+  const dash = base.indexOf("-");
+  return dash >= 0 ? base.slice(dash + 1) : base;
+}
+
+export const COVER_ACCEPT = "image/jpeg,image/png,image/webp";
+export const PDF_ACCEPT = "application/pdf";
+export const COVER_MAX_BYTES = 10 * 1024 * 1024;
+export const PDF_MAX_BYTES = 50 * 1024 * 1024;
+
+export function validateCoverFile(file: File): string | null {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    return "Допустимы только JPEG, PNG и WebP";
+  }
+  if (file.size > COVER_MAX_BYTES) {
+    return "Обложка не должна превышать 10 MB";
+  }
+  return null;
+}
+
+export function validatePdfFile(file: File): string | null {
+  if (file.type !== "application/pdf") {
+    return "Допустим только PDF";
+  }
+  if (file.size > PDF_MAX_BYTES) {
+    return "PDF не должен превышать 50 MB";
+  }
+  return null;
+}

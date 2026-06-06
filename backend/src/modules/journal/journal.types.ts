@@ -7,6 +7,7 @@ export type JournalIssue = {
   issue_number: string;
   description: string;
   cover_url: string | null;
+  /** Storage path in journal-pdfs bucket (private). */
   pdf_url: string | null;
   access_type: JournalAccessType;
   status: JournalStatus;
@@ -14,6 +15,10 @@ export type JournalIssue = {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type JournalIssueWithAuthor = JournalIssue & {
+  author_name: string | null;
 };
 
 export type CreateJournalIssueInput = {

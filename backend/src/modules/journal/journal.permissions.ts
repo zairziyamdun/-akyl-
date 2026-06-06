@@ -7,13 +7,19 @@ const TRANSITIONS: Record<
   JournalStatus,
   Partial<Record<JournalStatus, ProfileRole[]>>
 > = {
-  draft: { review: ["journalist", "admin"] },
+  draft: {
+    review: ["journalist", "admin"],
+    published: ["admin"],
+  },
   review: {
     published: ["admin"],
     draft: ["admin"],
   },
   published: { archived: ["admin"] },
-  archived: { published: ["admin"] },
+  archived: {
+    published: ["admin"],
+    draft: ["admin"],
+  },
 };
 
 export function assertStatusTransition(

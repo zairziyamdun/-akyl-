@@ -5,6 +5,7 @@ import { sendSuccess } from "../../common/response.js";
 import {
   createJournalIssue,
   deleteJournalIssue,
+  getIssuePdfSignedUrl,
   getJournalIssueById,
   listJournalIssues,
   transitionJournalIssue,
@@ -12,6 +13,12 @@ import {
   assertIssueOwnerOrAdmin,
   assertAuthenticated,
 } from "./journal.service.js";
+import {
+  assertCoverFile,
+  assertPdfFile,
+  uploadCoverToStorage,
+  uploadPdfToStorage,
+} from "./journal.storage.js";
 import type {
   CreateJournalIssueBody,
   UpdateJournalIssueBody,
@@ -30,6 +37,14 @@ export const getIssueHandler = asyncHandler(async (req: Request, res: Response) 
 
   sendSuccess(res, 200, { data: issue });
 });
+
+export const getIssuePdfHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const url = await getIssuePdfSignedUrl(req.params.id!, req.profile?.role);
+
+    res.status(200).json({ success: true, url });
+  },
+);
 
 export const createIssueHandler = asyncHandler(
   async (req: Request, res: Response) => {
@@ -121,5 +136,29 @@ export const revisionIssueHandler = asyncHandler(
   },
 );
 
-// TODO: POST /api/journal/upload/cover — Supabase Storage journal-covers
-// TODO: POST /api/journal/upload/pdf — Supabase Storage journal-pdfs
+export const uploadCoverHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const file = assertCoverFile(req.file);
+    const result = await uploadCoverToStorage(file);
+
+    res.status(200).json({
+      success: true,
+      url: result.url,
+      path: result.path,
+    });
+  },
+);
+
+export const uploadPdfHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const file = assertPdfFile(req.file);
+    const result = await uploadPdfToStorage(file);
+
+    res.status(200).json({
+      success: true,
+      path: result.path,
+      fileName: result.fileName,
+      size: result.size,
+    });
+  },
+);

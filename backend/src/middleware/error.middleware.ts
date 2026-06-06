@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import multer from "multer";
 
 import { AppError } from "../common/errors.js";
 import { logError } from "../common/logger.js";
@@ -18,6 +19,15 @@ export function errorMiddleware(
 
   if (error instanceof AppError) {
     sendError(res, error.statusCode, error.message, error.errors);
+    return;
+  }
+
+  if (error instanceof multer.MulterError) {
+    const message =
+      error.code === "LIMIT_FILE_SIZE"
+        ? "File exceeds maximum allowed size"
+        : error.message;
+    sendError(res, 400, message);
     return;
   }
 

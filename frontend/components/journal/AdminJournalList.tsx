@@ -5,8 +5,10 @@ import { useMemo, useState } from "react";
 
 import { AccessTypeBadge, IssueStatusBadge } from "@/components/journal/IssueBadges";
 import { IssueCoverThumb } from "@/components/journal/IssueCover";
+import { JournalListSkeleton } from "@/components/journal/JournalSkeletons";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { Button } from "@/components/ui/Button";
 import { useJournalIssues } from "@/lib/journal/JournalIssuesProvider";
 import type { JournalIssueFilter } from "@/lib/journal/types";
 import { formatDate, issueStatusLabels } from "@/lib/journal/utils";
@@ -21,7 +23,7 @@ const filters: { value: JournalIssueFilter; label: string }[] = [
 ];
 
 export function AdminJournalList() {
-  const { filterIssues } = useJournalIssues();
+  const { filterIssues, isLoading, error } = useJournalIssues();
   const [activeFilter, setActiveFilter] = useState<JournalIssueFilter>("ALL");
 
   const filtered = useMemo(
@@ -32,12 +34,38 @@ export function AdminJournalList() {
     [filterIssues, activeFilter],
   );
 
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader
+          title="Журнал"
+          description="Модерация и публикация PDF-выпусков"
+          actions={
+            <Button asChild size="sm">
+              <Link href="/admin/journal/new">Добавить выпуск</Link>
+            </Button>
+          }
+        />
+        <JournalListSkeleton count={6} />
+      </>
+    );
+  }
+
   return (
     <>
       <PageHeader
         title="Журнал"
         description="Модерация и публикация PDF-выпусков"
+        actions={
+          <Button asChild size="sm">
+            <Link href="/admin/journal/new">Добавить выпуск</Link>
+          </Button>
+        }
       />
+
+      {error ? (
+        <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+      ) : null}
 
       <div className="mb-6 flex flex-wrap gap-2">
         {filters.map((f) => (
@@ -62,8 +90,15 @@ export function AdminJournalList() {
           title="Нет выпусков"
           description={
             activeFilter === "ALL"
-              ? "Выпуски появятся после создания журналистом"
+              ? "Создайте первый выпуск или дождитесь материалов от журналистов"
               : `Нет выпусков со статусом «${issueStatusLabels[activeFilter as keyof typeof issueStatusLabels] ?? activeFilter}»`
+          }
+          action={
+            activeFilter === "ALL" ? (
+              <Button asChild>
+                <Link href="/admin/journal/new">Добавить выпуск</Link>
+              </Button>
+            ) : undefined
           }
         />
       ) : (
@@ -93,7 +128,7 @@ export function AdminJournalList() {
                   {issue.description}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-400">
-                  <span>{issue.authorName}</span>
+                  <span>{issue.authorName || "—"}</span>
                   <span>{formatDate(issue.updatedAt)}</span>
                 </div>
               </div>

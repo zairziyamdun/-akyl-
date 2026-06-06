@@ -1,7 +1,7 @@
 export { AccessTypeBadge, IssueStatusBadge } from "./IssueBadges";
 export { FileDropzone } from "./FileDropzone";
 export { IssueCoverHero, IssueCoverThumb } from "./IssueCover";
-export { IssueForm } from "./IssueForm";
+export { IssueForm, JournalIssueForm } from "./IssueForm";
 export { IssueDetailView } from "./IssueDetailView";
 export { IssueReviewPanel } from "./IssueReviewPanel";
 export { StudioJournalList } from "./StudioJournalList";

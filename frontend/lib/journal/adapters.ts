@@ -8,7 +8,7 @@ export function toPublicJournalIssue(record: JournalIssueRecord): JournalIssue {
     : "2026";
 
   return {
-    id: record.issueNumber,
+    id: record.id,
     title: record.title,
     subtitle: record.description.slice(0, 60) + (record.description.length > 60 ? "…" : ""),
     description: record.description,

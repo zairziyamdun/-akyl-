@@ -2,21 +2,50 @@
 
 import Link from "next/link";
 import { Lock } from "lucide-react";
+import { useState } from "react";
 
 import { AccessTypeBadge } from "@/components/journal/IssueBadges";
 import { IssueCoverThumb } from "@/components/journal/IssueCover";
+import { JournalToast } from "@/components/journal/JournalToast";
 import { Button } from "@/components/ui/Button";
 import { JOURNAL_ACCESS_HREF } from "@/data/journalData";
+import {
+  JournalApiError,
+  useJournalIssues,
+} from "@/lib/journal/JournalIssuesProvider";
 import type { JournalIssueRecord } from "@/lib/journal/types";
 
 export function IssueAccessGate({ issue }: { issue: JournalIssueRecord }) {
-  if (issue.accessType === "FREE" && issue.pdfUrl) {
+  const { openIssuePdf } = useJournalIssues();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  if (issue.accessType === "FREE") {
     return (
-      <Button asChild className="w-full">
-        <a href={issue.pdfUrl} target="_blank" rel="noopener noreferrer">
-          Читать
-        </a>
-      </Button>
+      <div className="space-y-2">
+        <Button
+          className="w-full"
+          disabled={loading || !issue.pdfUrl}
+          onClick={async () => {
+            setLoading(true);
+            setError("");
+            try {
+              await openIssuePdf(issue.id);
+            } catch (err) {
+              const message =
+                err instanceof JournalApiError
+                  ? err.message
+                  : "Не удалось открыть PDF";
+              setError(message);
+            } finally {
+              setLoading(false);
+            }
+          }}
+        >
+          {loading ? "Открытие…" : "Читать PDF"}
+        </Button>
+        {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      </div>
     );
   }
 

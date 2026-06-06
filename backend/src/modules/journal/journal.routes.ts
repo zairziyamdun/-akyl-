@@ -11,20 +11,44 @@ import {
   createIssueHandler,
   deleteIssueHandler,
   getIssueHandler,
+  getIssuePdfHandler,
   listIssuesHandler,
   publishIssueHandler,
   revisionIssueHandler,
   submitIssueHandler,
   updateIssueHandler,
+  uploadCoverHandler,
+  uploadPdfHandler,
 } from "./journal.controller.js";
 import { createJournalIssueSchema, updateJournalIssueSchema } from "./journal.schema.js";
+import {
+  uploadCoverMiddleware,
+  uploadPdfMiddleware,
+} from "./journal.upload.middleware.js";
 
 const router = Router();
 
 const editorRoles = ["journalist", "admin"] as const;
 const adminOnly = ["admin"] as const;
 
+router.post(
+  "/upload-cover",
+  authMiddleware,
+  roleMiddleware([...editorRoles]),
+  uploadCoverMiddleware,
+  uploadCoverHandler,
+);
+
+router.post(
+  "/upload-pdf",
+  authMiddleware,
+  roleMiddleware([...editorRoles]),
+  uploadPdfMiddleware,
+  uploadPdfHandler,
+);
+
 router.get("/issues", optionalAuthMiddleware, listIssuesHandler);
+router.get("/issues/:id/pdf", optionalAuthMiddleware, getIssuePdfHandler);
 router.get("/issues/:id", optionalAuthMiddleware, getIssueHandler);
 
 router.post(

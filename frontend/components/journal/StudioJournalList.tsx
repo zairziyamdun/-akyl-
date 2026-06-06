@@ -1,38 +1,67 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 import { AccessTypeBadge, IssueStatusBadge } from "@/components/journal/IssueBadges";
 import { IssueCoverThumb } from "@/components/journal/IssueCover";
+import { JournalTableSkeleton } from "@/components/journal/JournalSkeletons";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { Button } from "@/components/ui/Button";
-import { useMockAuth } from "@/lib/auth/MockAuthProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import { useJournalIssues } from "@/lib/journal/JournalIssuesProvider";
-import type { JournalIssueRecord } from "@/lib/journal/types";
-import { formatDate } from "@/lib/journal/utils";
+import type { JournalIssueFilter, JournalIssueRecord } from "@/lib/journal/types";
+import { formatDate, issueStatusLabels } from "@/lib/journal/utils";
+import { cn } from "@/lib/cn";
+
+const filters: { value: JournalIssueFilter; label: string }[] = [
+  { value: "ALL", label: "Все" },
+  { value: "DRAFT", label: "Черновики" },
+  { value: "REVIEW", label: "На проверке" },
+  { value: "PUBLISHED", label: "Опубликованные" },
+  { value: "ARCHIVED", label: "Архив" },
+];
 
 export function StudioJournalList() {
-  const router = useRouter();
-  const { user } = useMockAuth();
-  const { issues, submitForReview, deleteIssue } = useJournalIssues();
+  const { user } = useAuth();
+  const { issues, isLoading, error, submitForReview } = useJournalIssues();
+  const [activeFilter, setActiveFilter] = useState<JournalIssueFilter>("ALL");
+  const [actionId, setActionId] = useState<string | null>(null);
 
-  const journalistIssues = issues.filter(
-    (i) => i.authorId === user.id || i.authorName === user.name,
-  );
+  const journalistIssues = useMemo(() => {
+    const mine = issues.filter(
+      (i) => i.authorId === user?.id || (user?.name && i.authorName === user.name),
+    );
+    if (activeFilter === "ALL") return mine;
+    return mine.filter((i) => i.status === activeFilter);
+  }, [issues, user, activeFilter]);
 
-  const handleSubmit = (id: string) => {
-    submitForReview(id);
-    router.refresh();
-  };
-
-  const handleDelete = (issue: JournalIssueRecord) => {
-    if (issue.status !== "DRAFT") return;
-    if (confirm(`Удалить выпуск «${issue.title}»?`)) {
-      deleteIssue(issue.id);
+  const handleSubmit = async (id: string) => {
+    setActionId(id);
+    try {
+      await submitForReview(id);
+    } finally {
+      setActionId(null);
     }
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader
+          title="Журнал"
+          description="PDF-выпуски журнала AKYL"
+          actions={
+            <Button asChild size="sm">
+              <Link href="/studio/journal/new">Создать выпуск</Link>
+            </Button>
+          }
+        />
+        <JournalTableSkeleton />
+      </>
+    );
+  }
 
   return (
     <>
@@ -46,14 +75,42 @@ export function StudioJournalList() {
         }
       />
 
+      {error ? (
+        <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+      ) : null}
+
+      <div className="mb-6 flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <button
+            key={f.value}
+            type="button"
+            onClick={() => setActiveFilter(f.value)}
+            className={cn(
+              "rounded-full px-3.5 py-1.5 text-xs font-medium ring-1 transition",
+              activeFilter === f.value
+                ? "bg-sky-50 text-sky-800 ring-sky-200"
+                : "bg-white text-slate-600 ring-slate-200 hover:bg-slate-50",
+            )}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
       {journalistIssues.length === 0 ? (
         <EmptyState
           title="Нет выпусков"
-          description="Создайте первый PDF-выпуск журнала"
+          description={
+            activeFilter === "ALL"
+              ? "Создайте первый PDF-выпуск журнала"
+              : `Нет выпусков со статусом «${issueStatusLabels[activeFilter as keyof typeof issueStatusLabels] ?? activeFilter}»`
+          }
           action={
-            <Button asChild>
-              <Link href="/studio/journal/new">Создать выпуск</Link>
-            </Button>
+            activeFilter === "ALL" ? (
+              <Button asChild>
+                <Link href="/studio/journal/new">Создать выпуск</Link>
+              </Button>
+            ) : undefined
           }
         />
       ) : (
@@ -86,7 +143,7 @@ export function StudioJournalList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {journalistIssues.map((issue) => (
+                {journalistIssues.map((issue: JournalIssueRecord) => (
                   <tr key={issue.id} className="hover:bg-slate-50/80">
                     <td className="px-4 py-3">
                       <IssueCoverThumb
@@ -131,23 +188,14 @@ export function StudioJournalList() {
                           </Button>
                         )}
                         {issue.status === "DRAFT" ? (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleSubmit(issue.id)}
-                            >
-                              На проверку
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600"
-                              onClick={() => handleDelete(issue)}
-                            >
-                              Удалить
-                            </Button>
-                          </>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            disabled={actionId === issue.id}
+                            onClick={() => void handleSubmit(issue.id)}
+                          >
+                            {actionId === issue.id ? "…" : "На проверку"}
+                          </Button>
                         ) : null}
                       </div>
                     </td>
