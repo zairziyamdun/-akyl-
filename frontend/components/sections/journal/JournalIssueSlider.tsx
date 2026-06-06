@@ -3,48 +3,60 @@
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/cn";
-import type { JournalIssue } from "@/data/journalData";
+import type { HeroSlide } from "@/lib/journal/heroSlides";
 
 type JournalIssueSliderProps = {
-  issues: JournalIssue[];
+  slides: HeroSlide[];
   activeIndex: number;
   onSelect: (index: number) => void;
 };
 
+function slideLabel(slide: HeroSlide): string {
+  if (slide.kind === "intro") return "AKYL";
+  return slide.issueNumber;
+}
+
+function slideCaption(slide: HeroSlide): string {
+  if (slide.kind === "intro") return "Журнал AKYL";
+  return slide.title;
+}
+
 export function JournalIssueSlider({
-  issues,
+  slides,
   activeIndex,
   onSelect,
 }: JournalIssueSliderProps) {
+  if (slides.length <= 1) return null;
+
   return (
     <div className="w-full max-w-2xl px-4">
       <div className="flex items-end gap-2 sm:gap-3">
-        {issues.map((item, index) => {
+        {slides.map((item, index) => {
           const isActive = index === activeIndex;
           return (
             <button
-              key={item.id}
+              key={item.kind === "intro" ? "intro" : item.id}
               type="button"
               onClick={() => onSelect(index)}
-              aria-label={`Выпуск ${item.issue}`}
+              aria-label={slideCaption(item)}
               aria-current={isActive}
               className="group flex min-w-0 flex-1 flex-col items-center gap-2 touch-manipulation"
             >
-              <span className="relative block h-[3px] w-full overflow-hidden rounded-full bg-white/25">
+              <span className="relative block h-[3px] w-full overflow-hidden rounded-full bg-white/12">
                 {isActive ? (
                   <span
                     key={activeIndex}
-                    className="animate-journal-progress absolute top-0 left-0 h-full rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.35)]"
+                    className="animate-journal-progress absolute top-0 left-0 h-full rounded-full bg-white/65"
                   />
                 ) : null}
               </span>
               <span
                 className={cn(
                   "text-[11px] font-medium tabular-nums transition-colors sm:text-xs",
-                  isActive ? "text-white" : "text-white/45 group-hover:text-white/70",
+                  isActive ? "text-white/75" : "text-white/30 group-hover:text-white/45",
                 )}
               >
-                {item.issue}
+                {slideLabel(item)}
               </span>
             </button>
           );
@@ -54,9 +66,9 @@ export function JournalIssueSlider({
         key={activeIndex}
         initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mt-4 text-center text-xs text-white/50"
+        className="mt-4 text-center text-xs text-white/35 line-clamp-2"
       >
-        {issues[activeIndex]?.title}
+        {slideCaption(slides[activeIndex]!)}
       </motion.p>
     </div>
   );

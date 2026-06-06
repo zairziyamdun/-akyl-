@@ -32,7 +32,7 @@ export function PublicJournalIssuesGrid() {
           </div>
         ) : published.length === 0 ? (
           <p className="mt-10 text-center text-slate-500">
-            Опубликованные выпуски появятся после модерации.
+            Выпуски скоро появятся
           </p>
         ) : (
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

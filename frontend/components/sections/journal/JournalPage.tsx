@@ -20,7 +20,7 @@ function JournalAllIssues() {
 
 function JournalEditorial() {
   return (
-    <Section className="bg-slate-50/80">
+    <Section id="journal-editorial" className="scroll-mt-24 bg-slate-50/80">
       <Container>
         <motion.div {...journalReveal}>
           <SectionHeading

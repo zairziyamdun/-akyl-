@@ -8,6 +8,16 @@
   body {
     @apply bg-slate-50 text-slate-900 antialiased;
   }
+
+  :root {
+    --site-header-height: 4.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --site-header-height: 6.75rem;
+    }
+  }
 }
 
 @keyframes journalProgress {

@@ -1,43 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 
 import { cn } from "@/lib/cn";
-import {
-  JOURNAL_ACCESS_HREF,
-  journalCoverSpine,
-  type JournalIssue,
-} from "@/data/journalData";
-import {
-  getJournalIssuePath,
-  isLegacyFallbackIssueId,
-} from "@/lib/journal/utils";
+import { journalCoverSpine } from "@/data/journalData";
+import type { HeroIssueSlide } from "@/lib/journal/heroSlides";
 
 type JournalCoverProps = {
-  issue: JournalIssue;
+  issue: HeroIssueSlide;
   size?: "hero" | "card";
   className?: string;
 };
 
 export function JournalCover({ issue, size = "hero", className }: JournalCoverProps) {
-  const spine = journalCoverSpine[issue.issue] ?? journalCoverSpine[issue.id] ?? "bg-slate-800";
+  const spine = journalCoverSpine[issue.issueNumber] ?? "bg-slate-800";
   const isHero = size === "hero";
-  const issueHref = isLegacyFallbackIssueId(issue.id)
-    ? "/journal"
-    : getJournalIssuePath(issue.id);
-
-  const actionClass = cn(
-    "inline-flex items-center justify-center rounded-full font-semibold transition duration-200",
-    isHero
-      ? "min-h-[48px] w-full px-6 py-3 text-sm hover:scale-[1.02]"
-      : "mt-4 min-h-[40px] w-full px-4 py-2 text-xs",
-    issue.isLocked
-      ? "border border-white/25 bg-white/10 text-white hover:bg-white/15"
-      : "bg-white text-slate-900 hover:bg-slate-100",
-  );
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
@@ -77,18 +56,22 @@ export function JournalCover({ issue, size = "hero", className }: JournalCoverPr
               isHero ? "aspect-[3/4.1]" : "aspect-[3/4]",
             )}
           >
-            <Image
-              src={issue.coverImage}
-              alt={issue.title}
-              fill
-              className="object-cover"
-              sizes={
-                isHero
-                  ? "(max-width: 1024px) 340px, 380px"
-                  : "(max-width: 768px) 200px, 220px"
-              }
-              priority={isHero}
-            />
+            {issue.coverUrl ? (
+              <Image
+                src={issue.coverUrl}
+                alt={issue.title}
+                fill
+                className="object-cover"
+                sizes={
+                  isHero
+                    ? "(max-width: 1024px) 340px, 380px"
+                    : "(max-width: 768px) 200px, 220px"
+                }
+                priority={isHero}
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950" />
+            )}
 
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-slate-900/20" />
 
@@ -103,7 +86,7 @@ export function JournalCover({ issue, size = "hero", className }: JournalCoverPr
                     isHero ? "text-3xl sm:text-4xl" : "text-2xl",
                   )}
                 >
-                  {issue.issue}
+                  {issue.issueNumber}
                   <span className="text-white/60"> / </span>
                   {issue.year}
                 </p>
@@ -139,20 +122,6 @@ export function JournalCover({ issue, size = "hero", className }: JournalCoverPr
           </div>
         </motion.div>
       </div>
-
-      {isHero ? (
-        <div className="mt-6 w-full max-w-[300px] sm:max-w-[340px] lg:max-w-[380px]">
-          {issue.isLocked ? (
-            <Link href={JOURNAL_ACCESS_HREF} className={actionClass}>
-              Получить доступ
-            </Link>
-          ) : (
-            <Link href={issueHref} className={actionClass}>
-              Читать
-            </Link>
-          )}
-        </div>
-      ) : null}
     </div>
   );
 }
