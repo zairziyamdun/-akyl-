@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
-import { getRoleDashboardPath } from "@/lib/auth/mockAuth";
-import type { AkylRole } from "@/lib/auth/mockAuth";
+import { getRoleDashboardPath } from "@/lib/auth/authUtils";
+import type { AkylRole } from "@/lib/auth/types";
 
 export function AccessDenied({ role }: { role?: AkylRole }) {
   const home = role ? getRoleDashboardPath(role) : "/";

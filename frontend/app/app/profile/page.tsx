@@ -4,10 +4,12 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { RoleBadge } from "@/components/dashboard/RoleBadge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useMockAuth } from "@/lib/auth/MockAuthProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export default function UserProfilePage() {
-  const { user, role } = useMockAuth();
+  const { user, role, profile } = useAuth();
+
+  if (!user || !role) return null;
 
   return (
     <>
@@ -27,19 +29,28 @@ export default function UserProfilePage() {
         <div className="space-y-4">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Имя</label>
-            <Input defaultValue={user.name} />
+            <Input defaultValue={user.name} readOnly />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-            <Input defaultValue={user.email} type="email" />
+            <Input defaultValue={user.email} type="email" readOnly />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">
               Организация
             </label>
-            <Input defaultValue={user.organization} />
+            <Input defaultValue={user.organization} readOnly />
           </div>
-          <Button onClick={() => alert("Mock: профиль сохранён")}>Сохранить</Button>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Телефон</label>
+            <Input defaultValue={profile?.phone ?? user.phone} readOnly />
+          </div>
+          <p className="text-xs text-slate-400">
+            Редактирование профиля будет доступно в следующей версии.
+          </p>
+          <Button variant="secondary" disabled>
+            Сохранить
+          </Button>
         </div>
       </div>
     </>

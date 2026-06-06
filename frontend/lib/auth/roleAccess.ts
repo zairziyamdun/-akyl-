@@ -1,4 +1,4 @@
-import type { AkylRole } from "./mockAuth";
+import type { AkylRole } from "./types";
 
 export function canAccessPath(role: AkylRole, pathname: string): boolean {
   if (pathname.startsWith("/admin")) {

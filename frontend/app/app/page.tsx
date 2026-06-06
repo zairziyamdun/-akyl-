@@ -1,23 +1,27 @@
+"use client";
+
 import Link from "next/link";
 
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import {
   mockAccessibleMaterials,
   mockSubscriptions,
   mockUserMaterials,
 } from "@/data/dashboardMockData";
-import { mockAuth } from "@/lib/auth/mockAuth";
 
 export default function UserAppDashboardPage() {
+  const { user } = useAuth();
+  const firstName = user?.name.split(" ")[0] ?? "пользователь";
   const savedCount = mockUserMaterials.filter((m) => m.saved).length;
   const activeSubs = mockSubscriptions.filter((s) => s.status === "active").length;
 
   return (
     <>
       <PageHeader
-        title={`Здравствуйте, ${mockAuth.user.name.split(" ")[0]}`}
+        title={`Здравствуйте, ${firstName}`}
         description="Ваш личный кабинет AKYL"
       />
 

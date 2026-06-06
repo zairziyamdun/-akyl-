@@ -4,10 +4,12 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { RoleBadge } from "@/components/dashboard/RoleBadge";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useMockAuth } from "@/lib/auth/MockAuthProvider";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export default function StudioProfilePage() {
-  const { user } = useMockAuth();
+  const { user, profile } = useAuth();
+
+  if (!user) return null;
 
   return (
     <>
@@ -27,22 +29,24 @@ export default function StudioProfilePage() {
         <div className="space-y-4">
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-            <Input defaultValue={user.email} type="email" />
+            <Input defaultValue={user.email} type="email" readOnly />
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">
               Организация
             </label>
-            <Input defaultValue={user.organization} />
+            <Input defaultValue={user.organization} readOnly />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Био</label>
-            <textarea
-              className="min-h-[100px] w-full rounded-xl bg-white px-4 py-3 text-sm ring-1 ring-black/10 outline-none"
-              defaultValue="Журналист AKYL, специализация — управление МЖД и KPI."
-            />
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Телефон</label>
+            <Input defaultValue={profile?.phone ?? user.phone} readOnly />
           </div>
-          <Button onClick={() => alert("Mock: профиль сохранён")}>Сохранить</Button>
+          <p className="text-xs text-slate-400">
+            Редактирование профиля будет доступно в следующей версии.
+          </p>
+          <Button variant="secondary" disabled>
+            Сохранить
+          </Button>
         </div>
       </div>
     </>

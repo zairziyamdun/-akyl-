@@ -3,7 +3,7 @@ import { Inter, Sora } from "next/font/google";
 import "./globals.css";
 
 import { AppChrome } from "@/components/layout/AppChrome";
-import { MockAuthProvider } from "@/lib/auth/MockAuthProvider";
+import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { JournalIssuesProvider } from "@/lib/journal/JournalIssuesProvider";
 
 const inter = Inter({
@@ -32,11 +32,11 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${inter.variable} ${sora.variable}`}>
       <body className="flex min-h-screen flex-col antialiased">
-        <MockAuthProvider>
+        <AuthProvider>
           <JournalIssuesProvider>
             <AppChrome>{children}</AppChrome>
           </JournalIssuesProvider>
-        </MockAuthProvider>
+        </AuthProvider>
       </body>
     </html>
   );

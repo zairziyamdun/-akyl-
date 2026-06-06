@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { getRoleDashboardPath } from "@/lib/auth/mockAuth";
-import { useMockAuth } from "@/lib/auth/MockAuthProvider";
+import { getRoleDashboardPath } from "@/lib/auth/authUtils";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import { cn } from "@/lib/cn";
 
 function buildBreadcrumbs(pathname: string) {
@@ -42,7 +42,7 @@ export function Topbar({
   showMenuButton?: boolean;
 }) {
   const pathname = usePathname();
-  const { user, role } = useMockAuth();
+  const { user, role, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const crumbs = buildBreadcrumbs(pathname);
@@ -95,11 +95,12 @@ export function Topbar({
             variant="ghost"
             size="sm"
             className="hidden text-slate-500 sm:inline-flex"
-            onClick={() => alert("Mock logout — подключите Supabase Auth позже")}
+            onClick={() => void logout()}
           >
             Выйти
           </Button>
 
+          {user && role ? (
           <div className="relative" ref={menuRef}>
             <button
               type="button"
@@ -137,7 +138,7 @@ export function Topbar({
                   className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
                   onClick={() => {
                     setMenuOpen(false);
-                    alert("Mock logout");
+                    void logout();
                   }}
                 >
                   Выйти
@@ -145,6 +146,7 @@ export function Topbar({
               </div>
             ) : null}
           </div>
+          ) : null}
         </div>
       </div>
     </header>
@@ -152,7 +154,7 @@ export function Topbar({
 }
 
 export function PublicUserMenu() {
-  const { isAuthenticated, user, role } = useMockAuth();
+  const { isAuthenticated, isLoading, user, role, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -166,7 +168,11 @@ export function PublicUserMenu() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  if (!isAuthenticated) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (!isAuthenticated || !user || !role) {
     return (
       <Link
         href="/login"
@@ -206,13 +212,16 @@ export function PublicUserMenu() {
           >
             {role === "admin" ? "Admin" : role === "journalist" ? "Studio" : "Кабинет"}
           </Link>
-          <Link
-            href="/login"
-            className="block px-4 py-2 text-sm text-white/60 hover:bg-white/5"
-            onClick={() => setOpen(false)}
+          <button
+            type="button"
+            className="block w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-white/5"
+            onClick={() => {
+              setOpen(false);
+              void logout();
+            }}
           >
-            Сменить аккаунт (mock)
-          </Link>
+            Выйти
+          </button>
         </div>
       ) : null}
     </div>

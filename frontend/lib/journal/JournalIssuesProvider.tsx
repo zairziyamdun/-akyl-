@@ -10,7 +10,7 @@ import {
 } from "react";
 
 import { initialJournalIssues } from "@/data/journalIssuesMock";
-import { mockAuth } from "@/lib/auth/mockAuth";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 import type {
   CreateJournalIssuePayload,
@@ -44,6 +44,7 @@ function nowIso() {
 }
 
 export function JournalIssuesProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [issues, setIssues] = useState<JournalIssueRecord[]>(initialJournalIssues);
   const [isLoading] = useState(false);
 
@@ -97,8 +98,8 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
         pdfSizeBytes: payload.pdfSizeBytes ?? 0,
         accessType: payload.accessType,
         status: asDraft ? "DRAFT" : "REVIEW",
-        authorId: mockAuth.user.id,
-        authorName: mockAuth.user.name,
+        authorId: user?.id ?? "",
+        authorName: user?.name ?? "",
         createdAt: timestamp,
         updatedAt: timestamp,
         pdfUploadedAt: payload.pdfUrl ? timestamp : "",
@@ -106,7 +107,7 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
       setIssues((prev) => [record, ...prev]);
       return id;
     },
-    [],
+    [user],
   );
 
   const updateIssue = useCallback(

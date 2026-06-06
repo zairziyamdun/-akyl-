@@ -1,29 +1,26 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 
 import { AuthCard } from "@/components/dashboard/AuthCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { AuthApiError, useAuth } from "@/lib/auth/AuthProvider";
+import { getRoleDashboardPath } from "@/lib/auth/authUtils";
 import { cn } from "@/lib/cn";
 
 type FormState = "idle" | "loading" | "success" | "error";
 
-function useMockSubmit() {
-  const [state, setState] = useState<FormState>("idle");
-
-  const submit = async (shouldFail = false) => {
-    setState("loading");
-    await new Promise((r) => setTimeout(r, 900));
-    setState(shouldFail ? "error" : "success");
-  };
-
-  return { state, submit, reset: () => setState("idle") };
-}
-
 export function LoginForm() {
-  const { state, submit } = useMockSubmit();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login } = useAuth();
+  const [state, setState] = useState<FormState>("idle");
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <AuthCard
@@ -40,14 +37,34 @@ export function LoginForm() {
     >
       <form
         className="space-y-4"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          void submit();
+          setState("loading");
+          setError("");
+          try {
+            const role = await login({ email, password });
+            const next = searchParams.get("next");
+            router.push(next ?? getRoleDashboardPath(role));
+          } catch (err) {
+            setState("error");
+            setError(
+              err instanceof AuthApiError
+                ? err.message
+                : "Не удалось войти. Проверьте email и пароль.",
+            );
+          }
         }}
       >
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-          <Input type="email" placeholder="you@example.kz" required disabled={state === "loading"} />
+          <Input
+            type="email"
+            placeholder="you@example.kz"
+            required
+            disabled={state === "loading"}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div>
           <div className="mb-1.5 flex items-center justify-between">
@@ -56,19 +73,18 @@ export function LoginForm() {
               Забыли пароль?
             </Link>
           </div>
-          <Input type="password" placeholder="••••••••" required disabled={state === "loading"} />
+          <Input
+            type="password"
+            placeholder="••••••••"
+            required
+            disabled={state === "loading"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
 
-        {state === "error" ? (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-            Неверный email или пароль (mock)
-          </p>
-        ) : null}
-
-        {state === "success" ? (
-          <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            Вход выполнен. Подключите Supabase Auth для редиректа в кабинет.
-          </p>
+        {state === "error" && error ? (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
         ) : null}
 
         <Button type="submit" className="w-full" disabled={state === "loading"}>
@@ -80,7 +96,15 @@ export function LoginForm() {
 }
 
 export function RegisterForm() {
-  const { state, submit } = useMockSubmit();
+  const router = useRouter();
+  const { register } = useAuth();
+  const [state, setState] = useState<FormState>("idle");
+  const [error, setError] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <AuthCard
@@ -97,35 +121,96 @@ export function RegisterForm() {
     >
       <form
         className="space-y-4"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          void submit();
+          setState("loading");
+          setError("");
+          try {
+            await register({
+              email,
+              password,
+              full_name: fullName,
+              organization,
+              phone,
+            });
+            setState("success");
+            setTimeout(() => router.push("/login"), 1500);
+          } catch (err) {
+            setState("error");
+            setError(
+              err instanceof AuthApiError
+                ? err.message
+                : "Не удалось создать аккаунт",
+            );
+          }
         }}
       >
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">Имя</label>
-          <Input placeholder="Иван Иванов" required disabled={state === "loading"} />
+          <Input
+            placeholder="Иван Иванов"
+            required
+            disabled={state === "loading"}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-          <Input type="email" placeholder="you@example.kz" required disabled={state === "loading"} />
+          <Input
+            type="email"
+            placeholder="you@example.kz"
+            required
+            disabled={state === "loading"}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">Организация</label>
-          <Input placeholder="ОСИ / УК / Акимат" required disabled={state === "loading"} />
+          <Input
+            placeholder="ОСИ / УК / Акимат"
+            required
+            disabled={state === "loading"}
+            value={organization}
+            onChange={(e) => setOrganization(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Телефон</label>
+          <Input
+            type="tel"
+            placeholder="+7 777 000 0000"
+            required
+            disabled={state === "loading"}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">Пароль</label>
-          <Input type="password" placeholder="мин. 8 символов" required disabled={state === "loading"} />
+          <Input
+            type="password"
+            placeholder="мин. 8 символов"
+            required
+            minLength={8}
+            disabled={state === "loading"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
+
+        {state === "error" && error ? (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        ) : null}
 
         {state === "success" ? (
           <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            Аккаунт создан (mock). Подтвердите email после подключения Supabase.
+            Аккаунт создан. Перенаправление на вход…
           </p>
         ) : null}
 
-        <Button type="submit" className="w-full" disabled={state === "loading"}>
+        <Button type="submit" className="w-full" disabled={state === "loading" || state === "success"}>
           {state === "loading" ? "Создание…" : "Создать аккаунт"}
         </Button>
       </form>
@@ -134,7 +219,7 @@ export function RegisterForm() {
 }
 
 export function ForgotPasswordForm() {
-  const { state, submit } = useMockSubmit();
+  const [state, setState] = useState<FormState>("idle");
 
   return (
     <AuthCard
@@ -152,7 +237,8 @@ export function ForgotPasswordForm() {
         className="space-y-4"
         onSubmit={(e) => {
           e.preventDefault();
-          void submit();
+          setState("loading");
+          setTimeout(() => setState("success"), 900);
         }}
       >
         <div>
@@ -162,7 +248,7 @@ export function ForgotPasswordForm() {
 
         {state === "success" ? (
           <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            Письмо отправлено (mock). Проверьте почту.
+            Функция восстановления пароля будет подключена позже.
           </p>
         ) : null}
 
