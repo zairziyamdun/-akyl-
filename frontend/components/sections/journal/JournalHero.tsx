@@ -14,6 +14,10 @@ import {
   journalIssues,
   type JournalIssue,
 } from "@/data/journalData";
+import {
+  getJournalIssuePath,
+  isLegacyFallbackIssueId,
+} from "@/lib/journal/utils";
 
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   return (
@@ -43,6 +47,9 @@ export function JournalHero({ issues: issuesProp }: JournalHeroProps = {}) {
     [activeIndex, issues],
   );
   const latestOpen = issues.find((i) => !i.isLocked) ?? issues[0];
+  const latestOpenHref = isLegacyFallbackIssueId(latestOpen.id)
+    ? "/journal"
+    : getJournalIssuePath(latestOpen.id);
 
   const goTo = useCallback((index: number) => {
     setActiveIndex(index);
@@ -158,14 +165,12 @@ export function JournalHero({ issues: issuesProp }: JournalHeroProps = {}) {
               </ul>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a
-                  href={latestOpen.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={latestOpenHref}
                   className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100"
                 >
                   Читать последний выпуск
-                </a>
+                </Link>
                 <Link
                   href="#journal-all-issues"
                   className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15"

@@ -19,11 +19,25 @@ function isDashboardRoute(pathname: string) {
   );
 }
 
+/** Full-screen PDF reader — navbar only, no footer. */
+function isJournalReaderRoute(pathname: string) {
+  return /^\/journal\/[^/]+$/.test(pathname);
+}
+
 export function AppChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   if (isAuthRoute(pathname) || isDashboardRoute(pathname)) {
     return children;
+  }
+
+  if (isJournalReaderRoute(pathname)) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
+      </>
+    );
   }
 
   return (

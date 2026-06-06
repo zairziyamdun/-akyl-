@@ -17,7 +17,7 @@ export function toPublicJournalIssue(record: JournalIssueRecord): JournalIssue {
     category: accessToCategory(record.accessType),
     coverImage: record.coverUrl,
     backgroundImage: record.coverUrl,
-    pdfUrl: record.pdfUrl,
+    pdfUrl: "",
     isLocked: record.accessType !== "FREE",
   };
 }

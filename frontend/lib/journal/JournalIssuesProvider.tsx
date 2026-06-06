@@ -218,7 +218,13 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
 
   const openIssuePdf = useCallback(async (id: string) => {
     const url = await fetchIssuePdfUrl(id);
-    window.open(url, "_blank", "noopener,noreferrer");
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
   }, []);
 
   const value = useMemo(

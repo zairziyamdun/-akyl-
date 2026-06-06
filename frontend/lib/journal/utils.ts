@@ -46,6 +46,15 @@ export const publicAccessBadgeLabels: Record<JournalAccessType, string> = {
   PRIVATE: "Закрытый",
 };
 
+export function getJournalIssuePath(id: string): string {
+  return `/journal/${id}`;
+}
+
+/** Static demo issues from journalData use ids like "01", "02". */
+export function isLegacyFallbackIssueId(id: string): boolean {
+  return /^\d{1,2}$/.test(id);
+}
+
 export function generateIssueId(): string {
   return `issue_${Date.now()}`;
 }

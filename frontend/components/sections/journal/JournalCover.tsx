@@ -11,6 +11,10 @@ import {
   journalCoverSpine,
   type JournalIssue,
 } from "@/data/journalData";
+import {
+  getJournalIssuePath,
+  isLegacyFallbackIssueId,
+} from "@/lib/journal/utils";
 
 type JournalCoverProps = {
   issue: JournalIssue;
@@ -19,8 +23,11 @@ type JournalCoverProps = {
 };
 
 export function JournalCover({ issue, size = "hero", className }: JournalCoverProps) {
-  const spine = journalCoverSpine[issue.id] ?? "bg-slate-800";
+  const spine = journalCoverSpine[issue.issue] ?? journalCoverSpine[issue.id] ?? "bg-slate-800";
   const isHero = size === "hero";
+  const issueHref = isLegacyFallbackIssueId(issue.id)
+    ? "/journal"
+    : getJournalIssuePath(issue.id);
 
   const actionClass = cn(
     "inline-flex items-center justify-center rounded-full font-semibold transition duration-200",
@@ -140,14 +147,9 @@ export function JournalCover({ issue, size = "hero", className }: JournalCoverPr
               Получить доступ
             </Link>
           ) : (
-            <a
-              href={issue.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={actionClass}
-            >
+            <Link href={issueHref} className={actionClass}>
               Читать
-            </a>
+            </Link>
           )}
         </div>
       ) : null}
