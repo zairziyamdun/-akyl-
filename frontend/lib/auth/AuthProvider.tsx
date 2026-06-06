@@ -16,16 +16,19 @@ import {
   logoutRequest,
   meRequest,
   registerRequest,
+  updateProfileRequest,
   AuthApiError,
 } from "./api";
-import { profileToAuthUser, getRoleDashboardPath } from "./authUtils";
-import { clearAccessToken, getAccessToken } from "./token";
+import { profileToAuthUser, getInitials } from "./authUtils";
+import { getRoleDashboardPath } from "./roleAccess";
+import { clearAccessToken, getAccessToken, setAccessToken } from "./token";
 import type {
   AkylRole,
   AuthProfile,
   AuthUser,
   LoginPayload,
   RegisterPayload,
+  UpdateProfilePayload,
 } from "./types";
 
 type AuthContextValue = {
@@ -36,6 +39,7 @@ type AuthContextValue = {
   profile: AuthProfile | null;
   login: (payload: LoginPayload) => Promise<AkylRole>;
   register: (payload: RegisterPayload) => Promise<void>;
+  updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 };
@@ -81,6 +85,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applySession, clearSession]);
 
   useEffect(() => {
+    const token = getAccessToken();
+    if (token) {
+      // Sync cookie for middleware when token exists only in localStorage
+      setAccessToken(token);
+    }
     void (async () => {
       await refresh();
       setIsLoading(false);
@@ -100,6 +109,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await registerRequest(payload);
   }, []);
 
+  const updateProfile = useCallback(
+    async (payload: UpdateProfilePayload) => {
+      const me = await updateProfileRequest(payload);
+      applySession(me);
+    },
+    [applySession],
+  );
+
   const logout = useCallback(async () => {
     await logoutRequest();
     clearSession();
@@ -115,10 +132,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       login,
       register,
+      updateProfile,
       logout,
       refresh,
     }),
-    [user, role, profile, isLoading, login, register, logout, refresh],
+    [user, role, profile, isLoading, login, register, updateProfile, logout, refresh],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -152,4 +170,5 @@ export function useMockAuth() {
   };
 }
 
-export { getRoleDashboardPath, AuthApiError };
+export { getRoleDashboardPath } from "./roleAccess";
+export { AuthApiError } from "./api";

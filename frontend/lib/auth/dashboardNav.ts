@@ -32,7 +32,10 @@ export const adminNav: NavSection[] = [
   },
   {
     title: "Система",
-    items: [{ label: "Настройки", href: "/admin/settings", icon: "⚙" }],
+    items: [
+      { label: "Профиль", href: "/admin/profile", icon: "◎" },
+      { label: "Настройки", href: "/admin/settings", icon: "⚙" },
+    ],
   },
 ];
 

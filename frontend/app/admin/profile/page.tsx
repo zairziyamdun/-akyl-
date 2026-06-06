@@ -2,11 +2,11 @@
 
 import { ProfileForm } from "@/components/auth/ProfileForm";
 
-export default function StudioProfilePage() {
+export default function AdminProfilePage() {
   return (
     <ProfileForm
       title="Профиль"
-      description="Данные редакционного аккаунта"
+      description="Данные администратора платформы"
     />
   );
 }

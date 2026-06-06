@@ -5,8 +5,9 @@ import { sendSuccess } from "../../common/response.js";
 import {
   loginUser,
   registerUser,
+  updateProfile,
 } from "./auth.service.js";
-import type { LoginInput, RegisterInput } from "./auth.schema.js";
+import type { LoginInput, RegisterInput, UpdateProfileInput } from "./auth.schema.js";
 
 export const registerHandler = asyncHandler(
   async (req: Request, res: Response) => {
@@ -41,6 +42,21 @@ export const logoutHandler = asyncHandler(
   async (_req: Request, res: Response) => {
     sendSuccess(res, 200, {
       message: "Logged out successfully",
+    });
+  },
+);
+
+export const updateProfileHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const profile = await updateProfile(req.user!.id, req.body as UpdateProfileInput);
+
+    sendSuccess(res, 200, {
+      message: "Profile updated",
+      data: {
+        user: req.user!,
+        profile,
+        role: profile.role,
+      },
     });
   },
 );

@@ -57,3 +57,31 @@ export function roleMiddleware(allowedRoles: ProfileRole[]) {
     next();
   };
 }
+
+/** Sets req.user/req.profile when Bearer token is valid; continues as guest otherwise. */
+export const optionalAuthMiddleware = asyncHandler(
+  async (req: Request, _res: Response, next: NextFunction) => {
+    const token = extractBearerToken(req);
+    if (!token) {
+      next();
+      return;
+    }
+
+    try {
+      const { data, error } = await getSupabaseAdmin().auth.getUser(token);
+
+      if (!error && data.user) {
+        const profile = await getProfileByUserId(data.user.id);
+        if (profile.status !== "suspended") {
+          req.user = toAuthUser(data.user);
+          req.profile = profile;
+          req.accessToken = token;
+        }
+      }
+    } catch {
+      // invalid token — treat as guest for public routes
+    }
+
+    next();
+  },
+);

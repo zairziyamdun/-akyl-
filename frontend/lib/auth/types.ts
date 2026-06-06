@@ -43,6 +43,12 @@ export type RegisterPayload = {
   phone: string;
 };
 
+export type UpdateProfilePayload = {
+  full_name: string;
+  organization: string;
+  phone: string;
+};
+
 export type LoginPayload = {
   email: string;
   password: string;

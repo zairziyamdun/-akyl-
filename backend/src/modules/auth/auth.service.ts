@@ -95,6 +95,7 @@ async function updateProfileAfterRegister(
 export async function registerUser(input: RegisterInput): Promise<void> {
   const supabase = getSupabaseAdmin();
 
+  // TODO: disable email_confirm when email confirmation flow is enabled
   const { data, error } = await supabase.auth.admin.createUser({
     email: input.email,
     password: input.password,
@@ -171,6 +172,31 @@ export async function getMe(accessToken: string): Promise<AuthMeResponse> {
 
 export async function logoutUser(): Promise<void> {
   // JWT sessions are stateless — client removes access_token locally.
+  // TODO: invalidate refresh token when refresh flow is implemented
+}
+
+export async function updateProfile(
+  userId: string,
+  input: { full_name: string; organization: string; phone: string },
+): Promise<Profile> {
+  const supabase = getSupabaseAdmin();
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({
+      full_name: input.full_name,
+      organization: input.organization,
+      phone: input.phone,
+    })
+    .eq("id", userId)
+    .select("*")
+    .single();
+
+  if (error || !data) {
+    throw new DatabaseError("Failed to update profile", error);
+  }
+
+  return data as Profile;
 }
 
 export { getProfileByUserId };

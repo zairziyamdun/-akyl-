@@ -8,7 +8,7 @@ import { AuthCard } from "@/components/dashboard/AuthCard";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { AuthApiError, useAuth } from "@/lib/auth/AuthProvider";
-import { getRoleDashboardPath } from "@/lib/auth/authUtils";
+import { getRoleDashboardPath } from "@/lib/auth/roleAccess";
 import { cn } from "@/lib/cn";
 
 type FormState = "idle" | "loading" | "success" | "error";
@@ -43,8 +43,9 @@ export function LoginForm() {
           setError("");
           try {
             const role = await login({ email, password });
-            const next = searchParams.get("next");
-            router.push(next ?? getRoleDashboardPath(role));
+            const returnUrl =
+              searchParams.get("returnUrl") ?? searchParams.get("next");
+            router.push(returnUrl ?? getRoleDashboardPath(role));
           } catch (err) {
             setState("error");
             setError(
@@ -219,6 +220,7 @@ export function RegisterForm() {
 }
 
 export function ForgotPasswordForm() {
+  // TODO: implement forgot-password via Supabase resetPasswordForEmail + backend endpoint
   const [state, setState] = useState<FormState>("idle");
 
   return (
@@ -248,6 +250,7 @@ export function ForgotPasswordForm() {
 
         {state === "success" ? (
           <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+            {/* TODO: connect to POST /api/auth/forgot-password when implemented */}
             Функция восстановления пароля будет подключена позже.
           </p>
         ) : null}

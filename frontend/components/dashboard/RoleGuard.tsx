@@ -15,7 +15,7 @@ export function RoleGuard({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
+      router.replace(`/login?returnUrl=${encodeURIComponent(pathname)}`);
     }
   }, [isLoading, isAuthenticated, pathname, router]);
 

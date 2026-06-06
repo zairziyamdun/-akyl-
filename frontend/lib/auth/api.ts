@@ -134,4 +134,13 @@ export async function logoutRequest(): Promise<void> {
   clearAccessToken();
 }
 
+export async function updateProfileRequest(
+  payload: import("./types").UpdateProfilePayload,
+): Promise<MeResponse> {
+  return authFetch<MeResponse>("/api/auth/profile", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export { AuthApiError };

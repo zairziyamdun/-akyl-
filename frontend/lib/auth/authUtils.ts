@@ -1,16 +1,3 @@
-import type { AkylRole } from "./types";
-
-export function getRoleDashboardPath(role: AkylRole): string {
-  switch (role) {
-    case "admin":
-      return "/admin";
-    case "journalist":
-      return "/studio";
-    case "user":
-      return "/app";
-  }
-}
-
 export function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";

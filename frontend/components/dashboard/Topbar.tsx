@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { getRoleDashboardPath } from "@/lib/auth/authUtils";
+import { getRoleDashboardPath } from "@/lib/auth/roleAccess";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { cn } from "@/lib/cn";
 
