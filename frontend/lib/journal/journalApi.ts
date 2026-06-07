@@ -225,10 +225,78 @@ export async function fetchIssuePdfUrl(id: string): Promise<string> {
   return body.url;
 }
 
+function pdfFileHeaders(): Record<string, string> {
+  const token = getAccessToken();
+  const headers: Record<string, string> = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
+
+/** PDF bytes via backend proxy — avoids CORS and mobile download quirks. */
+export async function fetchIssuePdfArrayBuffer(id: string): Promise<ArrayBuffer> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}/api/journal/issues/${id}/pdf/file`, {
+      headers: pdfFileHeaders(),
+    });
+  } catch {
+    throw new JournalApiError("Не удалось загрузить PDF", 0);
+  }
+
+  if (!response.ok) {
+    let message = "Не удалось загрузить PDF";
+    try {
+      const body = (await response.json()) as ApiError;
+      if (body.message) message = body.message;
+    } catch {
+      // binary or empty body
+    }
+    throw new JournalApiError(message, response.status);
+  }
+
+  return response.arrayBuffer();
+}
+
+/** Explicit user-initiated download (attachment). */
+export async function downloadIssuePdf(id: string, fileName: string): Promise<void> {
+  let response: Response;
+  try {
+    response = await fetch(
+      `${API_URL}/api/journal/issues/${id}/pdf/file?download=1`,
+      { headers: pdfFileHeaders() },
+    );
+  } catch {
+    throw new JournalApiError("Не удалось скачать PDF", 0);
+  }
+
+  if (!response.ok) {
+    let message = "Не удалось скачать PDF";
+    try {
+      const body = (await response.json()) as ApiError;
+      if (body.message) message = body.message;
+    } catch {
+      // ignore
+    }
+    throw new JournalApiError(message, response.status);
+  }
+
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = objectUrl;
+  anchor.download = fileName;
+  anchor.rel = "noopener";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(objectUrl);
+}
+
 export const JOURNAL_API = {
   issues: "/api/journal/issues",
   issue: (id: string) => `/api/journal/issues/${id}`,
   issuePdf: (id: string) => `/api/journal/issues/${id}/pdf`,
+  issuePdfFile: (id: string) => `/api/journal/issues/${id}/pdf/file`,
   submit: (id: string) => `/api/journal/issues/${id}/submit`,
   publish: (id: string) => `/api/journal/issues/${id}/publish`,
   revision: (id: string) => `/api/journal/issues/${id}/revision`,

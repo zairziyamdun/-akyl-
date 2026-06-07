@@ -5,6 +5,7 @@ import { sendSuccess } from "../../common/response.js";
 import {
   createJournalIssue,
   deleteJournalIssue,
+  getIssuePdfFile,
   getIssuePdfSignedUrl,
   getJournalIssueById,
   listJournalIssues,
@@ -43,6 +44,30 @@ export const getIssuePdfHandler = asyncHandler(
     const url = await getIssuePdfSignedUrl(req.params.id!, req.profile?.role);
 
     res.status(200).json({ success: true, url });
+  },
+);
+
+export const getIssuePdfFileHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { buffer, fileName } = await getIssuePdfFile(
+      req.params.id!,
+      req.profile?.role,
+    );
+
+    const asDownload = req.query.download === "1";
+    const safeName = fileName.replace(/[^\w.\-() ]+/g, "_") || "issue.pdf";
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Length", String(buffer.length));
+    res.setHeader(
+      "Content-Disposition",
+      asDownload
+        ? `attachment; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`
+        : "inline",
+    );
+    res.setHeader("Cache-Control", "private, no-store");
+
+    res.status(200).send(buffer);
   },
 );
 

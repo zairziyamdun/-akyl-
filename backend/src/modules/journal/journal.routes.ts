@@ -11,6 +11,7 @@ import {
   createIssueHandler,
   deleteIssueHandler,
   getIssueHandler,
+  getIssuePdfFileHandler,
   getIssuePdfHandler,
   listIssuesHandler,
   publishIssueHandler,
@@ -48,6 +49,7 @@ router.post(
 );
 
 router.get("/issues", optionalAuthMiddleware, listIssuesHandler);
+router.get("/issues/:id/pdf/file", optionalAuthMiddleware, getIssuePdfFileHandler);
 router.get("/issues/:id/pdf", optionalAuthMiddleware, getIssuePdfHandler);
 router.get("/issues/:id", optionalAuthMiddleware, getIssueHandler);
 

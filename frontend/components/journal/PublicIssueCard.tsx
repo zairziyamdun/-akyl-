@@ -63,30 +63,33 @@ export function PublicIssueCard({ issue }: { issue: JournalIssueRecord }) {
   const issueHref = getJournalIssuePath(issue.id);
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm transition hover:shadow-md">
-      <Link href={issueHref} className="flex justify-center bg-slate-50 p-6">
+    <article className="flex flex-row overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm transition hover:shadow-md sm:flex-col">
+      <Link
+        href={issueHref}
+        className="flex shrink-0 items-center bg-slate-50 p-4 sm:justify-center sm:p-6"
+      >
         <IssueCoverThumb
           coverUrl={issue.coverUrl}
           title={issue.title}
           issueNumber={issue.issueNumber}
           size="md"
-          className="!h-40 !w-28"
+          className="!h-28 !w-20 sm:!h-40 sm:!w-28"
         />
       </Link>
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
         <div className="mb-2">
           <AccessTypeBadge accessType={issue.accessType} variant="public" />
         </div>
         <p className="text-xs font-medium text-sky-700">Выпуск {issue.issueNumber}</p>
         <Link href={issueHref}>
-          <h3 className="mt-1 font-[family-name:var(--font-sora)] text-base font-semibold text-slate-900 hover:text-sky-800">
+          <h3 className="mt-1 font-[family-name:var(--font-sora)] text-sm font-semibold text-slate-900 hover:text-sky-800 sm:text-base">
             {issue.title}
           </h3>
         </Link>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600 line-clamp-3">
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600 line-clamp-2 sm:line-clamp-3">
           {issue.description}
         </p>
-        <div className="mt-4">
+        <div className="mt-3 sm:mt-4">
           <IssueAccessGate issue={issue} />
         </div>
       </div>

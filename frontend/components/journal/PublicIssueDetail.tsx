@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Download, ExternalLink, Lock } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -11,29 +12,31 @@ import { JOURNAL_ACCESS_HREF } from "@/data/journalData";
 import { fromApiIssue } from "@/lib/journal/apiAdapters";
 import {
   JournalApiError,
+  downloadIssuePdf,
   fetchIssuePdfUrl,
   fetchJournalIssue,
 } from "@/lib/journal/journalApi";
 import type { JournalIssueRecord } from "@/lib/journal/types";
+import { usePdfViewerMode } from "@/lib/pdf/usePdfViewerMode";
+
+const JournalPdfJsViewer = dynamic(
+  () =>
+    import("@/components/journal/JournalPdfJsViewer").then(
+      (mod) => mod.JournalPdfJsViewer,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex min-h-[40vh] items-center justify-center px-6 py-12">
+        <p className="text-sm text-slate-500">Загрузка PDF…</p>
+      </div>
+    ),
+  },
+);
 
 type PublicIssueDetailProps = {
   issueId: string;
 };
-
-/** iOS Safari often cannot render PDF inside iframe — offer open/download instead. */
-function usePrefersPdfFallback() {
-  const [prefersFallback, setPrefersFallback] = useState(false);
-
-  useEffect(() => {
-    const ua = navigator.userAgent;
-    const isIOS =
-      /iPad|iPhone|iPod/.test(ua) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    setPrefersFallback(isIOS);
-  }, []);
-
-  return prefersFallback;
-}
 
 function PaywallView({
   issue,
@@ -43,12 +46,12 @@ function PaywallView({
   variant: "paid" | "private";
 }) {
   return (
-    <Container className="flex min-h-[50vh] flex-col items-center justify-center py-20 text-center">
-      <Lock className="h-10 w-10 text-slate-500" />
+    <Container className="flex min-h-[50vh] flex-col items-center justify-center px-4 py-16 text-center sm:px-6 sm:py-20">
+      <Lock className="h-9 w-9 text-slate-500 sm:h-10 sm:w-10" />
       <p className="mt-4 text-sm font-medium text-sky-700">
         Выпуск {issue.issueNumber}
       </p>
-      <h1 className="mt-2 max-w-xl font-[family-name:var(--font-sora)] text-2xl font-semibold text-slate-900">
+      <h1 className="mt-2 max-w-xl font-[family-name:var(--font-sora)] text-xl font-semibold text-slate-900 sm:text-2xl">
         {issue.title}
       </h1>
       {variant === "paid" ? (
@@ -72,58 +75,94 @@ function PaywallView({
   );
 }
 
-function PdfFallbackPanel({
-  issue,
-  pdfUrl,
+function PdfViewerErrorFallback({
+  issueId,
+  fileName,
   onRetry,
 }: {
-  issue: JournalIssueRecord;
-  pdfUrl: string;
-  onRetry?: () => void;
+  issueId: string;
+  fileName: string;
+  onRetry: () => void;
 }) {
-  const fileName = issue.pdfFileName || `${issue.title}.pdf`;
+  const [opening, setOpening] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [actionError, setActionError] = useState("");
+
+  const openInNewTab = async () => {
+    setOpening(true);
+    setActionError("");
+    try {
+      const url = await fetchIssuePdfUrl(issueId);
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (err) {
+      setActionError(
+        err instanceof JournalApiError ? err.message : "Не удалось открыть PDF",
+      );
+    } finally {
+      setOpening(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    setActionError("");
+    try {
+      await downloadIssuePdf(issueId, fileName);
+    } catch (err) {
+      setActionError(
+        err instanceof JournalApiError ? err.message : "Не удалось скачать PDF",
+      );
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 bg-slate-100 px-6 py-12 text-center">
       <div className="max-w-md space-y-2">
-        <h2 className="text-lg font-semibold text-slate-900">{issue.title}</h2>
+        <h2 className="text-lg font-semibold text-slate-900">
+          Не удалось отобразить PDF в браузере
+        </h2>
         <p className="text-sm text-slate-600">
-          Ваш браузер не показывает PDF во встроенном окне. Откройте документ
-          отдельно или скачайте его.
+          Попробуйте открыть документ в новой вкладке или скачать его на устройство.
         </p>
       </div>
+      {actionError ? (
+        <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{actionError}</p>
+      ) : null}
       <div className="flex flex-wrap justify-center gap-3">
-        <Button asChild>
-          <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            Открыть PDF
-          </a>
+        <Button onClick={() => void openInNewTab()} disabled={opening}>
+          <ExternalLink className="mr-2 h-4 w-4" />
+          {opening ? "Открываем…" : "Открыть в новой вкладке"}
         </Button>
-        <Button asChild variant="secondary">
-          <a href={pdfUrl} download={fileName} target="_blank" rel="noopener noreferrer">
-            <Download className="mr-2 h-4 w-4" />
-            Скачать PDF
-          </a>
+        <Button
+          variant="secondary"
+          onClick={() => void handleDownload()}
+          disabled={downloading}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          {downloading ? "Скачивание…" : "Скачать PDF"}
         </Button>
-        {onRetry ? (
-          <Button variant="ghost" onClick={onRetry}>
-            Повторить
-          </Button>
-        ) : null}
+        <Button variant="ghost" onClick={onRetry}>
+          Повторить
+        </Button>
       </div>
     </div>
   );
 }
 
 export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
-  const prefersPdfFallback = usePrefersPdfFallback();
+  const viewerMode = usePdfViewerMode();
   const [issue, setIssue] = useState<JournalIssueRecord | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState("");
+  const [viewerError, setViewerError] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [iframeFailed, setIframeFailed] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+  const [viewerKey, setViewerKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,7 +173,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
       setIssue(null);
       setPdfUrl(null);
       setPdfError("");
-      setIframeFailed(false);
+      setViewerError(false);
 
       try {
         const data = await fetchJournalIssue(issueId);
@@ -158,11 +197,11 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
     };
   }, [issueId]);
 
-  const loadPdf = useCallback(async () => {
+  const loadSignedPdfUrl = useCallback(async () => {
     if (!issue) return;
     setPdfLoading(true);
     setPdfError("");
-    setIframeFailed(false);
+    setViewerError(false);
     try {
       const url = await fetchIssuePdfUrl(issue.id);
       setPdfUrl(url);
@@ -178,12 +217,43 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
 
   useEffect(() => {
     if (!issue || issue.accessType !== "FREE") return;
-    void loadPdf();
-  }, [issue, loadPdf]);
+    if (viewerMode !== "iframe") return;
+    void loadSignedPdfUrl();
+  }, [issue, viewerMode, loadSignedPdfUrl]);
 
-  if (loading) {
+  const handlePdfJsError = useCallback((message: string) => {
+    setPdfError(message);
+    setViewerError(true);
+  }, []);
+
+  const handleDownload = async () => {
+    if (!issue) return;
+    const fileName = issue.pdfFileName || `${issue.title}.pdf`;
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      await downloadIssuePdf(issue.id, fileName);
+    } catch (err) {
+      setDownloadError(
+        err instanceof JournalApiError ? err.message : "Не удалось скачать PDF",
+      );
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const retryViewer = () => {
+    setViewerError(false);
+    setPdfError("");
+    setViewerKey((key) => key + 1);
+    if (viewerMode === "iframe") {
+      void loadSignedPdfUrl();
+    }
+  };
+
+  if (loading || viewerMode === null) {
     return (
-      <div className="flex h-[calc(100dvh-4.25rem)] items-center justify-center bg-slate-50">
+      <div className="flex flex-1 items-center justify-center bg-slate-50 py-20">
         <JournalListSkeleton count={1} />
       </div>
     );
@@ -214,52 +284,58 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   }
 
   const fileName = issue.pdfFileName || `${issue.title}.pdf`;
-  const showIframe = pdfUrl && !prefersPdfFallback && !iframeFailed;
+  const showIframe = viewerMode === "iframe" && pdfUrl && !viewerError && !pdfError;
+  const showPdfJs = viewerMode === "pdfjs" && !viewerError && !pdfError;
+  const showFallback =
+    viewerError || (viewerMode === "iframe" && pdfError && !pdfLoading);
 
   return (
-    <div className="flex h-[calc(100dvh-4.25rem)] min-h-0 flex-col overflow-hidden bg-slate-200">
-      <header className="flex shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 py-2.5 sm:px-5">
+    <div className="flex min-h-0 flex-1 flex-col bg-slate-200">
+      <header className="flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2.5 sm:gap-3 sm:px-5">
         <Link
           href="/journal"
-          className="shrink-0 text-sm font-medium text-sky-700 hover:underline"
+          className="shrink-0 text-xs font-medium text-sky-700 hover:underline sm:text-sm"
         >
           ← Все выпуски
         </Link>
-        <h1 className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900 sm:text-base">
+        <h1 className="min-w-0 flex-1 basis-full truncate text-sm font-semibold text-slate-900 sm:basis-auto sm:text-base">
           {issue.title}
         </h1>
-        <div className="flex shrink-0 items-center gap-2">
-          {pdfUrl ? (
-            <>
-              <Button asChild size="sm" variant="secondary" className="hidden sm:inline-flex">
-                <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
-                  Открыть
-                </a>
-              </Button>
-              <Button asChild size="sm" variant="secondary">
-                <a href={pdfUrl} download={fileName} target="_blank" rel="noopener noreferrer">
-                  <Download className="mr-1.5 h-3.5 w-3.5 sm:mr-0" />
-                  <span className="hidden sm:inline">Скачать PDF</span>
-                  <span className="sm:hidden">PDF</span>
-                </a>
-              </Button>
-            </>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={downloading}
+            onClick={() => void handleDownload()}
+          >
+            <Download className="mr-1.5 h-3.5 w-3.5" />
+            {downloading ? "…" : "Скачать PDF"}
+          </Button>
+          {downloadError ? (
+            <span className="max-w-[10rem] truncate text-[10px] text-red-600">
+              {downloadError}
+            </span>
           ) : null}
         </div>
       </header>
 
-      <div className="relative min-h-0 flex-1">
-        {pdfLoading ? (
-          <div className="flex h-full items-center justify-center bg-slate-100">
+      <div
+        className={
+          viewerMode === "pdfjs"
+            ? "min-h-0 flex-1 overflow-y-auto overscroll-contain"
+            : "relative min-h-0 flex-1 overflow-hidden"
+        }
+      >
+        {viewerMode === "iframe" && pdfLoading ? (
+          <div className="flex h-full min-h-[50vh] items-center justify-center bg-slate-100">
             <p className="text-sm text-slate-500">Загрузка PDF…</p>
           </div>
         ) : null}
 
-        {pdfError ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4 bg-slate-100 px-6 text-center">
+        {viewerMode === "iframe" && pdfError && !showFallback ? (
+          <div className="flex h-full min-h-[50vh] flex-col items-center justify-center gap-4 bg-slate-100 px-6 text-center">
             <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{pdfError}</p>
-            <Button variant="secondary" size="sm" onClick={() => void loadPdf()}>
+            <Button variant="secondary" size="sm" onClick={() => void loadSignedPdfUrl()}>
               Повторить
             </Button>
           </div>
@@ -270,12 +346,23 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
             title={issue.title}
             src={pdfUrl}
             className="absolute inset-0 h-full w-full border-0 bg-white"
-            onError={() => setIframeFailed(true)}
           />
         ) : null}
 
-        {pdfUrl && (prefersPdfFallback || iframeFailed) ? (
-          <PdfFallbackPanel issue={issue} pdfUrl={pdfUrl} onRetry={() => void loadPdf()} />
+        {showPdfJs ? (
+          <JournalPdfJsViewer
+            key={viewerKey}
+            issueId={issue.id}
+            onLoadError={handlePdfJsError}
+          />
+        ) : null}
+
+        {showFallback ? (
+          <PdfViewerErrorFallback
+            issueId={issue.id}
+            fileName={fileName}
+            onRetry={retryViewer}
+          />
         ) : null}
       </div>
     </div>

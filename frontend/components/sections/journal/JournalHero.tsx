@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type TouchEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
 
@@ -58,6 +58,8 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
     setActiveIndex(0);
   }, [slides.length]);
 
+  const touchStartX = useRef<number | null>(null);
+
   const goTo = useCallback((index: number) => {
     setActiveIndex(index);
   }, []);
@@ -89,8 +91,27 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [prev, next, slides.length]);
 
+  const onTouchStart = useCallback((e: TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: TouchEvent) => {
+      if (touchStartX.current === null || slides.length <= 1) return;
+      const endX = e.changedTouches[0]?.clientX;
+      if (endX === undefined) return;
+      const diff = endX - touchStartX.current;
+      if (Math.abs(diff) > 48) {
+        if (diff > 0) prev();
+        else next();
+      }
+      touchStartX.current = null;
+    },
+    [next, prev, slides.length],
+  );
+
   const arrowClass =
-    "absolute z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-lg backdrop-blur-md transition hover:bg-white/20 hover:scale-105 sm:h-12 sm:w-12 md:h-14 md:w-14";
+    "absolute z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-lg backdrop-blur-md transition hover:scale-105 hover:bg-white/20 md:flex md:h-12 md:w-12 lg:h-14 lg:w-14";
 
   const bgSrc = useMemo(
     () => (activeSlide ? slideBackground(activeSlide) : journalIntroBackground),
@@ -100,7 +121,11 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
   if (!activeSlide) return null;
 
   return (
-    <section className="relative isolate min-h-[100svh] overflow-hidden bg-slate-950">
+    <section
+      className="relative isolate overflow-hidden bg-slate-950 lg:min-h-[100svh]"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="absolute inset-0">
         <AnimatePresence mode="sync">
           <motion.div
@@ -123,8 +148,8 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
           </motion.div>
         </AnimatePresence>
         <div className="pointer-events-none absolute inset-0 bg-slate-950/60" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/92 via-slate-900/78 to-slate-950/50" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-slate-900/35" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-900/82 to-slate-950/55 lg:from-slate-950/92 lg:via-slate-900/78 lg:to-slate-950/50" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-slate-900/35 lg:from-slate-950/85 lg:via-transparent" />
       </div>
 
       {slides.length > 1 ? (
@@ -148,9 +173,9 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
         </>
       ) : null}
 
-      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-4 pb-28 pt-20 sm:px-6 sm:pb-32 sm:pt-24 lg:px-8">
-        <div className="flex flex-1 flex-col items-center justify-center">
-          <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col px-4 pb-36 pt-20 sm:px-6 sm:pb-32 sm:pt-24 lg:min-h-[100svh] lg:px-8 lg:pb-32 lg:pt-24">
+        <div className="flex flex-1 flex-col items-center justify-center py-6 sm:py-8 lg:py-0">
+          <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`left-${slideKey(activeSlide)}`}
@@ -159,24 +184,24 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                 exit={{ opacity: 0, x: 12 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className={cn(
-                  "min-w-0",
-                  activeSlide.kind === "intro" ? "max-w-xl" : "max-w-2xl",
+                  "order-2 min-w-0 w-full lg:order-1",
+                  activeSlide.kind === "intro" ? "lg:max-w-xl" : "lg:max-w-2xl",
                 )}
               >
                 {activeSlide.kind === "intro" ? (
                   <>
-                    <h1 className="font-[family-name:var(--font-sora)] text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+                    <h1 className="font-[family-name:var(--font-sora)] text-[1.75rem] font-semibold leading-[1.1] tracking-tight text-white sm:text-4xl sm:leading-tight md:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
                       Журнал AKYL
                     </h1>
-                    <p className="mt-5 text-base leading-relaxed text-white/75 sm:text-lg sm:leading-8">
+                    <p className="mt-4 text-[15px] leading-7 text-white/75 sm:mt-5 sm:text-base sm:leading-relaxed md:text-lg md:leading-8">
                       Экспертные статьи, аналитика и публикации о профессиональном
                       управлении МЖД.
                     </p>
-                    <ul className="mt-6 space-y-2.5 sm:mt-8">
+                    <ul className="mt-5 space-y-2 sm:mt-6 sm:space-y-2.5 md:mt-8">
                       {journalHeroBenefits.map((item) => (
                         <li
                           key={item}
-                          className="flex items-center gap-2.5 text-sm text-white/80 sm:text-base"
+                          className="flex items-start gap-2.5 text-sm text-white/80 sm:items-center sm:text-base"
                         >
                           <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-sky-300">
                             <Check className="h-3 w-3" strokeWidth={2.5} />
@@ -185,22 +210,22 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                         </li>
                       ))}
                     </ul>
-                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
                       <Link
                         href="/journal#journal-all-issues"
-                        className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Все выпуски
                       </Link>
                       <Link
                         href="#journal-editorial"
-                        className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         О журнале
                       </Link>
                       <Link
                         href={JOURNAL_ACCESS_HREF}
-                        className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Связаться
                       </Link>
@@ -213,28 +238,28 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                   </>
                 ) : (
                   <>
-                    <h1 className="font-[family-name:var(--font-sora)] text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+                    <h1 className="font-[family-name:var(--font-sora)] text-[1.75rem] font-semibold leading-[1.1] tracking-tight text-white sm:text-4xl sm:leading-tight md:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
                       Выпуск {activeSlide.issueNumber}
                     </h1>
-                    <p className="mt-4 text-lg font-medium leading-snug text-white/90 sm:text-xl sm:leading-snug">
+                    <p className="mt-3 text-base font-medium leading-snug text-white/90 sm:mt-4 sm:text-lg md:text-xl md:leading-snug">
                       {activeSlide.title}
                     </p>
-                    <p className="mt-3 text-sm text-white/55">
+                    <p className="mt-2 text-xs text-white/55 sm:mt-3 sm:text-sm">
                       Опубликовано {activeSlide.publishedLabel}
                     </p>
-                    <p className="mt-6 text-base leading-relaxed text-white/75 sm:text-lg sm:leading-8">
+                    <p className="mt-4 text-[15px] leading-7 text-white/75 line-clamp-4 sm:mt-6 sm:line-clamp-none sm:text-base sm:leading-relaxed md:text-lg md:leading-8">
                       {activeSlide.description}
                     </p>
-                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
                       <Link
                         href={getJournalIssuePath(activeSlide.id)}
-                        className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Читать
                       </Link>
                       <Link
                         href="/journal#journal-all-issues"
-                        className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Все выпуски
                       </Link>
@@ -244,7 +269,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
               </motion.div>
             </AnimatePresence>
 
-            <div className="flex min-w-0 justify-center lg:justify-end">
+            <div className="order-1 flex min-w-0 justify-center lg:order-2 lg:justify-end">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`right-${slideKey(activeSlide)}`}
@@ -252,7 +277,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: -16, scale: 0.98 }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full"
+                  className="mx-auto w-full max-w-[240px] sm:max-w-[300px] lg:max-w-none"
                 >
                   {activeSlide.kind === "intro" ? (
                     <JournalIntroVisual />
@@ -266,7 +291,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
         </div>
 
         {slides.length > 1 ? (
-          <div className="absolute bottom-8 left-0 right-0 flex justify-center sm:bottom-10">
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center sm:bottom-8 md:bottom-10">
             <JournalIssueSlider
               slides={slides}
               activeIndex={activeIndex}
@@ -277,8 +302,8 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
       </div>
 
       {slides.length > 1 ? (
-        <div className="pointer-events-none absolute bottom-24 left-0 right-0 flex justify-center gap-4 sm:hidden">
-          <span className="text-[10px] text-white/40">← → листайте выпуски</span>
+        <div className="pointer-events-none absolute bottom-[4.75rem] left-0 right-0 flex justify-center md:hidden">
+          <span className="text-[10px] text-white/35">Свайп для переключения</span>
         </div>
       ) : null}
     </section>

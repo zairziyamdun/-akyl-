@@ -8,7 +8,6 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { cn } from "@/lib/cn";
 import { JOURNAL_ACCESS_HREF, journalEditorialDirections } from "@/data/journalData";
 import { PublicJournalIssuesGrid } from "@/components/journal/PublicJournalIssuesGrid";
 import { JournalHeroConnected } from "./JournalHeroConnected";
@@ -20,34 +19,32 @@ function JournalAllIssues() {
 
 function JournalEditorial() {
   return (
-    <Section id="journal-editorial" className="scroll-mt-24 bg-slate-50/80">
-      <Container>
+    <Section id="journal-editorial" className="scroll-mt-20 bg-slate-50/80 sm:scroll-mt-24">
+      <Container className="px-4 sm:px-6">
         <motion.div {...journalReveal}>
           <SectionHeading
             eyebrow="Редакция"
             title="Редакционные направления"
             description="Материалы журнала группируются по ключевым темам профессионального управления МЖД."
+            className="max-w-2xl"
           />
           <motion.div
-            className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            className="mt-8 grid grid-cols-1 gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-5"
             variants={journalStagger}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.08 }}
           >
-            {journalEditorialDirections.map((dir, i) => (
+            {journalEditorialDirections.map((dir) => (
               <motion.div
                 key={dir.title}
                 variants={journalStaggerItem}
-                className={cn(
-                  "rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm transition hover:border-sky-200/80 hover:shadow-md",
-                  i === 0 && "sm:col-span-2 lg:col-span-1",
-                )}
+                className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm transition hover:border-sky-200/80 hover:shadow-md sm:p-5"
               >
-                <span className="text-[11px] font-semibold tracking-wider text-sky-600 uppercase">
+                <span className="text-[10px] font-semibold tracking-wider text-sky-600 uppercase sm:text-[11px]">
                   Направление
                 </span>
-                <h3 className="mt-2 text-lg font-semibold text-slate-900">
+                <h3 className="mt-2 text-base font-semibold text-slate-900 sm:text-lg">
                   {dir.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -66,21 +63,21 @@ function JournalAccessCta() {
   const reduced = useReducedMotion();
 
   return (
-    <Section className="bg-white pb-20 md:pb-28">
-      <Container>
+    <Section className="bg-white pb-16 sm:pb-20 md:pb-28">
+      <Container className="px-4 sm:px-6">
         <motion.div
           {...journalReveal}
-          className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 px-6 py-12 text-center shadow-xl sm:px-12 sm:py-16"
+          className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 px-5 py-10 text-center shadow-xl sm:rounded-3xl sm:px-12 sm:py-16"
         >
           <div
             className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-sky-500/20 blur-3xl"
             aria-hidden
           />
-          <Lock className="relative mx-auto h-10 w-10 text-sky-300/90" />
-          <h2 className="relative mt-4 font-[family-name:var(--font-sora)] text-2xl font-semibold text-white sm:text-3xl">
+          <Lock className="relative mx-auto h-9 w-9 text-sky-300/90 sm:h-10 sm:w-10" />
+          <h2 className="relative mt-4 font-[family-name:var(--font-sora)] text-xl font-semibold text-white sm:text-2xl md:text-3xl">
             Хотите получить доступ к закрытым выпускам?
           </h2>
-          <p className="relative mx-auto mt-3 max-w-lg text-base text-white/70">
+          <p className="relative mx-auto mt-3 max-w-lg text-sm text-white/70 sm:text-base">
             Оформите консультацию — расскажем о полном архиве журнала и
             методологии AKYL для вашей организации.
           </p>

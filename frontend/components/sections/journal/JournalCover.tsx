@@ -19,11 +19,13 @@ export function JournalCover({ issue, size = "hero", className }: JournalCoverPr
   const isHero = size === "hero";
 
   return (
-    <div className={cn("flex flex-col items-center", className)}>
+    <div className={cn("mx-auto flex w-full flex-col items-center", className)}>
       <div
         className={cn(
           "relative w-full",
-          isHero ? "max-w-[300px] sm:max-w-[340px] lg:max-w-[380px]" : "max-w-[200px]",
+          isHero
+            ? "max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[380px]"
+            : "max-w-[200px]",
         )}
         style={{ perspective: "1200px" }}
       >

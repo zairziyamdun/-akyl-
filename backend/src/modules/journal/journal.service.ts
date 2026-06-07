@@ -10,7 +10,7 @@ import {
   assertStatusTransition,
   canViewUnpublished,
 } from "./journal.permissions.js";
-import { createSignedPdfUrl } from "./journal.storage.js";
+import { createSignedPdfUrl, downloadPdfFromStorage } from "./journal.storage.js";
 import type {
   CreateJournalIssueInput,
   JournalIssue,
@@ -191,10 +191,10 @@ export function assertAuthenticated(userId?: string): asserts userId is string {
   }
 }
 
-export async function getIssuePdfSignedUrl(
+export async function assertIssuePdfAccess(
   id: string,
   role?: ProfileRole,
-): Promise<string> {
+): Promise<JournalIssueWithAuthor> {
   const issue = await getJournalIssueById(id, role);
 
   if (!issue.pdf_url) {
@@ -204,7 +204,7 @@ export async function getIssuePdfSignedUrl(
   const isEditor = role === "journalist" || role === "admin";
 
   if (isEditor) {
-    return createSignedPdfUrl(issue.pdf_url);
+    return issue;
   }
 
   if (issue.status !== "published") {
@@ -215,5 +215,27 @@ export async function getIssuePdfSignedUrl(
     throw new ForbiddenError("Нужен доступ");
   }
 
-  return createSignedPdfUrl(issue.pdf_url);
+  return issue;
+}
+
+export async function getIssuePdfSignedUrl(
+  id: string,
+  role?: ProfileRole,
+): Promise<string> {
+  const issue = await assertIssuePdfAccess(id, role);
+  return createSignedPdfUrl(issue.pdf_url!);
+}
+
+export async function getIssuePdfFile(
+  id: string,
+  role?: ProfileRole,
+): Promise<{ buffer: Buffer; fileName: string }> {
+  const issue = await assertIssuePdfAccess(id, role);
+  const buffer = await downloadPdfFromStorage(issue.pdf_url!);
+  const pathName = issue.pdf_url!.split("/").pop() ?? "issue.pdf";
+  const fileName = pathName.includes("-")
+    ? pathName.slice(pathName.indexOf("-") + 1)
+    : pathName;
+
+  return { buffer, fileName };
 }

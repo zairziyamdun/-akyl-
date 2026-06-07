@@ -105,3 +105,15 @@ export async function createSignedPdfUrl(storagePath: string): Promise<string> {
 
   return data.signedUrl;
 }
+
+export async function downloadPdfFromStorage(storagePath: string): Promise<Buffer> {
+  const supabase = getSupabaseAdmin();
+
+  const { data, error } = await supabase.storage.from(PDFS_BUCKET).download(storagePath);
+
+  if (error || !data) {
+    throw new ValidationError(`Failed to download PDF: ${error?.message ?? "unknown"}`);
+  }
+
+  return Buffer.from(await data.arrayBuffer());
+}
