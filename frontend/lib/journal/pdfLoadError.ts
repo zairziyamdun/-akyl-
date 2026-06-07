@@ -1,4 +1,4 @@
-import { JournalApiError } from "@/lib/journal/journalApi";
+import { JournalApiError } from "@/lib/journal/journalApiError";
 import type { PdfDiagnostics } from "@/lib/pdf/pdfDiagnostics";
 import { formatPdfDiagnostics } from "@/lib/pdf/pdfDiagnostics";
 

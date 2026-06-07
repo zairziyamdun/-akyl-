@@ -1,5 +1,6 @@
 import { getAccessToken } from "@/lib/auth/token";
 import { API_URL } from "@/lib/auth/api";
+import { JournalApiError } from "@/lib/journal/journalApiError";
 import { PdfLoadError, type PdfFetchResult } from "@/lib/journal/pdfLoadError";
 import {
   isPdfMagicValid,
@@ -19,15 +20,7 @@ import type {
 type ApiSuccess<T> = { success: true; message?: string; data?: T };
 type ApiError = { success: false; message: string };
 
-export class JournalApiError extends Error {
-  status: number;
-
-  constructor(message: string, status: number) {
-    super(message);
-    this.name = "JournalApiError";
-    this.status = status;
-  }
-}
+export { JournalApiError };
 
 async function parseJson<T>(response: Response): Promise<T> {
   try {
