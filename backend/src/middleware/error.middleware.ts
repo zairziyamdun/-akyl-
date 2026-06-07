@@ -25,9 +25,14 @@ export function errorMiddleware(
   if (error instanceof multer.MulterError) {
     const message =
       error.code === "LIMIT_FILE_SIZE"
-        ? "File exceeds maximum allowed size"
+        ? `File exceeds maximum allowed size (${error.field ?? "file"})`
         : error.message;
-    sendError(res, 400, message);
+    sendError(res, 400, message, [
+      {
+        path: "file",
+        message: `${message} (multer: ${error.code})`,
+      },
+    ]);
     return;
   }
 

@@ -18,10 +18,15 @@ import {
   revisionIssueHandler,
   submitIssueHandler,
   updateIssueHandler,
+  initPdfUploadHandler,
   uploadCoverHandler,
   uploadPdfHandler,
 } from "./journal.controller.js";
-import { createJournalIssueSchema, updateJournalIssueSchema } from "./journal.schema.js";
+import {
+  createJournalIssueSchema,
+  initPdfUploadSchema,
+  updateJournalIssueSchema,
+} from "./journal.schema.js";
 import {
   uploadCoverMiddleware,
   uploadPdfMiddleware,
@@ -38,6 +43,14 @@ router.post(
   roleMiddleware([...editorRoles]),
   uploadCoverMiddleware,
   uploadCoverHandler,
+);
+
+router.post(
+  "/upload-pdf/init",
+  authMiddleware,
+  roleMiddleware([...editorRoles]),
+  validateBody(initPdfUploadSchema),
+  initPdfUploadHandler,
 );
 
 router.post(

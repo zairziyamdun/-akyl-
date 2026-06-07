@@ -111,7 +111,9 @@ export function FileDropzone({
         </p>
         <p className="mt-1 text-xs text-slate-400">{hint}</p>
       </label>
-      {error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}
+      {error ? (
+        <pre className="mt-2 whitespace-pre-wrap text-xs text-red-600">{error}</pre>
+      ) : null}
     </div>
   );
 }

@@ -42,6 +42,17 @@ export type UploadPdfResponse = {
   size: number;
 };
 
+export type InitPdfUploadResponse = {
+  success: true;
+  path: string;
+  fileName: string;
+  signedUrl: string;
+  token: string;
+  bucket: string;
+  maxBytes: number;
+  serverlessLimitBytes: number;
+};
+
 export type IssuePdfResponse = {
   success: true;
   url: string;

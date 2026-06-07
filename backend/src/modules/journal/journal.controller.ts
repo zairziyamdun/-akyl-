@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import { asyncHandler } from "../../common/async-handler.js";
+import { ValidationError } from "../../common/errors.js";
 import { logInfo } from "../../common/logger.js";
 import { sendSuccess } from "../../common/response.js";
 import {
@@ -18,11 +19,14 @@ import {
 import {
   assertCoverFile,
   assertPdfFile,
+  createSignedPdfUploadUrl,
   uploadCoverToStorage,
   uploadPdfToStorage,
 } from "./journal.storage.js";
+import { VERCEL_SERVERLESS_BODY_LIMIT_BYTES } from "./journal.upload.constants.js";
 import type {
   CreateJournalIssueBody,
+  InitPdfUploadBody,
   UpdateJournalIssueBody,
 } from "./journal.schema.js";
 
@@ -184,6 +188,36 @@ export const uploadCoverHandler = asyncHandler(
       success: true,
       url: result.url,
       path: result.path,
+    });
+  },
+);
+
+export const initPdfUploadHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const body = req.body as InitPdfUploadBody;
+
+    if (body.contentType !== "application/pdf") {
+      throw new ValidationError("Only PDF files are allowed");
+    }
+
+    const result = await createSignedPdfUploadUrl(body.fileName, body.fileSize);
+
+    logInfo("journal.pdf.upload-init", {
+      path: result.path,
+      fileName: result.fileName,
+      fileSize: body.fileSize,
+      bucket: result.bucket,
+    });
+
+    res.status(200).json({
+      success: true,
+      path: result.path,
+      fileName: result.fileName,
+      signedUrl: result.signedUrl,
+      token: result.token,
+      bucket: result.bucket,
+      maxBytes: result.maxBytes,
+      serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
     });
   },
 );

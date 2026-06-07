@@ -12,6 +12,7 @@ import {
   JournalApiError,
   useJournalIssues,
 } from "@/lib/journal/JournalIssuesProvider";
+import { JournalUploadError } from "@/lib/journal/journalUploadError";
 import type { JournalAccessType, JournalIssueRecord } from "@/lib/journal/types";
 import {
   COVER_ACCEPT,
@@ -107,16 +108,30 @@ export function JournalIssueForm({
     if (pdfFile) {
       const validation = validatePdfFile(pdfFile);
       if (validation) throw new JournalApiError(validation, 400);
+      setPdfError("");
       setPdfProgress(30);
-      const uploaded = await uploadPdf(pdfFile);
-      setPdfProgress(100);
-      nextPdfPath = uploaded.path;
-      nextPdfFileName = uploaded.fileName;
-      nextPdfSize = uploaded.size;
-      setPdfPath(uploaded.path);
-      setPdfFileName(uploaded.fileName);
-      setPdfSizeBytes(uploaded.size);
-      setPdfFile(null);
+      try {
+        const uploaded = await uploadPdf(pdfFile);
+        setPdfProgress(100);
+        nextPdfPath = uploaded.path;
+        nextPdfFileName = uploaded.fileName;
+        nextPdfSize = uploaded.size;
+        setPdfPath(uploaded.path);
+        setPdfFileName(uploaded.fileName);
+        setPdfSizeBytes(uploaded.size);
+        setPdfFile(null);
+      } catch (err) {
+        const message =
+          err instanceof JournalUploadError
+            ? err.userMessage
+            : err instanceof JournalApiError
+              ? err.message
+              : "Не удалось загрузить PDF";
+        setPdfError(message);
+        throw err instanceof JournalApiError
+          ? err
+          : new JournalApiError(message, 0);
+      }
     }
 
     return {
@@ -158,9 +173,13 @@ export function JournalIssueForm({
       }
     } catch (err) {
       const message =
-        err instanceof JournalApiError ? err.message : "Не удалось сохранить выпуск";
+        err instanceof JournalUploadError
+          ? err.userMessage
+          : err instanceof JournalApiError
+            ? err.message
+            : "Не удалось сохранить выпуск";
       setFormError(message);
-      setToast({ message, variant: "error" });
+      setToast({ message: message.split("\n")[0] ?? message, variant: "error" });
     } finally {
       setSubmitting(false);
       setCoverProgress(null);
@@ -199,9 +218,13 @@ export function JournalIssueForm({
       }
     } catch (err) {
       const message =
-        err instanceof JournalApiError ? err.message : "Не удалось отправить на проверку";
+        err instanceof JournalUploadError
+          ? err.userMessage
+          : err instanceof JournalApiError
+            ? err.message
+            : "Не удалось отправить на проверку";
       setFormError(message);
-      setToast({ message, variant: "error" });
+      setToast({ message: message.split("\n")[0] ?? message, variant: "error" });
     } finally {
       setSubmitting(false);
       setCoverProgress(null);
@@ -245,9 +268,13 @@ export function JournalIssueForm({
       router.push(listPath);
     } catch (err) {
       const message =
-        err instanceof JournalApiError ? err.message : "Не удалось опубликовать выпуск";
+        err instanceof JournalUploadError
+          ? err.userMessage
+          : err instanceof JournalApiError
+            ? err.message
+            : "Не удалось опубликовать выпуск";
       setFormError(message);
-      setToast({ message, variant: "error" });
+      setToast({ message: message.split("\n")[0] ?? message, variant: "error" });
     } finally {
       setSubmitting(false);
       setCoverProgress(null);
@@ -348,7 +375,7 @@ export function JournalIssueForm({
           <FileDropzone
             accept={PDF_ACCEPT}
             label="PDF выпуска"
-            hint="PDF до 50 MB"
+            hint="PDF до 50 MB (напрямую в Supabase Storage, минуя Vercel 4.5 MB)"
             previewType="file"
             fileName={pdfFileName || undefined}
             disabled={readOnly || submitting}
@@ -368,7 +395,9 @@ export function JournalIssueForm({
           />
 
           {formError ? (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>
+            <pre className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 whitespace-pre-wrap">
+              {formError}
+            </pre>
           ) : null}
 
           {!readOnly ? (

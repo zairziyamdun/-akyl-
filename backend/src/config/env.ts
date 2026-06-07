@@ -18,7 +18,22 @@ const envSchema = z
     SUPABASE_URL: z.string().min(1).transform(normalizeSupabaseUrl),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
     SUPABASE_SECRET_KEY: z.string().min(1).optional(),
-    FRONTEND_URL: z.string().url().default("http://localhost:3000"),
+    FRONTEND_URL: z
+      .string()
+      .min(1)
+      .default("http://localhost:3000")
+      .refine(
+        (value) =>
+          value.split(",").every((part) => {
+            try {
+              new URL(part.trim());
+              return true;
+            } catch {
+              return false;
+            }
+          }),
+        { message: "FRONTEND_URL must be a valid URL or comma-separated URLs" },
+      ),
     TELEGRAM_BOT_TOKEN: z.string().min(1).optional(),
     TELEGRAM_CHAT_ID: z.string().min(1).optional(),
   })
@@ -46,6 +61,15 @@ function loadEnv(): Env {
     supabaseKey:
       parsed.SUPABASE_SERVICE_ROLE_KEY ?? parsed.SUPABASE_SECRET_KEY!,
   };
+}
+
+/** Comma-separated FRONTEND_URL values → allowed browser origins. */
+export function getAllowedOrigins(): string[] {
+  const raw = process.env.FRONTEND_URL ?? "http://localhost:3000";
+  return raw
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
 }
 
 export const env = loadEnv();

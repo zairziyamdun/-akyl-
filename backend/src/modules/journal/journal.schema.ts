@@ -14,5 +14,12 @@ export const createJournalIssueSchema = z.object({
 
 export const updateJournalIssueSchema = createJournalIssueSchema.partial();
 
+export const initPdfUploadSchema = z.object({
+  fileName: z.string().min(1),
+  fileSize: z.number().int().positive(),
+  contentType: z.string().default("application/pdf"),
+});
+
 export type CreateJournalIssueBody = z.infer<typeof createJournalIssueSchema>;
 export type UpdateJournalIssueBody = z.infer<typeof updateJournalIssueSchema>;
+export type InitPdfUploadBody = z.infer<typeof initPdfUploadSchema>;

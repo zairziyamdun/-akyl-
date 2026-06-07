@@ -12,10 +12,19 @@ import type {
   ApiCreateJournalIssue,
   ApiJournalIssue,
   ApiUpdateJournalIssue,
+  InitPdfUploadResponse,
   IssuePdfResponse,
   UploadCoverResponse,
   UploadPdfResponse,
 } from "./apiTypes";
+import {
+  JOURNAL_PDF_BUCKET,
+  JournalUploadError,
+  logJournalUploadError,
+  type JournalUploadErrorDetails,
+  VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+} from "@/lib/journal/journalUploadError";
+import { PDF_MAX_BYTES } from "@/lib/journal/utils";
 
 type ApiSuccess<T> = { success: true; message?: string; data?: T };
 type ApiError = { success: false; message: string };
@@ -173,33 +182,191 @@ export async function uploadCoverApi(file: File): Promise<UploadCoverResponse> {
   return body;
 }
 
-export async function uploadPdfApi(file: File): Promise<UploadPdfResponse> {
-  const form = new FormData();
-  form.append("pdf", file);
+async function readResponseBody(response: Response): Promise<{
+  json: ApiError | null;
+  text: string;
+  contentType: string | null;
+}> {
+  const contentType = response.headers.get("content-type");
+  const text = await response.text();
 
-  const token = getAccessToken();
-  const headers: Record<string, string> = {};
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  let response: Response;
-  try {
-    response = await fetch(`${API_URL}/api/journal/upload-pdf`, {
-      method: "POST",
-      headers,
-      body: form,
-    });
-  } catch {
-    throw new JournalApiError("Не удалось загрузить PDF", 0);
+  if (contentType?.includes("application/json")) {
+    try {
+      return { json: JSON.parse(text) as ApiError, text, contentType };
+    } catch {
+      return { json: null, text, contentType };
+    }
   }
 
-  const body = await parseJson<UploadPdfResponse | ApiError>(response);
-  if (!response.ok || !("success" in body) || !body.success) {
-    throw new JournalApiError(
-      "message" in body ? body.message : "Не удалось загрузить PDF",
-      response.status,
+  return { json: null, text, contentType };
+}
+
+function throwUploadError(
+  message: string,
+  status: number,
+  details: JournalUploadErrorDetails,
+): never {
+  logJournalUploadError("pdf-upload-failed", details);
+  throw new JournalUploadError(message, status, details);
+}
+
+export async function uploadPdfApi(file: File): Promise<UploadPdfResponse> {
+  const initEndpoint = `${API_URL}/api/journal/upload-pdf/init`;
+
+  if (file.size > PDF_MAX_BYTES) {
+    throwUploadError("PDF превышает допустимый размер", 400, {
+      phase: "init",
+      endpoint: initEndpoint,
+      httpStatus: 400,
+      backendMessage: `PDF не должен превышать ${Math.floor(PDF_MAX_BYTES / (1024 * 1024))} MB`,
+      fileName: file.name,
+      fileSize: file.size,
+      limitBytes: PDF_MAX_BYTES,
+      serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+      bucket: JOURNAL_PDF_BUCKET,
+    });
+  }
+
+  let initResponse: Response;
+  try {
+    initResponse = await fetch(initEndpoint, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        fileName: file.name,
+        fileSize: file.size,
+        contentType: file.type || "application/pdf",
+      }),
+    });
+  } catch (error) {
+    throwUploadError("Сеть недоступна — не удалось начать загрузку PDF", 0, {
+      phase: "init",
+      endpoint: initEndpoint,
+      httpStatus: 0,
+      backendMessage: error instanceof Error ? error.message : String(error),
+      fileName: file.name,
+      fileSize: file.size,
+      limitBytes: PDF_MAX_BYTES,
+      serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+      bucket: JOURNAL_PDF_BUCKET,
+    });
+  }
+
+  const initBodyParsed = await readResponseBody(initResponse);
+
+  if (!initResponse.ok) {
+    const backendMessage =
+      initBodyParsed.json?.message ??
+      (initBodyParsed.text.slice(0, 300) || `HTTP ${initResponse.status}`);
+
+    throwUploadError(
+      initResponse.status === 413
+        ? "Файл слишком большой для serverless backend"
+        : backendMessage,
+      initResponse.status,
+      {
+        phase: "init",
+        endpoint: initEndpoint,
+        httpStatus: initResponse.status,
+        backendMessage,
+        fileName: file.name,
+        fileSize: file.size,
+        limitBytes: PDF_MAX_BYTES,
+        serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+        bucket: JOURNAL_PDF_BUCKET,
+        contentType: initBodyParsed.contentType,
+        responsePreview: initBodyParsed.text.slice(0, 200),
+      },
     );
   }
-  return body;
+
+  let init: InitPdfUploadResponse;
+  try {
+    init = JSON.parse(initBodyParsed.text) as InitPdfUploadResponse;
+  } catch {
+    throwUploadError("Backend вернул некорректный JSON при инициализации загрузки", initResponse.status, {
+      phase: "init",
+      endpoint: initEndpoint,
+      httpStatus: initResponse.status,
+      backendMessage: initBodyParsed.text.slice(0, 300),
+      fileName: file.name,
+      fileSize: file.size,
+      limitBytes: PDF_MAX_BYTES,
+      serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+      bucket: JOURNAL_PDF_BUCKET,
+      contentType: initBodyParsed.contentType,
+      responsePreview: initBodyParsed.text.slice(0, 200),
+    });
+  }
+
+  if (!init.success || !init.signedUrl || !init.path) {
+    throwUploadError("Backend не вернул signed upload URL", initResponse.status, {
+      phase: "init",
+      endpoint: initEndpoint,
+      httpStatus: initResponse.status,
+      backendMessage: initBodyParsed.text.slice(0, 300),
+      fileName: file.name,
+      fileSize: file.size,
+      limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
+      serverlessLimitBytes:
+        init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+      bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
+      contentType: initBodyParsed.contentType,
+    });
+  }
+
+  let storageResponse: Response;
+  try {
+    storageResponse = await fetch(init.signedUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type || "application/pdf",
+      },
+      body: file,
+    });
+  } catch (error) {
+    throwUploadError("Не удалось загрузить PDF в Supabase Storage", 0, {
+      phase: "storage",
+      endpoint: init.signedUrl.split("?")[0] ?? init.signedUrl,
+      httpStatus: 0,
+      backendMessage: error instanceof Error ? error.message : String(error),
+      fileName: file.name,
+      fileSize: file.size,
+      limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
+      serverlessLimitBytes:
+        init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+      bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
+    });
+  }
+
+  if (!storageResponse.ok) {
+    const storageParsed = await readResponseBody(storageResponse);
+    const backendMessage =
+      storageParsed.json?.message ??
+      (storageParsed.text.slice(0, 300) || `HTTP ${storageResponse.status}`);
+
+    throwUploadError("Supabase Storage отклонил загрузку PDF", storageResponse.status, {
+      phase: "storage",
+      endpoint: init.signedUrl.split("?")[0] ?? init.signedUrl,
+      httpStatus: storageResponse.status,
+      backendMessage,
+      fileName: file.name,
+      fileSize: file.size,
+      limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
+      serverlessLimitBytes:
+        init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+      bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
+      contentType: storageParsed.contentType,
+      responsePreview: storageParsed.text.slice(0, 200),
+    });
+  }
+
+  return {
+    success: true,
+    path: init.path,
+    fileName: init.fileName,
+    size: file.size,
+  };
 }
 
 export async function fetchIssuePdfUrl(id: string): Promise<string> {
@@ -371,6 +538,7 @@ export const JOURNAL_API = {
   issue: (id: string) => `/api/journal/issues/${id}`,
   issuePdf: (id: string) => `/api/journal/issues/${id}/pdf`,
   issuePdfFile: (id: string) => `/api/journal/issues/${id}/pdf/file`,
+  uploadPdfInit: "/api/journal/upload-pdf/init",
   submit: (id: string) => `/api/journal/issues/${id}/submit`,
   publish: (id: string) => `/api/journal/issues/${id}/publish`,
   revision: (id: string) => `/api/journal/issues/${id}/revision`,

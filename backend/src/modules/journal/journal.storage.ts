@@ -2,15 +2,19 @@ import { randomUUID } from "node:crypto";
 
 import { ValidationError } from "../../common/errors.js";
 import { getSupabaseAdmin } from "../../config/supabase.js";
+import {
+  JOURNAL_PDF_BUCKET,
+  JOURNAL_PDF_MAX_BYTES,
+} from "./journal.upload.constants.js";
 
 export const COVERS_BUCKET = "journal-covers";
-export const PDFS_BUCKET = "journal-pdfs";
+export const PDFS_BUCKET = JOURNAL_PDF_BUCKET;
 
 const COVER_MIME_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const PDF_MIME_TYPE = "application/pdf";
 
 const COVER_MAX_BYTES = 10 * 1024 * 1024;
-const PDF_MAX_BYTES = 50 * 1024 * 1024;
+export const PDF_MAX_BYTES = JOURNAL_PDF_MAX_BYTES;
 
 const SIGNED_URL_TTL_SECONDS = 60 * 10;
 
@@ -89,6 +93,48 @@ export async function uploadPdfToStorage(
     path,
     fileName: file.originalname,
     size: file.size,
+  };
+}
+
+export type SignedPdfUpload = {
+  path: string;
+  fileName: string;
+  signedUrl: string;
+  token: string;
+  bucket: string;
+  maxBytes: number;
+};
+
+export async function createSignedPdfUploadUrl(
+  originalName: string,
+  fileSize: number,
+): Promise<SignedPdfUpload> {
+  if (fileSize > PDF_MAX_BYTES) {
+    throw new ValidationError(
+      `PDF file must be at most ${Math.floor(PDF_MAX_BYTES / (1024 * 1024))} MB`,
+    );
+  }
+
+  const path = storagePath(originalName);
+  const supabase = getSupabaseAdmin();
+
+  const { data, error } = await supabase.storage
+    .from(PDFS_BUCKET)
+    .createSignedUploadUrl(path);
+
+  if (error || !data?.signedUrl || !data.token) {
+    throw new ValidationError(
+      `Failed to create signed upload URL: ${error?.message ?? "unknown error"}`,
+    );
+  }
+
+  return {
+    path,
+    fileName: originalName,
+    signedUrl: data.signedUrl,
+    token: data.token,
+    bucket: PDFS_BUCKET,
+    maxBytes: PDF_MAX_BYTES,
   };
 }
 

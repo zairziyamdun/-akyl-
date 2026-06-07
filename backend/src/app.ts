@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 
-import { env } from "./config/env.js";
+import { env, getAllowedOrigins } from "./config/env.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import consultationRoutes from "./modules/consultation/consultation.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -12,7 +12,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin(origin, callback) {
+      const allowed = getAllowedOrigins();
+      if (!origin || allowed.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
   }),
 );
 app.use(express.json());
