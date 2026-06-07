@@ -6,6 +6,8 @@ import { Download, ExternalLink, Lock } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { JournalListSkeleton } from "@/components/journal/JournalSkeletons";
+import { PdfDiagnosticsPanel } from "@/components/journal/PdfDiagnosticsPanel";
+import type { PdfViewerErrorPayload } from "@/components/journal/JournalPdfJsViewer";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { JOURNAL_ACCESS_HREF } from "@/data/journalData";
@@ -17,6 +19,7 @@ import {
   fetchJournalIssue,
 } from "@/lib/journal/journalApi";
 import type { JournalIssueRecord } from "@/lib/journal/types";
+import type { PdfDiagnostics } from "@/lib/pdf/pdfDiagnostics";
 import { usePdfViewerMode } from "@/lib/pdf/usePdfViewerMode";
 
 const JournalPdfJsViewer = dynamic(
@@ -78,10 +81,14 @@ function PaywallView({
 function PdfViewerErrorFallback({
   issueId,
   fileName,
+  errorMessage,
+  diagnostics,
   onRetry,
 }: {
   issueId: string;
   fileName: string;
+  errorMessage: string;
+  diagnostics?: PdfDiagnostics | null;
   onRetry: () => void;
 }) {
   const [opening, setOpening] = useState(false);
@@ -118,15 +125,12 @@ function PdfViewerErrorFallback({
   };
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-6 bg-slate-100 px-6 py-12 text-center">
-      <div className="max-w-md space-y-2">
-        <h2 className="text-lg font-semibold text-slate-900">
-          Не удалось отобразить PDF в браузере
-        </h2>
-        <p className="text-sm text-slate-600">
-          Попробуйте открыть документ в новой вкладке или скачать его на устройство.
-        </p>
-      </div>
+    <div className="flex flex-1 flex-col items-center justify-center gap-6 bg-slate-100 px-4 py-12 sm:px-6">
+      <PdfDiagnosticsPanel
+        title="Не удалось отобразить PDF в браузере"
+        message={errorMessage}
+        diagnostics={diagnostics}
+      />
       {actionError ? (
         <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{actionError}</p>
       ) : null}
@@ -163,6 +167,9 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
   const [viewerKey, setViewerKey] = useState(0);
+  const [viewerDiagnostics, setViewerDiagnostics] = useState<PdfDiagnostics | null>(
+    null,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -174,6 +181,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
       setPdfUrl(null);
       setPdfError("");
       setViewerError(false);
+      setViewerDiagnostics(null);
 
       try {
         const data = await fetchJournalIssue(issueId);
@@ -202,6 +210,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
     setPdfLoading(true);
     setPdfError("");
     setViewerError(false);
+    setViewerDiagnostics(null);
     try {
       const url = await fetchIssuePdfUrl(issue.id);
       setPdfUrl(url);
@@ -221,8 +230,9 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
     void loadSignedPdfUrl();
   }, [issue, viewerMode, loadSignedPdfUrl]);
 
-  const handlePdfJsError = useCallback((message: string) => {
+  const handlePdfJsError = useCallback(({ message, diagnostics }: PdfViewerErrorPayload) => {
     setPdfError(message);
+    setViewerDiagnostics(diagnostics);
     setViewerError(true);
   }, []);
 
@@ -245,6 +255,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   const retryViewer = () => {
     setViewerError(false);
     setPdfError("");
+    setViewerDiagnostics(null);
     setViewerKey((key) => key + 1);
     if (viewerMode === "iframe") {
       void loadSignedPdfUrl();
@@ -361,6 +372,8 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
           <PdfViewerErrorFallback
             issueId={issue.id}
             fileName={fileName}
+            errorMessage={pdfError || "Не удалось отобразить PDF"}
+            diagnostics={viewerDiagnostics}
             onRetry={retryViewer}
           />
         ) : null}

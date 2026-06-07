@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import { asyncHandler } from "../../common/async-handler.js";
+import { logInfo } from "../../common/logger.js";
 import { sendSuccess } from "../../common/response.js";
 import {
   createJournalIssue,
@@ -49,13 +50,26 @@ export const getIssuePdfHandler = asyncHandler(
 
 export const getIssuePdfFileHandler = asyncHandler(
   async (req: Request, res: Response) => {
+    const issueId = req.params.id!;
+    const started = Date.now();
+
     const { buffer, fileName } = await getIssuePdfFile(
-      req.params.id!,
+      issueId,
       req.profile?.role,
     );
 
     const asDownload = req.query.download === "1";
     const safeName = fileName.replace(/[^\w.\-() ]+/g, "_") || "issue.pdf";
+
+    logInfo("journal.pdf.file", {
+      issueId,
+      download: asDownload,
+      bytes: buffer.length,
+      contentType: "application/pdf",
+      durationMs: Date.now() - started,
+      userAgent: req.get("user-agent")?.slice(0, 120),
+      origin: req.get("origin"),
+    });
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Length", String(buffer.length));

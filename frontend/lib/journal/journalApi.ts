@@ -1,5 +1,11 @@
 import { getAccessToken } from "@/lib/auth/token";
 import { API_URL } from "@/lib/auth/api";
+import { PdfLoadError, type PdfFetchResult } from "@/lib/journal/pdfLoadError";
+import {
+  isPdfMagicValid,
+  logPdfDiagnostic,
+  serializeError,
+} from "@/lib/pdf/pdfDiagnostics";
 
 import type {
   ApiCreateJournalIssue,
@@ -233,28 +239,103 @@ function pdfFileHeaders(): Record<string, string> {
 }
 
 /** PDF bytes via backend proxy — avoids CORS and mobile download quirks. */
-export async function fetchIssuePdfArrayBuffer(id: string): Promise<ArrayBuffer> {
+export async function fetchIssuePdfArrayBuffer(id: string): Promise<PdfFetchResult> {
+  const requestUrl = `${API_URL}/api/journal/issues/${id}/pdf/file`;
+  const started = performance.now();
+
   let response: Response;
   try {
-    response = await fetch(`${API_URL}/api/journal/issues/${id}/pdf/file`, {
+    response = await fetch(requestUrl, {
       headers: pdfFileHeaders(),
     });
-  } catch {
-    throw new JournalApiError("Не удалось загрузить PDF", 0);
+  } catch (error) {
+    const diagnostics = {
+      phase: "fetch" as const,
+      issueId: id,
+      requestUrl,
+      durationMs: Math.round(performance.now() - started),
+      ...serializeError(error),
+    };
+    logPdfDiagnostic("fetch-network-error", diagnostics);
+    throw new PdfLoadError(
+      "Сеть недоступна или backend не отвечает",
+      0,
+      diagnostics,
+    );
   }
+
+  const contentType = response.headers.get("content-type");
+  const contentLengthHeader = response.headers.get("content-length");
+  const durationMs = Math.round(performance.now() - started);
 
   if (!response.ok) {
-    let message = "Не удалось загрузить PDF";
+    let message = `HTTP ${response.status}`;
+
     try {
-      const body = (await response.json()) as ApiError;
-      if (body.message) message = body.message;
+      const text = await response.text();
+      try {
+        const body = JSON.parse(text) as ApiError;
+        if (body.message) message = body.message;
+      } catch {
+        message = text.slice(0, 200) || message;
+      }
     } catch {
-      // binary or empty body
+      // ignore body read errors
     }
-    throw new JournalApiError(message, response.status);
+
+    const diagnostics = {
+      phase: "fetch" as const,
+      issueId: id,
+      requestUrl,
+      httpStatus: response.status,
+      contentType,
+      contentLengthHeader,
+      durationMs,
+      errorMessage: message,
+    };
+    logPdfDiagnostic("fetch-http-error", diagnostics);
+    throw new PdfLoadError(message, response.status, diagnostics);
   }
 
-  return response.arrayBuffer();
+  const buffer = await response.arrayBuffer();
+  const pdfMagicValid = isPdfMagicValid(buffer);
+
+  const diagnostics = {
+    phase: "fetch" as const,
+    issueId: id,
+    requestUrl,
+    httpStatus: response.status,
+    contentType,
+    contentLengthHeader,
+    byteLength: buffer.byteLength,
+    pdfMagicValid,
+    durationMs,
+  };
+
+  logPdfDiagnostic("fetch-success", diagnostics);
+
+  if (!pdfMagicValid) {
+    const textPreview = new TextDecoder().decode(buffer.slice(0, 200));
+    const invalidDiagnostics = {
+      ...diagnostics,
+      errorMessage: `Ожидался PDF (%PDF), получено: ${contentType ?? "unknown"}. Body: ${textPreview}`,
+    };
+    logPdfDiagnostic("fetch-invalid-pdf", invalidDiagnostics);
+    throw new PdfLoadError(
+      "Сервер вернул не PDF (неверный Content-Type или тело ответа)",
+      response.status,
+      invalidDiagnostics,
+    );
+  }
+
+  if (contentType && !contentType.includes("application/pdf")) {
+    logPdfDiagnostic("fetch-warn-content-type", {
+      ...diagnostics,
+      errorMessage: `Content-Type не application/pdf: ${contentType}`,
+    });
+  }
+
+  return { buffer, diagnostics };
 }
 
 /** Explicit user-initiated download (attachment). */
