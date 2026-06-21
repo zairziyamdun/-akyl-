@@ -34,6 +34,7 @@ function getSupabaseImagePatterns() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["react-pdf", "pdfjs-dist"],
   turbopack: {
     root: path.join(__dirname),
   },

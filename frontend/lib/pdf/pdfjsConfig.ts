@@ -10,9 +10,10 @@ function buildWorkerSrc(version: string): string {
   return `/pdfjs/pdf.worker.min.mjs?v=${encodeURIComponent(version)}`;
 }
 
-/** Local worker from /public — avoids CDN failures on mobile. */
+/** Local worker from /public — must match react-pdf's pdfjs-dist (5.4.296). */
 export function configurePdfJsWorker(): string {
-  const workerSrc = buildWorkerSrc(pdfjs.version);
+  const version = pdfjs.version;
+  const workerSrc = buildWorkerSrc(version);
 
   if (typeof window !== "undefined" && !configured) {
     pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
@@ -21,8 +22,14 @@ export function configurePdfJsWorker(): string {
     logPdfDiagnostic("worker-configured", {
       phase: "worker",
       workerSrc,
-      pdfJsVersion: pdfjs.version,
+      pdfJsVersion: version,
     });
+
+    if (process.env.NODE_ENV === "development" && version !== "5.4.296") {
+      console.warn(
+        `[pdf.js] Unexpected API version ${version}. Expected 5.4.296 — run npm install && npm run postinstall`,
+      );
+    }
   }
 
   return workerSrc;

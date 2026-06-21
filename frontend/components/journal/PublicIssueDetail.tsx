@@ -7,7 +7,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import { JournalListSkeleton } from "@/components/journal/JournalSkeletons";
 import { PdfDiagnosticsPanel } from "@/components/journal/PdfDiagnosticsPanel";
-import type { PdfViewerErrorPayload } from "@/components/journal/JournalPdfJsViewer";
+import type { PdfViewerErrorPayload } from "@/components/pdf/PdfViewer";
+import { PdfLoadingState } from "@/components/pdf/PdfLoadingState";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { JOURNAL_ACCESS_HREF } from "@/data/journalData";
@@ -29,11 +30,7 @@ const JournalPdfJsViewer = dynamic(
     ),
   {
     ssr: false,
-    loading: () => (
-      <div className="flex min-h-[40vh] items-center justify-center px-6 py-12">
-        <p className="text-sm text-slate-500">Загрузка PDF…</p>
-      </div>
-    ),
+    loading: () => <PdfLoadingState />,
   },
 );
 
@@ -312,7 +309,21 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
         <h1 className="min-w-0 flex-1 basis-full truncate text-sm font-semibold text-slate-900 sm:basis-auto sm:text-base">
           {issue.title}
         </h1>
-        <div className="flex shrink-0 flex-col items-end gap-1">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          {viewerMode === "pdfjs" ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                void fetchIssuePdfUrl(issue.id).then((url) => {
+                  window.open(url, "_blank", "noopener,noreferrer");
+                });
+              }}
+            >
+              <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+              В браузере
+            </Button>
+          ) : null}
           <Button
             size="sm"
             variant="secondary"
@@ -338,9 +349,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
         }
       >
         {viewerMode === "iframe" && pdfLoading ? (
-          <div className="flex h-full min-h-[50vh] items-center justify-center bg-slate-100">
-            <p className="text-sm text-slate-500">Загрузка PDF…</p>
-          </div>
+          <PdfLoadingState />
         ) : null}
 
         {viewerMode === "iframe" && pdfError && !showFallback ? (
