@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -23,6 +24,8 @@ function buildBreadcrumbs(pathname: string) {
           ? "Studio"
           : segment === "app"
             ? "Кабинет"
+            : segment === "manager"
+              ? "Мои ЖК"
             : segment === "articles" && segments.includes("new")
               ? "Новая статья"
               : segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
@@ -58,17 +61,17 @@ export function Topbar({
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-      <div className="flex h-14 items-center justify-between gap-4 px-4 lg:px-6">
+    <header className="sticky top-0 z-30 border-b border-[#E2E8F0] bg-white/90 backdrop-blur-md">
+      <div className="flex h-14 items-center justify-between gap-4 px-4 md:px-6">
         <div className="flex min-w-0 items-center gap-3">
           {showMenuButton ? (
             <button
               type="button"
               onClick={onMenuClick}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 lg:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 md:hidden"
               aria-label="Открыть меню"
             >
-              ☰
+              <Menu className="h-5 w-5" />
             </button>
           ) : null}
           <div className="min-w-0">

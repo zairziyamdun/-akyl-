@@ -18,7 +18,7 @@ export const adminNav: NavSection[] = [
   {
     title: "Управление",
     items: [
-      { label: "ЖК", href: "/admin/houses", icon: "⌂" },
+      { label: "Мои ЖК", href: "/admin/houses", icon: "⌂" },
       { label: "Пользователи", href: "/admin/users", icon: "◎" },
       { label: "Роли", href: "/admin/roles", icon: "◈" },
       { label: "Заявки", href: "/admin/requests", icon: "✉" },
@@ -75,11 +75,10 @@ export const userNav: NavSection[] = [
 
 export const managerNav: NavSection[] = [
   {
-    items: [{ label: "Мои ЖК", href: "/manager/houses", icon: "⌂" }],
-  },
-  {
-    title: "Аккаунт",
-    items: [{ label: "Профиль", href: "/app/profile", icon: "◎" }],
+    items: [
+      { label: "Мои ЖК", href: "/manager/houses", icon: "⌂" },
+      { label: "Профиль", href: "/app/profile", icon: "◎" },
+    ],
   },
 ];
 
@@ -101,7 +100,7 @@ export function getShellTitle(role: AkylRole): string {
     case "admin":
       return "Admin";
     case "manager":
-      return "Manager";
+      return "Мои ЖК";
     case "journalist":
       return "Studio";
     case "user":
@@ -114,7 +113,7 @@ export function getShellBasePath(role: AkylRole): string {
     case "admin":
       return "/admin";
     case "manager":
-      return "/manager";
+      return "/manager/houses";
     case "journalist":
       return "/studio";
     case "user":

@@ -2,14 +2,20 @@ export type House = {
   id: string;
   name: string;
   address: string | null;
-  city: string | null;
-  description: string | null;
-  status: string | null;
+  apartments_count: number | null;
+  total_area: number | null;
+  build_year: number | null;
   created_at: string;
   updated_at: string;
 };
 
-export type HouseUserRole = "manager";
+export type HouseUserRole =
+  | "manager"
+  | "accountant"
+  | "engineer"
+  | "dispatcher"
+  | "chairman"
+  | "resident";
 
 export type HouseUser = {
   id: string;
@@ -19,21 +25,34 @@ export type HouseUser = {
   created_at: string;
 };
 
+export type HouseUserWithProfile = {
+  id: string;
+  user_id: string;
+  email: string | null;
+  full_name: string | null;
+  role: string;
+  house_role: HouseUserRole;
+  created_at: string;
+};
+
 export type CreateHouseInput = {
   name: string;
   address?: string | null;
-  city?: string | null;
-  description?: string | null;
-  status?: string | null;
+  apartments_count?: number | null;
+  total_area?: number | null;
+  build_year?: number | null;
 };
 
 export type UpdateHouseInput = Partial<CreateHouseInput>;
 
-export type FinanceSummary = {
-  budgetTotal: number;
-  collectedPercent: number;
-  debtTotal: number;
+export type AssignHouseUserInput = {
+  userId: string;
+  houseRole: HouseUserRole;
 };
+
+import type { FinanceSummary } from "../finance/finance.types.js";
+
+export type { FinanceSummary };
 
 export type TechnicalSummary = {
   openRequests: number;

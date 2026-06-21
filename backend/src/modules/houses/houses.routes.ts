@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { z } from "zod";
 
 import {
   authMiddleware,
@@ -13,7 +14,12 @@ import {
   listHousesHandler,
   updateHouseHandler,
 } from "./houses.controller.js";
-import { createHouseSchema, updateHouseSchema } from "./houses.schema.js";
+import {
+  createHouseSchema,
+  updateHouseSchema,
+  type CreateHouseBody,
+  type UpdateHouseBody,
+} from "./houses.schema.js";
 
 const router = Router();
 
@@ -45,7 +51,7 @@ router.post(
   "/",
   authMiddleware,
   roleMiddleware([...adminOnly]),
-  validateBody(createHouseSchema),
+  validateBody(createHouseSchema as z.ZodType<CreateHouseBody>),
   createHouseHandler,
 );
 
@@ -53,7 +59,7 @@ router.patch(
   "/:id",
   authMiddleware,
   roleMiddleware([...adminOnly]),
-  validateBody(updateHouseSchema),
+  validateBody(updateHouseSchema as z.ZodType<UpdateHouseBody>),
   updateHouseHandler,
 );
 

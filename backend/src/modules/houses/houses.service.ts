@@ -16,15 +16,23 @@ import type {
   HouseDashboard,
   UpdateHouseInput,
 } from "./houses.types.js";
+import { getLatestFinanceSummary } from "../finance/finance.service.js";
+
+function toNumber(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
 
 function mapHouse(row: Record<string, unknown>): House {
   return {
     id: String(row.id),
     name: String(row.name ?? ""),
     address: (row.address as string | null) ?? null,
-    city: (row.city as string | null) ?? null,
-    description: (row.description as string | null) ?? null,
-    status: (row.status as string | null) ?? null,
+    apartments_count: toNumber(row.apartments_count),
+    total_area: toNumber(row.total_area),
+    build_year: toNumber(row.build_year),
     created_at: String(row.created_at ?? ""),
     updated_at: String(row.updated_at ?? ""),
   };
@@ -119,9 +127,9 @@ export async function createHouse(
     .insert({
       name: input.name,
       address: input.address ?? null,
-      city: input.city ?? null,
-      description: input.description ?? null,
-      status: input.status ?? "active",
+      apartments_count: input.apartments_count ?? null,
+      total_area: input.total_area ?? null,
+      build_year: input.build_year ?? null,
     })
     .select("*")
     .single();
@@ -148,7 +156,13 @@ export async function updateHouse(
   const { data, error } = await supabase
     .from("houses")
     .update({
-      ...input,
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.address !== undefined ? { address: input.address } : {}),
+      ...(input.apartments_count !== undefined
+        ? { apartments_count: input.apartments_count }
+        : {}),
+      ...(input.total_area !== undefined ? { total_area: input.total_area } : {}),
+      ...(input.build_year !== undefined ? { build_year: input.build_year } : {}),
       updated_at: new Date().toISOString(),
     })
     .eq("id", houseId)
@@ -173,14 +187,13 @@ export async function deleteHouse(houseId: string, role: ProfileRole): Promise<v
   }
 }
 
-function buildDashboardMock(house: House): HouseDashboard {
+function buildDashboardMock(
+  house: House,
+  financeSummary: Awaited<ReturnType<typeof getLatestFinanceSummary>>,
+): HouseDashboard {
   return {
     house,
-    financeSummary: {
-      budgetTotal: 12_500_000,
-      collectedPercent: 92,
-      debtTotal: 450_000,
-    },
+    financeSummary,
     technicalSummary: {
       openRequests: 12,
       overdueRequests: 3,
@@ -210,5 +223,8 @@ export async function getHouseDashboard(
   }
 
   const house = await getHouseById(houseId, userId, role);
-  return buildDashboardMock(house);
+  const financeSummary = await getLatestFinanceSummary(houseId);
+  const dashboard = buildDashboardMock(house, financeSummary);
+  dashboard.kpiSummary.collectionRate = financeSummary.collectionRate;
+  return dashboard;
 }

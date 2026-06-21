@@ -1,6 +1,6 @@
 export { AuthCard } from "./AuthCard";
 export { AppShell } from "./AppShell";
-export { SidebarNav } from "./SidebarNav";
+export { DashboardSidebarPanel } from "./sidebar/DashboardSidebarPanel";
 export { Topbar, PublicUserMenu } from "./Topbar";
 export { PageHeader } from "./PageHeader";
 export { StatCard } from "./StatCard";

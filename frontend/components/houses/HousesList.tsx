@@ -132,9 +132,10 @@ export function HousesList({
               ),
             },
             {
-              key: "city",
-              header: "Город",
-              render: (house) => house.city ?? "—",
+              key: "apartments",
+              header: "Квартир",
+              render: (house) =>
+                house.apartments_count !== null ? String(house.apartments_count) : "—",
             },
             {
               key: "address",
@@ -142,9 +143,10 @@ export function HousesList({
               render: (house) => house.address ?? "—",
             },
             {
-              key: "status",
-              header: "Статус",
-              render: (house) => house.status ?? "—",
+              key: "build_year",
+              header: "Год",
+              render: (house) =>
+                house.build_year !== null ? String(house.build_year) : "—",
             },
             {
               key: "actions",
