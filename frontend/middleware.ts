@@ -15,8 +15,9 @@ type RouteRule = {
 
 const PROTECTED_ROUTES: RouteRule[] = [
   { prefix: "/admin", roles: ["admin"] },
+  { prefix: "/manager", roles: ["manager", "admin"] },
   { prefix: "/studio", roles: ["journalist", "admin"] },
-  { prefix: "/app", roles: ["user", "journalist", "admin"] },
+  { prefix: "/app", roles: ["user", "journalist", "admin", "manager"] },
 ];
 
 function matchRoute(pathname: string): RouteRule | undefined {
@@ -77,5 +78,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/studio/:path*", "/admin/:path*"],
+  matcher: ["/app/:path*", "/studio/:path*", "/admin/:path*", "/manager/:path*"],
 };

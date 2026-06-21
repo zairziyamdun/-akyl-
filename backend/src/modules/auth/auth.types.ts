@@ -1,7 +1,11 @@
 import type { User } from "@supabase/supabase-js";
 
-export type ProfileRole = "user" | "journalist" | "admin";
-export type ProfileStatus = "active" | "suspended";
+export type ProfileRole = "user" | "journalist" | "admin" | "manager";
+export type ProfileStatus = "active" | "suspended" | "blocked" | "pending";
+
+export function isActiveProfileStatus(status: ProfileStatus): boolean {
+  return status === "active";
+}
 
 export type Profile = {
   id: string;

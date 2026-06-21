@@ -1,6 +1,6 @@
-export type AkylRole = "admin" | "journalist" | "user";
+export type AkylRole = "admin" | "journalist" | "user" | "manager";
 
-export type ProfileStatus = "active" | "suspended";
+export type ProfileStatus = "active" | "suspended" | "blocked" | "pending";
 
 export type AuthProfile = {
   id: string;

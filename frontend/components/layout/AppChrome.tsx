@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
-const DASHBOARD_PREFIXES = ["/app", "/admin", "/studio"];
+const DASHBOARD_PREFIXES = ["/app", "/admin", "/studio", "/manager"];
 
 function isAuthRoute(pathname: string) {
   return AUTH_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));

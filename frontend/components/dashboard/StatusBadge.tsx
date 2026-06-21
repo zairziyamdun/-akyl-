@@ -13,6 +13,8 @@ type StatusVariant =
   | "error"
   | "active"
   | "suspended"
+  | "blocked"
+  | "pending"
   | "none";
 
 const styles: Record<StatusVariant, string> = {
@@ -28,6 +30,8 @@ const styles: Record<StatusVariant, string> = {
   error: "bg-red-50 text-red-700 ring-red-200",
   active: "bg-emerald-50 text-emerald-700 ring-emerald-200",
   suspended: "bg-red-50 text-red-700 ring-red-200",
+  blocked: "bg-red-50 text-red-700 ring-red-200",
+  pending: "bg-amber-50 text-amber-700 ring-amber-200",
   none: "bg-slate-100 text-slate-500 ring-slate-200",
 };
 
@@ -44,6 +48,8 @@ const labels: Record<StatusVariant, string> = {
   error: "Error",
   active: "Активен",
   suspended: "Заблокирован",
+  blocked: "Заблокирован",
+  pending: "Ожидает",
   none: "Нет подписки",
 };
 

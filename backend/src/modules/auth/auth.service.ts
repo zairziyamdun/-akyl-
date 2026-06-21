@@ -12,6 +12,7 @@ import {
   type AuthMeResponse,
   type AuthSessionResponse,
   type Profile,
+  isActiveProfileStatus,
 } from "./auth.types.js";
 
 async function getProfileByUserId(userId: string): Promise<Profile> {
@@ -135,9 +136,9 @@ export async function loginUser(input: LoginInput): Promise<AuthSessionResponse>
 
   const profile = await getProfileByUserId(data.user.id);
 
-  if (profile.status === "suspended") {
+  if (!isActiveProfileStatus(profile.status)) {
     await getSupabaseAdmin().auth.admin.signOut(data.user.id);
-    throw new ForbiddenError("Account is suspended");
+    throw new ForbiddenError("Account is not active");
   }
 
   return {
@@ -159,8 +160,8 @@ export async function getMe(accessToken: string): Promise<AuthMeResponse> {
 
   const profile = await getProfileByUserId(data.user.id);
 
-  if (profile.status === "suspended") {
-    throw new ForbiddenError("Account is suspended");
+  if (!isActiveProfileStatus(profile.status)) {
+    throw new ForbiddenError("Account is not active");
   }
 
   return {
