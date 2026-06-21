@@ -298,54 +298,40 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
     viewerError || (viewerMode === "iframe" && pdfError && !pdfLoading);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-slate-200">
-      <header className="flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-3 py-2.5 sm:gap-3 sm:px-5">
-        <Link
-          href="/journal"
-          className="shrink-0 text-xs font-medium text-sky-700 hover:underline sm:text-sm"
-        >
-          ← Все выпуски
-        </Link>
-        <h1 className="min-w-0 flex-1 basis-full truncate text-sm font-semibold text-slate-900 sm:basis-auto sm:text-base">
-          {issue.title}
-        </h1>
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
-          {viewerMode === "pdfjs" ? (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                void fetchIssuePdfUrl(issue.id).then((url) => {
-                  window.open(url, "_blank", "noopener,noreferrer");
-                });
-              }}
-            >
-              <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
-              В браузере
-            </Button>
-          ) : null}
-          <Button
-            size="sm"
-            variant="secondary"
+    <div className="w-full max-w-full overflow-x-hidden bg-slate-100">
+      <header className="sticky top-0 z-10 border-b border-slate-200/90 bg-white/95 backdrop-blur-sm">
+        <div className="mx-auto flex w-full max-w-full items-center gap-2 px-4 py-3 sm:gap-3 sm:px-5">
+          <Link
+            href="/journal"
+            className="shrink-0 text-xs font-medium text-sky-700 hover:underline sm:text-sm"
+          >
+            ← Все выпуски
+          </Link>
+          <h1 className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900 sm:text-base">
+            {issue.title}
+          </h1>
+          <button
+            type="button"
             disabled={downloading}
             onClick={() => void handleDownload()}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
           >
-            <Download className="mr-1.5 h-3.5 w-3.5" />
-            {downloading ? "…" : "Скачать PDF"}
-          </Button>
-          {downloadError ? (
-            <span className="max-w-[10rem] truncate text-[10px] text-red-600">
-              {downloadError}
-            </span>
-          ) : null}
+            <Download className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            <span>{downloading ? "…" : "Скачать PDF"}</span>
+          </button>
         </div>
+        {downloadError ? (
+          <p className="border-t border-red-100 bg-red-50 px-4 py-1.5 text-center text-[11px] text-red-600">
+            {downloadError}
+          </p>
+        ) : null}
       </header>
 
       <div
         className={
-          viewerMode === "pdfjs"
-            ? "min-h-0 flex-1 overflow-y-auto overscroll-contain"
-            : "relative min-h-0 flex-1 overflow-hidden"
+          viewerMode === "iframe"
+            ? "relative min-h-[calc(100dvh-8rem)] w-full max-w-full overflow-hidden sm:min-h-[calc(100vh-4rem)]"
+            : "w-full max-w-full overflow-x-hidden"
         }
       >
         {viewerMode === "iframe" && pdfLoading ? (

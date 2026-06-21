@@ -92,14 +92,14 @@ export function PdfViewer({
 
     const updateWidth = () => {
       const width = node.clientWidth;
-      setPageWidth(Math.max(240, Math.min(width - 24, 820)));
+      setPageWidth(Math.max(240, Math.floor(width)));
     };
 
     updateWidth();
     const observer = new ResizeObserver(updateWidth);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [phase]);
+  }, [phase, pdfBytes]);
 
   const emitLoadError = useCallback((message: string, diagnostics: PdfDiagnostics) => {
     console.error("[pdf] load-error", message, diagnostics);
@@ -277,7 +277,10 @@ export function PdfViewer({
   return (
     <div
       ref={containerRef}
-      className={className ?? "mx-auto w-full max-w-3xl px-3 py-4 sm:px-4 sm:py-6"}
+      className={
+        className ??
+        "w-full max-w-full overflow-x-hidden px-4 py-4 pb-8 sm:mx-auto sm:max-w-3xl sm:px-6 sm:py-6 sm:pb-10"
+      }
     >
       <Document
         key={documentKey}
@@ -294,6 +297,7 @@ export function PdfViewer({
             }
           />
         }
+        className="flex w-full max-w-full flex-col items-center overflow-x-hidden"
       >
         {Array.from({ length: numPages }, (_, index) => (
           <Page
@@ -303,34 +307,22 @@ export function PdfViewer({
             renderTextLayer={false}
             renderAnnotationLayer={false}
             onRenderError={handlePageRenderError}
-            className="mx-auto mb-3 overflow-hidden rounded-sm bg-white shadow-md last:mb-6"
+            className="mx-auto mb-4 max-w-full overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-md last:mb-0"
             loading={
               <div
-                className="mx-auto mb-3 animate-pulse rounded-sm bg-slate-100 shadow-sm"
+                className="mx-auto mb-4 max-w-full animate-pulse rounded-lg border border-slate-100 bg-white shadow-sm"
                 style={{ width: pageWidth, height: Math.round(pageWidth * 1.414) }}
                 aria-hidden
               />
             }
             error={
-              <div className="mx-auto mb-3 rounded-sm bg-red-50 px-3 py-2 text-xs text-red-700">
+              <div className="mx-auto mb-4 max-w-full rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
                 Страница {index + 1}: ошибка рендера
               </div>
             }
           />
         ))}
       </Document>
-
-      {showOpenInBrowser && browserUrl ? (
-        <p className="pb-6 text-center">
-          <button
-            type="button"
-            onClick={() => void openInBrowser()}
-            className="text-xs font-medium text-sky-700 underline-offset-2 hover:underline"
-          >
-            Открыть в браузере
-          </button>
-        </p>
-      ) : null}
 
       <span className="sr-only">{title}</span>
     </div>

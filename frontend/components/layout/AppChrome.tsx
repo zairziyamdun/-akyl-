@@ -35,7 +35,7 @@ export function AppChrome({ children }: { children: ReactNode }) {
     return (
       <>
         <Navbar />
-        <main className="flex min-h-0 flex-1 flex-col">{children}</main>
+        <main className="min-w-0 flex-1">{children}</main>
       </>
     );
   }
