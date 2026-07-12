@@ -1,0 +1,9 @@
+publicHoistPattern:
+  - pdfjs-dist
+
+overrides:
+  pdfjs-dist: 5.4.296
+
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
