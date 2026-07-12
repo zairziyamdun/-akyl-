@@ -150,10 +150,14 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
         </h3>
         <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_220px_auto]">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="house-user-select"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Пользователь
             </label>
             <select
+              id="house-user-select"
               value={selectedUserId}
               onChange={(event) => setSelectedUserId(event.target.value)}
               className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
@@ -175,10 +179,14 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="house-user-role"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Роль в ЖК
             </label>
             <select
+              id="house-user-role"
               value={selectedHouseRole}
               onChange={(event) =>
                 setSelectedHouseRole(event.target.value as HouseUserRole)

@@ -103,7 +103,9 @@ export function ChecklistsInteractive() {
   const [answers, setAnswers] = useState(createInitialAnswers);
 
   const activeCategory = useMemo(
-    () => CHECKLIST_CATEGORIES.find((c) => c.id === activeId)!,
+    () =>
+      CHECKLIST_CATEGORIES.find((c) => c.id === activeId) ??
+      CHECKLIST_CATEGORIES[0],
     [activeId],
   );
 
@@ -506,34 +508,35 @@ export function ChecklistsInteractive() {
                             </div>
                           </div>
 
-                          <div
-                            className="mt-5 grid gap-2 md:grid-cols-3"
-                            role="radiogroup"
-                            aria-label={q.text}
-                          >
+                          <div className="mt-5 grid gap-2 md:grid-cols-3">
                             {ANSWER_OPTIONS.map((opt) => {
                               const selected = value === opt.value;
 
                               return (
-                                <button
+                                <label
                                   key={opt.value}
-                                  type="button"
-                                  role="radio"
-                                  aria-checked={selected}
-                                  onClick={() =>
-                                    setAnswer(
-                                      activeCategory.id,
-                                      index,
-                                      opt.value,
-                                    )
-                                  }
                                   className={cn(
-                                    "group rounded-2xl border px-4 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400",
+                                    "group cursor-pointer rounded-2xl border px-4 py-4 text-left transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-slate-400",
                                     selected
                                       ? "border-slate-900 bg-slate-900 text-white shadow-sm"
                                       : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
                                   )}
                                 >
+                                  <input
+                                    type="radio"
+                                    className="sr-only"
+                                    name={`checklist-${activeCategory.id}-q-${index}`}
+                                    value={opt.value}
+                                    checked={selected}
+                                    onChange={() =>
+                                      setAnswer(
+                                        activeCategory.id,
+                                        index,
+                                        opt.value,
+                                      )
+                                    }
+                                    aria-label={`${q.text}: ${opt.label}`}
+                                  />
                                   <div className="flex items-start justify-between gap-3">
                                     <div>
                                       <p className="text-sm font-semibold">
@@ -560,7 +563,7 @@ export function ChecklistsInteractive() {
                                       )}
                                     />
                                   </div>
-                                </button>
+                                </label>
                               );
                             })}
                           </div>

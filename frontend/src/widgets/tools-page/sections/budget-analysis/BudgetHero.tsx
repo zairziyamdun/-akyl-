@@ -2,7 +2,10 @@ import { BarChart3, TrendingUp } from "lucide-react";
 
 import { Container } from "@/shared/ui/Container";
 
-const previewBars = [42, 68, 55, 82, 71, 90, 63, 78];
+const previewBars = [42, 68, 55, 82, 71, 90, 63, 78].map((height, i) => ({
+  id: `budget-preview-bar-${i}`,
+  height,
+}));
 
 export function BudgetHero() {
   return (
@@ -63,16 +66,16 @@ export function BudgetHero() {
                 </div>
 
                 <div className="mt-6 flex h-44 items-end justify-between gap-3 md:h-52">
-                  {previewBars.map((h, i) => (
+                  {previewBars.map((bar) => (
                     <div
-                      key={i}
+                      key={bar.id}
                       className="flex h-full flex-1 items-end justify-center"
                     >
                       <div className="relative flex h-full w-full max-w-[30px] items-end">
                         <div className="absolute inset-0 rounded-t-lg bg-white/5" />
                         <div
                           className="relative z-10 w-full rounded-t-lg bg-gradient-to-t from-cyan-500/40 via-cyan-400/70 to-cyan-300/90 shadow-[0_0_20px_rgba(34,211,238,0.25)]"
-                          style={{ height: `${h}%` }}
+                          style={{ height: `${bar.height}%` }}
                         />
                       </div>
                     </div>

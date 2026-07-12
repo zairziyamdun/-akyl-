@@ -180,7 +180,7 @@ function HeroSection() {
                   const offset = index - 1;
                   return (
                     <motion.button
-                      key={`${tool.id}-${index}`}
+                      key={tool.id}
                       type="button"
                       onClick={() =>
                         setActive(
@@ -237,7 +237,7 @@ function HeroSection() {
                 const isActive = index === 0;
                 return (
                   <motion.button
-                    key={`${tool.id}-mobile-${index}`}
+                    key={`${tool.id}-mobile`}
                     type="button"
                     onClick={() =>
                       setActive(TOOLS.findIndex((item) => item.id === tool.id))

@@ -34,21 +34,23 @@ function ToggleRow({
   description?: string;
 }) {
   return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      disabled={disabled}
-      onClick={onChange}
+    <label
       className={cn(
-        "w-full rounded-2xl border px-4 py-3 text-left transition",
+        "block w-full rounded-2xl border px-4 py-3 text-left transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-slate-400",
         disabled
           ? "cursor-not-allowed border-slate-200 bg-slate-50 opacity-70"
           : checked
-            ? "border-slate-900 bg-white shadow-sm"
-            : "border-black/10 bg-white/90 hover:border-slate-300 hover:bg-white",
+            ? "cursor-pointer border-slate-900 bg-white shadow-sm"
+            : "cursor-pointer border-black/10 bg-white/90 hover:border-slate-300 hover:bg-white",
       )}
     >
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        disabled={disabled}
+        onChange={onChange}
+      />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-slate-950">{label}</p>
@@ -70,7 +72,7 @@ function ToggleRow({
           <Check className="size-4" />
         </span>
       </div>
-    </button>
+    </label>
   );
 }
 
@@ -84,18 +86,20 @@ function MetricToggle({
   onChange: () => void;
 }) {
   return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      onClick={onChange}
+    <label
       className={cn(
-        "flex min-h-[56px] items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition",
+        "flex min-h-[56px] cursor-pointer items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-slate-400",
         checked
           ? "border-slate-900 bg-white shadow-sm"
           : "border-black/10 bg-white/80 hover:border-slate-300 hover:bg-white",
       )}
     >
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={onChange}
+      />
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-slate-950">
           {metric.label}
@@ -117,7 +121,7 @@ function MetricToggle({
           className={cn("size-4", checked ? "opacity-100" : "opacity-0")}
         />
       </span>
-    </button>
+    </label>
   );
 }
 
@@ -162,7 +166,7 @@ export function ManagementReportConstructor() {
   }, [activeSections, enabledMetrics]);
 
   const kpiSection = useMemo(
-    () => REPORT_SECTIONS.find((s) => s.id === "kpi")!,
+    () => REPORT_SECTIONS.find((s) => s.id === "kpi") ?? REPORT_SECTIONS[0],
     [],
   );
 
@@ -281,7 +285,9 @@ export function ManagementReportConstructor() {
   }, [activeSections, enabledMetrics, kpiValuesForStatus.statusKey]);
 
   const activeSection = useMemo(
-    () => REPORT_SECTIONS.find((s) => s.id === activeSectionId)!,
+    () =>
+      REPORT_SECTIONS.find((s) => s.id === activeSectionId) ??
+      REPORT_SECTIONS[0],
     [activeSectionId],
   );
 
@@ -296,7 +302,8 @@ export function ManagementReportConstructor() {
 
       // Если выключаем раздел — выключаем и его метрики.
       if (!nextEnabled) {
-        const section = REPORT_SECTIONS.find((s) => s.id === sectionId)!;
+        const section = REPORT_SECTIONS.find((s) => s.id === sectionId);
+        if (!section) return next;
         setEnabledMetrics((prevMetrics) => {
           const metricsNext = { ...prevMetrics };
           for (const metric of section.metrics) {
@@ -306,7 +313,8 @@ export function ManagementReportConstructor() {
         });
       } else {
         // Если включаем — включаем его метрики.
-        const section = REPORT_SECTIONS.find((s) => s.id === sectionId)!;
+        const section = REPORT_SECTIONS.find((s) => s.id === sectionId);
+        if (!section) return next;
         setEnabledMetrics((prevMetrics) => {
           const metricsNext = { ...prevMetrics };
           for (const metric of section.metrics) {

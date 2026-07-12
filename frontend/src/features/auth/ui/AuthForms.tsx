@@ -59,10 +59,14 @@ export function LoginForm() {
         }}
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="login-email"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Email
           </label>
           <Input
+            id="login-email"
             type="email"
             placeholder="you@example.kz"
             required
@@ -73,7 +77,12 @@ export function LoginForm() {
         </div>
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <label className="text-sm font-medium text-slate-700">Пароль</label>
+            <label
+              htmlFor="login-password"
+              className="text-sm font-medium text-slate-700"
+            >
+              Пароль
+            </label>
             <Link
               href="/forgot-password"
               className="text-xs text-sky-700 hover:underline"
@@ -82,6 +91,7 @@ export function LoginForm() {
             </Link>
           </div>
           <Input
+            id="login-password"
             type="password"
             placeholder="••••••••"
             required
@@ -159,10 +169,14 @@ export function RegisterForm() {
         }}
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="register-full-name"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Имя
           </label>
           <Input
+            id="register-full-name"
             placeholder="Иван Иванов"
             required
             disabled={state === "loading"}
@@ -171,10 +185,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="register-email"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Email
           </label>
           <Input
+            id="register-email"
             type="email"
             placeholder="you@example.kz"
             required
@@ -184,10 +202,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="register-organization"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Организация
           </label>
           <Input
+            id="register-organization"
             placeholder="ОСИ / УК / Акимат"
             required
             disabled={state === "loading"}
@@ -196,10 +218,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="register-phone"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Телефон
           </label>
           <Input
+            id="register-phone"
             type="tel"
             placeholder="+7 777 000 0000"
             required
@@ -209,10 +235,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="register-password"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Пароль
           </label>
           <Input
+            id="register-password"
             type="password"
             placeholder="мин. 8 символов"
             required
@@ -275,10 +305,14 @@ export function ForgotPasswordForm() {
         }}
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="forgot-email"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Email
           </label>
           <Input
+            id="forgot-email"
             type="email"
             placeholder="you@example.kz"
             required

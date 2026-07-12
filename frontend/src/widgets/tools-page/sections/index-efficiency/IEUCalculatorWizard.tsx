@@ -136,7 +136,10 @@ export function IEUCalculatorWizard() {
                   key={field.key}
                   className="rounded-xl border border-black/10 bg-slate-50/50 p-4 transition hover:border-slate-300"
                 >
-                  <label className="text-sm font-semibold text-slate-900">
+                  <label
+                    htmlFor={`ieu-${field.key}`}
+                    className="text-sm font-semibold text-slate-900"
+                  >
                     {field.label}
                   </label>
                   <p className="mt-1 text-xs leading-relaxed text-slate-500">
@@ -144,6 +147,7 @@ export function IEUCalculatorWizard() {
                   </p>
                   <div className="mt-3 flex items-center gap-3">
                     <input
+                      id={`ieu-${field.key}`}
                       type="range"
                       min={field.min}
                       max={field.max}

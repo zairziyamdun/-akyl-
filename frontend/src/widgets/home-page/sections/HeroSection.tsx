@@ -154,7 +154,12 @@ function HeroVisualPanel({ activeIndex }: { activeIndex: number }) {
 
 function ChevronLeftIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
       <path
         d="M14.5 6.5L9 12l5.5 5.5"
         stroke="currentColor"
@@ -168,7 +173,12 @@ function ChevronLeftIcon({ className }: { className?: string }) {
 
 function ChevronRightIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
       <path
         d="M9.5 6.5L15 12l-5.5 5.5"
         stroke="currentColor"

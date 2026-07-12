@@ -161,13 +161,22 @@ function NavbarInner({ pathname }: { pathname: string }) {
           {/* RIGHT — CTA + ACTIONS */}
           <div className="flex items-center justify-end gap-3">
             <div className="hidden md:flex items-center gap-2">
-              <button className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white">
+              <button
+                type="button"
+                className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white"
+              >
                 RU
               </button>
-              <button className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white">
+              <button
+                type="button"
+                className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white"
+              >
                 KZ
               </button>
-              <button className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white">
+              <button
+                type="button"
+                className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white"
+              >
                 ☾
               </button>
             </div>
@@ -182,6 +191,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
             </Link>
 
             <button
+              type="button"
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white lg:hidden"
               onClick={() => setMobileOpen((prev) => !prev)}
             >

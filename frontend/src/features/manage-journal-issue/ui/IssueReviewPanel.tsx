@@ -54,10 +54,14 @@ export function IssueReviewPanel({ issue }: { issue: JournalIssueRecord }) {
         </p>
 
         <div className="mt-4">
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="issue-review-note"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Комментарий (опционально)
           </label>
           <textarea
+            id="issue-review-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className="min-h-[80px] w-full rounded-xl bg-white px-4 py-3 text-sm ring-1 ring-black/10 outline-none"

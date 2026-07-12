@@ -348,10 +348,14 @@ export function JournalIssueForm({
       <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
         <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="issue-title"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Название выпуска
             </label>
             <Input
+              id="issue-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Индекс эффективности управления МЖД"
@@ -360,10 +364,14 @@ export function JournalIssueForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="issue-number"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Номер выпуска
             </label>
             <Input
+              id="issue-number"
               value={issueNumber}
               onChange={(e) => setIssueNumber(e.target.value)}
               placeholder="06"
@@ -372,10 +380,14 @@ export function JournalIssueForm({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="issue-description"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Краткое описание
             </label>
             <textarea
+              id="issue-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               disabled={readOnly || submitting}

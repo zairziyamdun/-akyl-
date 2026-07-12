@@ -11,6 +11,11 @@ import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const slides = homeAnalyticsSlides;
 
+const kpiBars = [40, 55, 48, 62, 58, 71, 68, 74, 78].map((height, i) => ({
+  id: `home-kpi-bar-${i}`,
+  height,
+}));
+
 export function HomeAnalyticsShowcaseSection() {
   const [i, setI] = useState(0);
 
@@ -76,9 +81,9 @@ export function HomeAnalyticsShowcaseSection() {
                 </motion.div>
               </AnimatePresence>
               <div className="mt-4 flex gap-1.5">
-                {slides.map((_, j) => (
+                {slides.map((slide, j) => (
                   <button
-                    key={j}
+                    key={slide.href}
                     type="button"
                     aria-label={`Слайд ${j + 1}`}
                     onClick={() => setI(j)}
@@ -133,11 +138,11 @@ export function HomeAnalyticsShowcaseSection() {
                 <span>квартал</span>
               </div>
               <div className="mt-4 flex h-24 items-end gap-1">
-                {[40, 55, 48, 62, 58, 71, 68, 74, 78].map((h, k) => (
+                {kpiBars.map((bar) => (
                   <div
-                    key={k}
+                    key={bar.id}
                     className="flex-1 rounded-t bg-gradient-to-t from-slate-700 to-emerald-500/80"
-                    style={{ height: `${h}%` }}
+                    style={{ height: `${bar.height}%` }}
                   />
                 ))}
               </div>

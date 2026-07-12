@@ -70,10 +70,14 @@ export function ProfileForm({
           }}
         >
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="profile-full-name"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Имя
             </label>
             <Input
+              id="profile-full-name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -81,16 +85,29 @@ export function ProfileForm({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="profile-email"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Email
             </label>
-            <Input value={user.email} type="email" readOnly disabled />
+            <Input
+              id="profile-email"
+              value={user.email}
+              type="email"
+              readOnly
+              disabled
+            />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="profile-organization"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Организация
             </label>
             <Input
+              id="profile-organization"
               value={organization}
               onChange={(e) => setOrganization(e.target.value)}
               required
@@ -98,10 +115,14 @@ export function ProfileForm({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="profile-phone"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Телефон
             </label>
             <Input
+              id="profile-phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required

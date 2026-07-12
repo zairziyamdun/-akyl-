@@ -14,7 +14,7 @@
       "!dist",
       "!build",
       "!public/pdf.worker.min.mjs",
-      "!public/pdfjs/**",
+      "!public/pdfjs",
       "!**/*.svg"
     ]
   },

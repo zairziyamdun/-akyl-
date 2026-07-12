@@ -13,7 +13,10 @@ import {
   consultationHeroTransition,
 } from "../model/consultationMotion";
 
-const chartBars = [38, 52, 48, 64, 58, 72, 68, 78, 82, 88];
+const chartBars = [38, 52, 48, 64, 58, 72, 68, 78, 82, 88].map((height, i) => ({
+  id: `consultation-bar-${i}`,
+  height,
+}));
 
 function AnimatedKpiBar({
   value,
@@ -193,12 +196,12 @@ export function ConsultationHero() {
                     <span className="text-xs text-slate-500">live</span>
                   </div>
                   <div className="mt-3 flex h-16 items-end justify-between gap-1">
-                    {chartBars.map((h, i) => (
+                    {chartBars.map((bar, i) => (
                       <motion.div
-                        key={i}
+                        key={bar.id}
                         className="flex-1 rounded-t bg-gradient-to-t from-sky-200 to-sky-600"
-                        initial={{ height: reduced ? `${h}%` : "0%" }}
-                        whileInView={{ height: `${h}%` }}
+                        initial={{ height: reduced ? `${bar.height}%` : "0%" }}
+                        whileInView={{ height: `${bar.height}%` }}
                         viewport={{ once: true }}
                         transition={{
                           duration: 0.6,

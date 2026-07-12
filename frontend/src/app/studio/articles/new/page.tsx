@@ -47,10 +47,14 @@ export default function StudioArticleNewPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
         <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="article-title"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Заголовок
             </label>
             <Input
+              id="article-title"
               placeholder="Заголовок статьи"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -58,10 +62,14 @@ export default function StudioArticleNewPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="article-content"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Содержание
             </label>
             <textarea
+              id="article-content"
               className="min-h-[320px] w-full rounded-xl bg-white px-4 py-3 text-sm text-slate-900 ring-1 ring-black/10 outline-none placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-slate-400"
               placeholder="Текст статьи — здесь будет rich-text editor после подключения CMS…"
             />
@@ -90,29 +98,44 @@ export default function StudioArticleNewPage() {
             </h3>
             <div className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs text-slate-500">
+                <label
+                  htmlFor="article-category"
+                  className="mb-1 block text-xs text-slate-500"
+                >
                   Категория
                 </label>
-                <select className="h-10 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10">
+                <select
+                  id="article-category"
+                  className="h-10 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10"
+                >
                   <option>Управление МЖД</option>
                   <option>Финансы</option>
                   <option>KPI</option>
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs text-slate-500">
+                <label
+                  htmlFor="article-issue"
+                  className="mb-1 block text-xs text-slate-500"
+                >
                   Выпуск
                 </label>
-                <select className="h-10 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10">
+                <select
+                  id="article-issue"
+                  className="h-10 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10"
+                >
                   <option>04 — Стандарты</option>
                   <option>03 — Финансы</option>
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs text-slate-500">
+                <label
+                  htmlFor="article-tags"
+                  className="mb-1 block text-xs text-slate-500"
+                >
                   Теги
                 </label>
-                <Input placeholder="KPI, ОСИ, финансы" />
+                <Input id="article-tags" placeholder="KPI, ОСИ, финансы" />
               </div>
             </div>
           </div>

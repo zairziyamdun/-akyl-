@@ -250,10 +250,14 @@ export function HouseFinanceManager({ houseId }: HouseFinanceManagerProps) {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="finance-period-month"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               {FINANCE_FIELD_LABELS.period_month}
             </label>
             <Input
+              id="finance-period-month"
               type="month"
               value={form.period_month}
               onChange={(event) =>
@@ -268,10 +272,14 @@ export function HouseFinanceManager({ houseId }: HouseFinanceManagerProps) {
 
           {NUMERIC_FIELDS.map((field) => (
             <div key={field}>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label
+                htmlFor={`finance-${field}`}
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
                 {FINANCE_FIELD_LABELS[field]}
               </label>
               <Input
+                id={`finance-${field}`}
                 type="number"
                 step="0.01"
                 value={form[field]}

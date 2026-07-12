@@ -170,9 +170,9 @@ export function BudgetCharts({ rows }: Props) {
                     return `${shortName(name, 12)} ${(pct * 100).toFixed(0)}%`;
                   }}
                 >
-                  {pieData.map((_, i) => (
+                  {pieData.map((entry, i) => (
                     <Cell
-                      key={i}
+                      key={entry.name}
                       fill={PIE_COLORS[i % PIE_COLORS.length]}
                       stroke="white"
                       strokeWidth={2}

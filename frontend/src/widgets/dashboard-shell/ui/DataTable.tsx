@@ -75,17 +75,23 @@ export function TableSkeleton({
   rows?: number;
   cols?: number;
 }) {
+  const rowIds = Array.from({ length: rows }, (_, i) => `table-skel-row-${i}`);
+  const colIds = Array.from({ length: cols }, (_, i) => `table-skel-col-${i}`);
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <div className="animate-pulse space-y-0">
         <div className="h-10 bg-slate-100" />
-        {Array.from({ length: rows }).map((_, i) => (
+        {rowIds.map((rowId) => (
           <div
-            key={i}
+            key={rowId}
             className="flex gap-4 border-t border-slate-100 px-4 py-4"
           >
-            {Array.from({ length: cols }).map((__, j) => (
-              <div key={j} className="h-4 flex-1 rounded bg-slate-100" />
+            {colIds.map((colId) => (
+              <div
+                key={`${rowId}-${colId}`}
+                className="h-4 flex-1 rounded bg-slate-100"
+              />
             ))}
           </div>
         ))}

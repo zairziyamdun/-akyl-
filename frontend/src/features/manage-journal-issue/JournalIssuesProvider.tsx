@@ -77,7 +77,7 @@ function upsertIssue(
 }
 
 export function JournalIssuesProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [issues, setIssues] = useState<JournalIssueRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

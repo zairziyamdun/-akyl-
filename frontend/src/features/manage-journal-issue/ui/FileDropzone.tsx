@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useState } from "react";
 
 import { cn } from "@/shared/lib";
@@ -41,6 +42,10 @@ export function FileDropzone({
     [disabled, onFileSelect],
   );
 
+  const isLocalPreview =
+    !!previewUrl &&
+    (previewUrl.startsWith("blob:") || previewUrl.startsWith("data:"));
+
   return (
     <div className={className}>
       <p className="mb-2 text-sm font-medium text-slate-700">{label}</p>
@@ -75,9 +80,12 @@ export function FileDropzone({
         />
 
         {previewType === "image" && previewUrl ? (
-          <img
+          <Image
             src={previewUrl}
             alt="Обложка"
+            width={144}
+            height={192}
+            unoptimized={isLocalPreview}
             className="mb-4 h-48 w-36 rounded-xl object-cover shadow-md"
           />
         ) : null}

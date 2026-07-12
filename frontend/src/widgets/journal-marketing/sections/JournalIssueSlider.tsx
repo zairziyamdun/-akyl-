@@ -27,6 +27,7 @@ export function JournalIssueSlider({
 }: JournalIssueSliderProps) {
   if (slides.length <= 1) return null;
 
+  const activeSlide = slides[activeIndex];
   const useScroll = slides.length > 5;
 
   return (
@@ -80,7 +81,7 @@ export function JournalIssueSlider({
         animate={{ opacity: 1, y: 0 }}
         className="mt-3 hidden text-center text-xs text-white/35 line-clamp-2 sm:mt-4 sm:block"
       >
-        {slideCaption(slides[activeIndex]!)}
+        {activeSlide ? slideCaption(activeSlide) : null}
       </motion.p>
     </div>
   );

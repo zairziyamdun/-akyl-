@@ -309,32 +309,34 @@ export function PdfViewer({
         }
         className="flex w-full max-w-full flex-col items-center overflow-x-hidden"
       >
-        {Array.from({ length: numPages }, (_, index) => (
-          <Page
-            key={`${documentKey}-page-${index + 1}`}
-            pageNumber={index + 1}
-            width={pageWidth}
-            renderTextLayer={false}
-            renderAnnotationLayer={false}
-            onRenderError={handlePageRenderError}
-            className="mx-auto mb-4 max-w-full overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-md last:mb-0"
-            loading={
-              <div
-                className="mx-auto mb-4 max-w-full animate-pulse rounded-lg border border-slate-100 bg-white shadow-sm"
-                style={{
-                  width: pageWidth,
-                  height: Math.round(pageWidth * Math.SQRT2),
-                }}
-                aria-hidden
-              />
-            }
-            error={
-              <div className="mx-auto mb-4 max-w-full rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
-                Страница {index + 1}: ошибка рендера
-              </div>
-            }
-          />
-        ))}
+        {Array.from({ length: numPages }, (_, index) => index + 1).map(
+          (pageNumber) => (
+            <Page
+              key={`${documentKey}-page-${pageNumber}`}
+              pageNumber={pageNumber}
+              width={pageWidth}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              onRenderError={handlePageRenderError}
+              className="mx-auto mb-4 max-w-full overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-md last:mb-0"
+              loading={
+                <div
+                  className="mx-auto mb-4 max-w-full animate-pulse rounded-lg border border-slate-100 bg-white shadow-sm"
+                  style={{
+                    width: pageWidth,
+                    height: Math.round(pageWidth * Math.SQRT2),
+                  }}
+                  aria-hidden
+                />
+              }
+              error={
+                <div className="mx-auto mb-4 max-w-full rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">
+                  Страница {pageNumber}: ошибка рендера
+                </div>
+              }
+            />
+          ),
+        )}
       </Document>
 
       <span className="sr-only">{title}</span>

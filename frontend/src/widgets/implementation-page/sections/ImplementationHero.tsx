@@ -22,7 +22,10 @@ const kpiRows = [
   { label: "KPI", value: 58 },
 ];
 
-const chartBars = [40, 55, 48, 70, 62, 78, 85, 80, 88, 92];
+const chartBars = [40, 55, 48, 70, 62, 78, 85, 80, 88, 92].map((height, i) => ({
+  id: `implementation-bar-${i}`,
+  height,
+}));
 
 const badges = ["Диагностика", "Аудит", "KPI", "BI", "Контроль"];
 
@@ -145,11 +148,11 @@ export function ImplementationHero() {
                 </p>
               </div>
               <div className="flex h-12 items-end gap-1">
-                {chartBars.map((h, i) => (
+                {chartBars.map((bar) => (
                   <div
-                    key={i}
+                    key={bar.id}
                     className="w-1.5 rounded-t bg-gradient-to-t from-stone-300 to-stone-800"
-                    style={{ height: `${h}%` }}
+                    style={{ height: `${bar.height}%` }}
                   />
                 ))}
               </div>

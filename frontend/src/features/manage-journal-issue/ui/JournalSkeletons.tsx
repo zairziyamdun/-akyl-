@@ -1,9 +1,14 @@
 export function JournalListSkeleton({ count = 6 }: { count?: number }) {
+  const placeholders = Array.from(
+    { length: count },
+    (_, i) => `journal-card-skeleton-${i}`,
+  );
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: count }).map((_, i) => (
+      {placeholders.map((id) => (
         <div
-          key={i}
+          key={id}
           className="animate-pulse overflow-hidden rounded-2xl border border-slate-200 bg-white"
         >
           <div className="h-40 bg-slate-100" />
@@ -20,12 +25,17 @@ export function JournalListSkeleton({ count = 6 }: { count?: number }) {
 }
 
 export function JournalTableSkeleton({ rows = 5 }: { rows?: number }) {
+  const placeholders = Array.from(
+    { length: rows },
+    (_, i) => `journal-row-skeleton-${i}`,
+  );
+
   return (
     <div className="animate-pulse overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <div className="h-11 bg-slate-100" />
-      {Array.from({ length: rows }).map((_, i) => (
+      {placeholders.map((id) => (
         <div
-          key={i}
+          key={id}
           className="flex items-center gap-4 border-t border-slate-100 px-4 py-4"
         >
           <div className="h-14 w-10 rounded bg-slate-100" />

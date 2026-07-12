@@ -27,7 +27,12 @@ import {
 
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 sm:h-6 sm:w-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="h-5 w-5 sm:h-6 sm:w-6"
+      aria-hidden="true"
+    >
       <path
         d={
           direction === "left"

@@ -161,20 +161,23 @@ export function ToolsHero() {
                     </div>
                   </div>
                   <div className="mt-4 space-y-2">
-                    {activeTool.progress.map((value, idx) => (
-                      <div key={`${activeTool.id}-${idx}`}>
-                        <div className="mb-1 flex justify-between text-xs text-slate-500">
-                          <span>Блок {idx + 1}</span>
-                          <span>{value}%</span>
+                    {activeTool.progress.map((value, idx) => {
+                      const blockId = `${activeTool.id}-block-${idx + 1}`;
+                      return (
+                        <div key={blockId}>
+                          <div className="mb-1 flex justify-between text-xs text-slate-500">
+                            <span>Блок {idx + 1}</span>
+                            <span>{value}%</span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-slate-200">
+                            <div
+                              className="h-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500"
+                              style={{ width: `${value}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="h-1.5 rounded-full bg-slate-200">
-                          <div
-                            className="h-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500"
-                            style={{ width: `${value}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
