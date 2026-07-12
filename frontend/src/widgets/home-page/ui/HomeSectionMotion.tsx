@@ -1,8 +1,8 @@
 "use client";
 
-import type { ReactNode } from "react";
 import type { Transition } from "framer-motion";
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 
 import { homeTransition, homeViewport } from "@/widgets/home-page";
 

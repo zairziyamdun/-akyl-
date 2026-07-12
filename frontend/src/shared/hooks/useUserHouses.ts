@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { fetchHouses, HousesApiError, type House } from "@/entities/house";
+import { fetchHouses, type House, HousesApiError } from "@/entities/house";
 import type { AkylRole } from "@/entities/session";
 
 export function useUserHouses(role: AkylRole | null, enabled: boolean) {
@@ -27,7 +27,9 @@ export function useUserHouses(role: AkylRole | null, enabled: boolean) {
       } catch (err) {
         if (!cancelled) {
           setError(
-            err instanceof HousesApiError ? err.message : "Не удалось загрузить ЖК",
+            err instanceof HousesApiError
+              ? err.message
+              : "Не удалось загрузить ЖК",
           );
           setHouses([]);
         }

@@ -1,50 +1,46 @@
-export type {
-  House,
-  HouseUserRole,
-  HouseUserWithProfile,
-  FinanceSummary,
-  TechnicalSummary,
-  RequestsSummary,
-  KpiSummary,
-  HouseDashboard,
-  CreateHousePayload,
-  UpdateHousePayload,
-  AssignHouseUserPayload,
-} from "./model/types";
-
 export {
-  HOUSE_USER_ROLES,
-  HOUSE_USER_ROLE_LABELS,
-  houseUserDisplayName,
-} from "./model/types";
-
-export {
-  fetchHouses,
+  createHouse,
+  deleteHouse,
   fetchHouse,
   fetchHouseDashboard,
-  createHouse,
-  updateHouse,
-  deleteHouse,
+  fetchHouses,
   HousesApiError,
+  updateHouse,
 } from "./api/house.service";
-
 export type {
-  DashboardTabId,
-  DashboardSectionId,
-  TrafficStatus,
   ChartPoint,
-  NamedValue,
-  PlanFactRow,
+  DashboardSectionId,
+  DashboardTabId,
+  DashboardViewModel,
   ExpenseProgressRow,
-  SystemHealthRow,
   KpiMetricRow,
   ManagementDecision,
+  NamedValue,
+  PlanFactRow,
   RiskItem,
-  DashboardViewModel,
+  SystemHealthRow,
+  TrafficStatus,
 } from "./model/dashboardModel";
-
 export {
-  DASHBOARD_TABS,
-  DASHBOARD_SECTIONS,
   buildDashboardViewModel,
+  DASHBOARD_SECTIONS,
+  DASHBOARD_TABS,
 } from "./model/dashboardModel";
+export type {
+  AssignHouseUserPayload,
+  CreateHousePayload,
+  FinanceSummary,
+  House,
+  HouseDashboard,
+  HouseUserRole,
+  HouseUserWithProfile,
+  KpiSummary,
+  RequestsSummary,
+  TechnicalSummary,
+  UpdateHousePayload,
+} from "./model/types";
+export {
+  HOUSE_USER_ROLE_LABELS,
+  HOUSE_USER_ROLES,
+  houseUserDisplayName,
+} from "./model/types";

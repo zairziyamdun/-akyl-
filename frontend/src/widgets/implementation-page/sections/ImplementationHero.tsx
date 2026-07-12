@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, CircleDot } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
-import { Button } from "@/shared/ui/Button";
+import Link from "next/link";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 
 import { implementationSectionMotion } from "../model/implementationMotion";
 
@@ -53,8 +52,9 @@ export function ImplementationHero() {
               Практика внедрения системы профессионального управления МЖД
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-              Пошаговая модель перехода от хаотичного управления домом к прозрачной
-              системе процессов, KPI, финансового контроля и цифровой аналитики.
+              Пошаговая модель перехода от хаотичного управления домом к
+              прозрачной системе процессов, KPI, финансового контроля и цифровой
+              аналитики.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button asChild>

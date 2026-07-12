@@ -1,15 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import Image from "next/image";
 
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import {
   homeUrbanCaseBullets,
   homeUrbanCaseImage,
 } from "../model/home-urban-case.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const bullets = homeUrbanCaseBullets;
 
@@ -42,11 +42,15 @@ export function HomeUrbanCaseSection() {
               Когда дом становится управляемым активом
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">
-              Методология проявляется в реальных контурах: фонд, подрядчики, жители, регуляторика.
+              Методология проявляется в реальных контурах: фонд, подрядчики,
+              жители, регуляторика.
             </p>
             <ul className="mt-8 space-y-3">
               {bullets.map((line) => (
-                <li key={line} className="flex gap-3 text-sm text-white/90 sm:text-[15px]">
+                <li
+                  key={line}
+                  className="flex gap-3 text-sm text-white/90 sm:text-[15px]"
+                >
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15">
                     <Check className="h-3 w-3" strokeWidth={2.5} />
                   </span>

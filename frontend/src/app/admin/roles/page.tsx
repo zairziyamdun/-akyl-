@@ -1,7 +1,10 @@
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { RoleBadge } from "@/widgets/dashboard-shell";
-import { mockPermissionMatrix, mockRoleCards } from "@/widgets/dashboard-shell";
 import type { AkylRole } from "@/entities/session";
+import {
+  mockPermissionMatrix,
+  mockRoleCards,
+  PageHeader,
+  RoleBadge,
+} from "@/widgets/dashboard-shell";
 
 function Check({ value }: { value: boolean }) {
   return (
@@ -69,7 +72,9 @@ export default function AdminRolesPage() {
             <tbody className="divide-y divide-slate-100">
               {mockPermissionMatrix.map((row) => (
                 <tr key={row.feature} className="hover:bg-slate-50/80">
-                  <td className="px-4 py-3 text-sm text-slate-700">{row.feature}</td>
+                  <td className="px-4 py-3 text-sm text-slate-700">
+                    {row.feature}
+                  </td>
                   <td className="px-4 py-3 text-center">
                     <Check value={row.admin} />
                   </td>

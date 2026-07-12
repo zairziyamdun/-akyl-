@@ -27,7 +27,8 @@ export const IEU_STEPS: IEUStepConfig[] = [
       {
         key: "maintenanceCompletion",
         label: "Выполнение ППР",
-        description: "Доля выполненных планово-предупредительных работ по плану.",
+        description:
+          "Доля выполненных планово-предупредительных работ по плану.",
         min: 0,
         max: 100,
       },
@@ -48,7 +49,8 @@ export const IEU_STEPS: IEUStepConfig[] = [
       {
         key: "overdueDefects",
         label: "Просроченные дефекты",
-        description: "Доля несвоевременно устранённых дефектов (чем ниже, тем лучше).",
+        description:
+          "Доля несвоевременно устранённых дефектов (чем ниже, тем лучше).",
         min: 0,
         max: 100,
       },
@@ -107,7 +109,8 @@ export const IEU_STEPS: IEUStepConfig[] = [
       {
         key: "repeatRequests",
         label: "Повторные обращения",
-        description: "Доля повторных обращений по тем же темам (чем ниже, тем лучше).",
+        description:
+          "Доля повторных обращений по тем же темам (чем ниже, тем лучше).",
         min: 0,
         max: 100,
       },
@@ -172,7 +175,8 @@ export const IEU_STEPS: IEUStepConfig[] = [
       {
         key: "complianceWithoutViolations",
         label: "Отсутствие нарушений",
-        description: "Соответствие процедур и отсутствие существенных нарушений.",
+        description:
+          "Соответствие процедур и отсутствие существенных нарушений.",
         min: 0,
         max: 100,
       },
@@ -208,7 +212,8 @@ export const IEU_STEPS: IEUStepConfig[] = [
       {
         key: "noSevereIncidents",
         label: "Отсутствие тяжёлых инцидентов",
-        description: "Оценка тяжести и частоты инцидентов (чем выше балл, тем лучше).",
+        description:
+          "Оценка тяжести и частоты инцидентов (чем выше балл, тем лучше).",
         min: 0,
         max: 100,
       },

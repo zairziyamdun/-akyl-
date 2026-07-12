@@ -1,3 +1,4 @@
+export * from "./model/books.data";
 export * from "./sections/BookOneSection";
 export * from "./sections/BooksCtaSection";
 export * from "./sections/BooksHeroSection";
@@ -7,4 +8,3 @@ export * from "./sections/BookTwoSection";
 export * from "./ui/BookCoverPlaceholder";
 export * from "./ui/Bullets";
 export * from "./ui/SectionEyebrow";
-export * from "./model/books.data";

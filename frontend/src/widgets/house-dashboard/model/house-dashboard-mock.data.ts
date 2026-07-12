@@ -33,7 +33,11 @@ export const DEFAULT_DASHBOARD_MOCK: DashboardViewModel = {
     expenseFact: 4_920_000,
     variance: -170_000,
     planFactRows: [
-      { category: "Содержание и эксплуатация", plan: 1_850_000, fact: 1_920_000 },
+      {
+        category: "Содержание и эксплуатация",
+        plan: 1_850_000,
+        fact: 1_920_000,
+      },
       { category: "Коммунальные услуги", plan: 1_420_000, fact: 1_380_000 },
       { category: "Текущий ремонт", plan: 780_000, fact: 910_000 },
       { category: "Управление и персонал", plan: 520_000, fact: 510_000 },
@@ -100,7 +104,12 @@ export const DEFAULT_DASHBOARD_MOCK: DashboardViewModel = {
       { name: "Выполнение заявок", value: 88, unit: "%", status: "green" },
       { name: "Выполнение бюджета", value: 96, unit: "%", status: "green" },
       { name: "Технический индекс", value: 78, unit: "балл", status: "yellow" },
-      { name: "Удовлетворенность жителей", value: 81, unit: "%", status: "green" },
+      {
+        name: "Удовлетворенность жителей",
+        value: 81,
+        unit: "%",
+        status: "green",
+      },
       { name: "Аварийность", value: 4, unit: "%", status: "yellow" },
     ],
     ieuTrend: [

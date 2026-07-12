@@ -2,23 +2,24 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import { FileDropzone } from ".";
-import { JournalToast } from ".";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-import { useJournalIssues } from "../JournalIssuesProvider";
-import { JournalApiError } from "@/entities/journal-issue";
-import { JournalUploadError } from "@/entities/journal-issue";
-import type { JournalAccessType, JournalIssueRecord } from "@/entities/journal-issue";
+import type {
+  JournalAccessType,
+  JournalIssueRecord,
+} from "@/entities/journal-issue";
 import {
   COVER_ACCEPT,
+  JournalApiError,
+  JournalUploadError,
   PDF_ACCEPT,
   validateCoverFile,
   validatePdfFile,
 } from "@/entities/journal-issue";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { PageHeader } from "@/widgets/dashboard-shell";
+import { useJournalIssues } from "../JournalIssuesProvider";
+import { FileDropzone, JournalToast } from ".";
 
 type IssueFormProps = {
   mode: "create" | "edit";
@@ -27,7 +28,11 @@ type IssueFormProps = {
   listPath?: string;
 };
 
-const accessOptions: { value: JournalAccessType; label: string; hint: string }[] = [
+const accessOptions: {
+  value: JournalAccessType;
+  label: string;
+  hint: string;
+}[] = [
   { value: "FREE", label: "FREE", hint: "Бесплатный доступ" },
   { value: "PAID", label: "PAID", hint: "По подписке" },
   { value: "PRIVATE", label: "PRIVATE", hint: "Специальный доступ" },
@@ -40,8 +45,15 @@ export function JournalIssueForm({
   listPath = "/studio/journal",
 }: IssueFormProps) {
   const router = useRouter();
-  const { createIssue, updateIssue, submitForReview, publishIssue, uploadCover, uploadPdf, openIssuePdf } =
-    useJournalIssues();
+  const {
+    createIssue,
+    updateIssue,
+    submitForReview,
+    publishIssue,
+    uploadCover,
+    uploadPdf,
+    openIssuePdf,
+  } = useJournalIssues();
 
   const [title, setTitle] = useState(issue?.title ?? "");
   const [issueNumber, setIssueNumber] = useState(issue?.issueNumber ?? "");
@@ -50,7 +62,9 @@ export function JournalIssueForm({
     issue?.accessType ?? "FREE",
   );
   const [coverUrl, setCoverUrl] = useState(issue?.coverUrl ?? "");
-  const [coverFileName, setCoverFileName] = useState(issue?.coverFileName ?? "");
+  const [coverFileName, setCoverFileName] = useState(
+    issue?.coverFileName ?? "",
+  );
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState(issue?.coverUrl ?? "");
   const [pdfPath, setPdfPath] = useState(issue?.pdfUrl ?? "");
@@ -63,9 +77,10 @@ export function JournalIssueForm({
   const [pdfProgress, setPdfProgress] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
-  const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(
-    null,
-  );
+  const [toast, setToast] = useState<{
+    message: string;
+    variant: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
     return () => {
@@ -177,7 +192,10 @@ export function JournalIssueForm({
             ? err.message
             : "Не удалось сохранить выпуск";
       setFormError(message);
-      setToast({ message: message.split("\n")[0] ?? message, variant: "error" });
+      setToast({
+        message: message.split("\n")[0] ?? message,
+        variant: "error",
+      });
     } finally {
       setSubmitting(false);
       setCoverProgress(null);
@@ -206,12 +224,18 @@ export function JournalIssueForm({
 
       if (mode === "create") {
         await createIssue(payload, false);
-        setToast({ message: "Выпуск отправлен на проверку", variant: "success" });
+        setToast({
+          message: "Выпуск отправлен на проверку",
+          variant: "success",
+        });
         router.push(listPath);
       } else if (issue) {
         await updateIssue(issue.id, payload);
         await submitForReview(issue.id);
-        setToast({ message: "Выпуск отправлен на проверку", variant: "success" });
+        setToast({
+          message: "Выпуск отправлен на проверку",
+          variant: "success",
+        });
         router.push(`${listPath}/${issue.id}`);
       }
     } catch (err) {
@@ -222,7 +246,10 @@ export function JournalIssueForm({
             ? err.message
             : "Не удалось отправить на проверку";
       setFormError(message);
-      setToast({ message: message.split("\n")[0] ?? message, variant: "error" });
+      setToast({
+        message: message.split("\n")[0] ?? message,
+        variant: "error",
+      });
     } finally {
       setSubmitting(false);
       setCoverProgress(null);
@@ -272,7 +299,10 @@ export function JournalIssueForm({
             ? err.message
             : "Не удалось опубликовать выпуск";
       setFormError(message);
-      setToast({ message: message.split("\n")[0] ?? message, variant: "error" });
+      setToast({
+        message: message.split("\n")[0] ?? message,
+        variant: "error",
+      });
     } finally {
       setSubmitting(false);
       setCoverProgress(null);
@@ -286,7 +316,10 @@ export function JournalIssueForm({
         await openIssuePdf(issue.id);
       } catch (err) {
         setToast({
-          message: err instanceof JournalApiError ? err.message : "Не удалось открыть PDF",
+          message:
+            err instanceof JournalApiError
+              ? err.message
+              : "Не удалось открыть PDF",
           variant: "error",
         });
       }
@@ -294,7 +327,11 @@ export function JournalIssueForm({
     }
 
     if (pdfFile) {
-      window.open(URL.createObjectURL(pdfFile), "_blank", "noopener,noreferrer");
+      window.open(
+        URL.createObjectURL(pdfFile),
+        "_blank",
+        "noopener,noreferrer",
+      );
       return;
     }
 
@@ -407,7 +444,11 @@ export function JournalIssueForm({
               >
                 {submitting ? "Сохранение…" : "Сохранить черновик"}
               </Button>
-              <Button variant="ghost" disabled={submitting} onClick={() => void handlePreview()}>
+              <Button
+                variant="ghost"
+                disabled={submitting}
+                onClick={() => void handlePreview()}
+              >
                 Предпросмотр
               </Button>
               <Button
@@ -430,7 +471,9 @@ export function JournalIssueForm({
 
         <aside className="space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold text-slate-900">Тип доступа</h3>
+            <h3 className="mb-3 text-sm font-semibold text-slate-900">
+              Тип доступа
+            </h3>
             <div className="space-y-2">
               {accessOptions.map((opt) => (
                 <label
@@ -440,7 +483,8 @@ export function JournalIssueForm({
                     accessType === opt.value
                       ? "border-sky-200 bg-sky-50"
                       : "border-slate-200 hover:bg-slate-50",
-                    (readOnly || submitting) && "pointer-events-none opacity-60",
+                    (readOnly || submitting) &&
+                      "pointer-events-none opacity-60",
                   )}
                 >
                   <input
@@ -452,7 +496,9 @@ export function JournalIssueForm({
                     disabled={readOnly || submitting}
                   />
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{opt.label}</p>
+                    <p className="text-sm font-medium text-slate-900">
+                      {opt.label}
+                    </p>
                     <p className="text-xs text-slate-500">{opt.hint}</p>
                   </div>
                 </label>

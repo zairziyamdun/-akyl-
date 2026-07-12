@@ -1,5 +1,5 @@
-import { REPORT_SECTIONS } from "@/widgets/tools-page";
 import { Container } from "@/shared/ui/Container";
+import { REPORT_SECTIONS } from "@/widgets/tools-page";
 
 export function ManagementReportOverviewCards() {
   return (
@@ -48,4 +48,3 @@ export function ManagementReportOverviewCards() {
     </section>
   );
 }
-

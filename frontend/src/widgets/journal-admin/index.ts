@@ -1,6 +1,6 @@
 export {
   AdminJournalList,
-  StudioJournalList,
   IssueDetailView,
   JournalTableSkeleton,
+  StudioJournalList,
 } from "@/features/manage-journal-issue";

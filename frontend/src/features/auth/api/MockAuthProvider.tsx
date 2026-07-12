@@ -1,1 +1,7 @@
-export { AuthProvider, useAuth, useMockAuth, getRoleDashboardPath, AuthApiError } from "./AuthProvider";
+export {
+  AuthApiError,
+  AuthProvider,
+  getRoleDashboardPath,
+  useAuth,
+  useMockAuth,
+} from "./AuthProvider";

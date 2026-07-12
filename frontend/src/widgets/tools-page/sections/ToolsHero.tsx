@@ -1,8 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
@@ -17,7 +17,12 @@ type ToolItem = {
   score: number;
   progress: number[];
   status: "Стабильно" | "Зона риска" | "Рост";
-  budgetRows: Array<{ name: string; plan: string; fact: string; delta: string }>;
+  budgetRows: Array<{
+    name: string;
+    plan: string;
+    fact: string;
+    delta: string;
+  }>;
 };
 
 const TOOLS: ToolItem[] = [
@@ -106,8 +111,10 @@ export function ToolsHero() {
   }, []);
 
   const statusClass = useMemo(() => {
-    if (activeTool.status === "Стабильно") return "bg-emerald-100 text-emerald-700";
-    if (activeTool.status === "Зона риска") return "bg-amber-100 text-amber-700";
+    if (activeTool.status === "Стабильно")
+      return "bg-emerald-100 text-emerald-700";
+    if (activeTool.status === "Зона риска")
+      return "bg-amber-100 text-amber-700";
     return "bg-sky-100 text-sky-700";
   }, [activeTool.status]);
 
@@ -128,13 +135,17 @@ export function ToolsHero() {
                 <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
                   <div className="flex items-center justify-between text-xs text-slate-500">
                     <span>KPI Dashboard</span>
-                    <span className={`rounded-full px-2 py-0.5 font-medium ${statusClass}`}>
+                    <span
+                      className={`rounded-full px-2 py-0.5 font-medium ${statusClass}`}
+                    >
                       {activeTool.status}
                     </span>
                   </div>
                   <div className="mt-3 flex items-end gap-3">
                     <div>
-                      <p className="text-3xl font-semibold tracking-tight text-slate-900">{activeTool.score}</p>
+                      <p className="text-3xl font-semibold tracking-tight text-slate-900">
+                        {activeTool.score}
+                      </p>
                       <p className="text-xs text-slate-500">Индекс / 100</p>
                     </div>
                     <div className="h-14 flex-1 rounded-xl bg-gradient-to-r from-cyan-400/25 via-sky-400/20 to-emerald-400/25 p-2">
@@ -168,15 +179,24 @@ export function ToolsHero() {
                 </div>
 
                 <div className="rounded-2xl border border-slate-100 bg-white p-4">
-                  <p className="text-xs font-medium text-slate-500">План / Факт</p>
+                  <p className="text-xs font-medium text-slate-500">
+                    План / Факт
+                  </p>
                   <div className="mt-2 space-y-2 text-xs">
                     {activeTool.budgetRows.map((row) => (
-                      <div key={row.name} className="rounded-lg border border-slate-100 p-2">
-                        <div className="font-medium text-slate-700">{row.name}</div>
+                      <div
+                        key={row.name}
+                        className="rounded-lg border border-slate-100 p-2"
+                      >
+                        <div className="font-medium text-slate-700">
+                          {row.name}
+                        </div>
                         <div className="mt-1 grid grid-cols-3 gap-2 text-slate-500">
                           <span>П {row.plan}</span>
                           <span>Ф {row.fact}</span>
-                          <span className="text-right font-medium text-slate-700">{row.delta}</span>
+                          <span className="text-right font-medium text-slate-700">
+                            {row.delta}
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -187,25 +207,33 @@ export function ToolsHero() {
           </AnimatePresence>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">Digital toolkit</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
+              Digital toolkit
+            </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl lg:text-5xl">
               Инструменты профессионального управления МЖД
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
-              Практические цифровые решения для оценки эффективности, анализа бюджета, контроля процессов и формирования управленческой отчетности.
+              Практические цифровые решения для оценки эффективности, анализа
+              бюджета, контроля процессов и формирования управленческой
+              отчетности.
             </p>
 
             <AnimatePresence mode="wait">
               <motion.div
-                key={activeTool.id + "-content"}
+                key={`${activeTool.id}-content`}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.3 }}
                 className="mt-7 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
               >
-                <h2 className="text-xl font-semibold tracking-tight text-slate-900">{activeTool.headline}</h2>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{activeTool.description}</p>
+                <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+                  {activeTool.headline}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {activeTool.description}
+                </p>
                 <Link href={activeTool.route} className="mt-4 inline-flex">
                   <Button>{activeTool.cta}</Button>
                 </Link>

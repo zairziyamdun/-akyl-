@@ -180,9 +180,7 @@ export function BudgetCharts({ rows }: Props) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value) =>
-                    formatCurrencyRub(Number(value ?? 0))
-                  }
+                  formatter={(value) => formatCurrencyRub(Number(value ?? 0))}
                   contentStyle={{
                     borderRadius: 12,
                     border: "1px solid #e2e8f0",

@@ -1,3 +1,4 @@
+export * from "./model/implementationMotion";
 export * from "./sections/ImplementationBeforeAfter";
 export * from "./sections/ImplementationFinalCta";
 export * from "./sections/ImplementationForWhom";
@@ -7,4 +8,3 @@ export * from "./sections/ImplementationPilot";
 export * from "./sections/ImplementationProblems";
 export * from "./sections/ImplementationRoadmap";
 export * from "./sections/ImplementationToolsConnection";
-export * from "./model/implementationMotion";

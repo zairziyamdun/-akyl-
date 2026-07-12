@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
-
+import Image from "next/image";
+import type { HeroIssueSlide } from "@/entities/journal-issue";
 import { cn } from "@/shared/lib";
 import { journalCoverSpine } from "@/widgets/journal-marketing";
-import type { HeroIssueSlide } from "@/entities/journal-issue";
 
 type JournalCoverProps = {
   issue: HeroIssueSlide;
@@ -14,7 +13,11 @@ type JournalCoverProps = {
   className?: string;
 };
 
-export function JournalCover({ issue, size = "hero", className }: JournalCoverProps) {
+export function JournalCover({
+  issue,
+  size = "hero",
+  className,
+}: JournalCoverProps) {
   const spine = journalCoverSpine[issue.issueNumber] ?? "bg-slate-800";
   const isHero = size === "hero";
 
@@ -111,8 +114,13 @@ export function JournalCover({ issue, size = "hero", className }: JournalCoverPr
 
             {issue.isLocked ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm">
-                <Lock className="h-8 w-8 text-white/90 sm:h-10 sm:w-10" strokeWidth={1.5} />
-                <p className="mt-3 text-sm font-semibold text-white">Закрытый выпуск</p>
+                <Lock
+                  className="h-8 w-8 text-white/90 sm:h-10 sm:w-10"
+                  strokeWidth={1.5}
+                />
+                <p className="mt-3 text-sm font-semibold text-white">
+                  Закрытый выпуск
+                </p>
               </div>
             ) : null}
 

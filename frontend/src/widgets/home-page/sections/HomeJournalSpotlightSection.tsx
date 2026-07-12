@@ -1,15 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
+import { homeJournalPosts, homeJournalUrl } from "../model/home-journal.data";
 import { homeTransition, homeViewport } from "../model/homePageMotion";
-import {
-  homeJournalPosts,
-  homeJournalUrl,
-} from "../model/home-journal.data";
 
 const posts = homeJournalPosts;
 const JOURNAL_URL = homeJournalUrl;
@@ -33,7 +30,8 @@ export function HomeJournalSpotlightSection() {
               Экспертный контур
             </h2>
             <p className="mt-4 text-base text-slate-600">
-              Публикации и разборы — живой слой методологии за пределами статичных страниц.
+              Публикации и разборы — живой слой методологии за пределами
+              статичных страниц.
             </p>
           </motion.div>
           <Link

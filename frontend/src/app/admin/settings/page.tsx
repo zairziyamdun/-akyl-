@@ -1,8 +1,8 @@
 "use client";
 
-import { PageHeader } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
+import { PageHeader } from "@/widgets/dashboard-shell";
 
 export default function AdminSettingsPage() {
   return (

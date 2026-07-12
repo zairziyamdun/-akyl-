@@ -1,7 +1,9 @@
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
-import { mockJournalIssues } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  mockJournalIssues,
+  PageHeader,
+  StatusBadge,
+} from "@/widgets/dashboard-shell";
 
 export default function StudioIssuesPage() {
   return (

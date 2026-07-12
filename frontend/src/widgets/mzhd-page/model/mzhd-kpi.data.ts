@@ -1,6 +1,5 @@
 export const mzhdKpiImages = {
-  hero:
-    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=2400&q=85",
+  hero: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=2400&q=85",
 } as const;
 
 export const mzhdKpiHero = {

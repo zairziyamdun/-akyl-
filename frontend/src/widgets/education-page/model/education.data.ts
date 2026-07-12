@@ -1,10 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import {
-  BookOpen,
-  GraduationCap,
-  MonitorPlay,
-  Users,
-} from "lucide-react";
+import { BookOpen, GraduationCap, MonitorPlay, Users } from "lucide-react";
 
 export const educationImages = {
   hero: "https://images.unsplash.com/photo-1524178232363-68fb921bb167?auto=format&fit=crop&w=2400&q=85",
@@ -95,14 +90,12 @@ export const educationAudience: EducationAudienceItem[] = [
   {
     icon: Users,
     role: "Председатели и члены ОСИ",
-    detail:
-      "Контроль УК, понимание бюджета и KPI без лишней бюрократии.",
+    detail: "Контроль УК, понимание бюджета и KPI без лишней бюрократии.",
   },
   {
     icon: Users,
     role: "Руководители и менеджеры УК",
-    detail:
-      "Систематизация процессов, отчётность и рост зрелости управления.",
+    detail: "Систематизация процессов, отчётность и рост зрелости управления.",
   },
   {
     icon: Users,
@@ -112,8 +105,7 @@ export const educationAudience: EducationAudienceItem[] = [
   {
     icon: Users,
     role: "Представители акимата",
-    detail:
-      "Методология контроля и поддержки профессионального управления.",
+    detail: "Методология контроля и поддержки профессионального управления.",
   },
 ];
 

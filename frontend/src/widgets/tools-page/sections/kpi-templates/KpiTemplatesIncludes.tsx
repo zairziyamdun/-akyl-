@@ -61,10 +61,7 @@ function TemplateMockTable() {
 
 export function KpiTemplatesIncludes() {
   return (
-    <section
-      className="py-16 md:py-20"
-      aria-labelledby="kpi-includes-heading"
-    >
+    <section className="py-16 md:py-20" aria-labelledby="kpi-includes-heading">
       <Container>
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div>

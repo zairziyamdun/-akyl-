@@ -2,13 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-
-import { PublicUserMenu } from "@/widgets/dashboard-shell";
-import { Container } from "@/shared/ui/Container";
-import { HOME_LOGO_URL } from "@/widgets/home-page";
+import { useEffect, useState } from "react";
 import { cn } from "@/shared/lib";
+import { Container } from "@/shared/ui/Container";
+import { PublicUserMenu } from "@/widgets/dashboard-shell";
+import { HOME_LOGO_URL } from "@/widgets/home-page";
 
 type NavItem = {
   label: string;
@@ -112,14 +111,12 @@ function NavbarInner({ pathname }: { pathname: string }) {
         "sticky top-0 z-50 border-b transition-all duration-300",
         scrolled
           ? "border-white/8 bg-[#060b14]/95 backdrop-blur-xl"
-          : "border-white/6 bg-[#060b14]/90 backdrop-blur-lg"
+          : "border-white/6 bg-[#060b14]/90 backdrop-blur-lg",
       )}
     >
       <Container className="py-3.5">
-
         {/* GRID LAYOUT */}
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
-
           {/* LEFT — LOGO */}
           <div className="flex items-center">
             <Link href="/" onClick={() => setMobileOpen(false)}>
@@ -136,7 +133,6 @@ function NavbarInner({ pathname }: { pathname: string }) {
 
           {/* CENTER — NAV */}
           <div className="hidden lg:flex flex-col items-center">
-
             <nav className="flex items-center gap-2">
               {primaryLinks.map((item) => (
                 <NavLink
@@ -160,12 +156,10 @@ function NavbarInner({ pathname }: { pathname: string }) {
                 </div>
               ))}
             </div>
-
           </div>
 
           {/* RIGHT — CTA + ACTIONS */}
           <div className="flex items-center justify-end gap-3">
-
             <div className="hidden md:flex items-center gap-2">
               <button className="rounded-full px-3 py-2 text-sm text-white/60 hover:bg-white/6 hover:text-white">
                 RU
@@ -193,9 +187,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
             >
               {mobileOpen ? "✕" : "☰"}
             </button>
-
           </div>
-
         </div>
       </Container>
 
@@ -203,9 +195,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
       {mobileOpen && (
         <div className="border-t border-white/8 bg-[#060b14]/98 backdrop-blur-2xl lg:hidden">
           <Container className="py-4">
-
             <div className="flex flex-col gap-2">
-
               {primaryLinks.map((item) => (
                 <NavLink
                   key={item.label}
@@ -216,9 +206,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
                 />
               ))}
 
-              <div className="mt-3 text-xs text-white/40">
-                Дополнительно
-              </div>
+              <div className="mt-3 text-xs text-white/40">Дополнительно</div>
 
               {secondaryLinks.map((item) => (
                 <NavLink
@@ -244,9 +232,7 @@ function NavbarInner({ pathname }: { pathname: string }) {
               >
                 Консультация
               </Link>
-
             </div>
-
           </Container>
         </div>
       )}

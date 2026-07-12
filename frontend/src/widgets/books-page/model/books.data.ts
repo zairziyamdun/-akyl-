@@ -103,4 +103,3 @@ export const books: {
     secondaryCta: "Связаться с Центром AKYL",
   },
 };
-

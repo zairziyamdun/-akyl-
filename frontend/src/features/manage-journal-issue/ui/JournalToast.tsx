@@ -21,7 +21,7 @@ export function JournalToast({
     if (!onClose) return;
     const timer = setTimeout(onClose, 4000);
     return () => clearTimeout(timer);
-  }, [message, onClose]);
+  }, [onClose]);
 
   return (
     <div

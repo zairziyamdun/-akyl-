@@ -1,7 +1,5 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,21 +8,22 @@ import {
   Gauge,
   Layers3,
 } from "lucide-react";
-
-import {
-  ANSWER_OPTIONS,
-  type ChecklistAnswerValue,
-  CHECKLIST_CATEGORIES,
-  MAX_CHECKLIST_SCORE,
-  TOTAL_CHECKLIST_QUESTIONS,
-  bandLabelRu,
-  createInitialAnswers,
-  overallNarrativeRu,
-  scoreBand,
-} from "@/widgets/tools-page";
+import Link from "next/link";
+import { useCallback, useMemo, useState } from "react";
 import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
+import {
+  ANSWER_OPTIONS,
+  bandLabelRu,
+  CHECKLIST_CATEGORIES,
+  type ChecklistAnswerValue,
+  createInitialAnswers,
+  MAX_CHECKLIST_SCORE,
+  overallNarrativeRu,
+  scoreBand,
+  TOTAL_CHECKLIST_QUESTIONS,
+} from "@/widgets/tools-page";
 
 function pointsLabel(value: ChecklistAnswerValue): string {
   if (value === 0) return "0 баллов";
@@ -75,8 +74,7 @@ function ProgressBar({
 function scoreToneClasses(percent: number) {
   if (percent >= 75) {
     return {
-      badge:
-        "border-emerald-200 bg-emerald-50 text-emerald-700",
+      badge: "border-emerald-200 bg-emerald-50 text-emerald-700",
       dot: "bg-emerald-500",
       progress: "bg-emerald-600",
       softCard: "border-emerald-200/70 bg-emerald-50/60",
@@ -112,22 +110,22 @@ export function ChecklistsInteractive() {
   const derived = useMemo(() => {
     const perCategory = CHECKLIST_CATEGORIES.map((c) => {
       const row = answers[c.id] ?? [];
-  
+
       let sum = 0;
       let answered = 0;
-  
+
       for (const v of row) {
         if (v !== null) {
           answered += 1;
           sum += v;
         }
       }
-  
+
       const maxScore = c.questions.length * 2;
       const completionPercent = percentFrom(answered, c.questions.length);
       const scorePercent = percentFrom(sum, maxScore);
       const band = scoreBand(scorePercent);
-  
+
       return {
         id: c.id,
         title: c.title,
@@ -142,16 +140,19 @@ export function ChecklistsInteractive() {
         statusLabel: bandLabelRu(band),
       };
     });
-  
-    const totalSum = perCategory.reduce((acc, category) => acc + category.sum, 0);
+
+    const totalSum = perCategory.reduce(
+      (acc, category) => acc + category.sum,
+      0,
+    );
     const answeredAll = perCategory.reduce(
       (acc, category) => acc + category.answered,
       0,
     );
-  
+
     const overallPercent = percentFrom(totalSum, MAX_CHECKLIST_SCORE);
     const overallBand = scoreBand(overallPercent);
-  
+
     const activeRow = answers[activeId] ?? [];
     const activeAnswered = activeRow.filter(
       (v): v is ChecklistAnswerValue => v !== null,
@@ -163,7 +164,7 @@ export function ChecklistsInteractive() {
     );
     const activeMaxScore = activeCategory.questions.length * 2;
     const activeScorePercent = percentFrom(activeScore, activeMaxScore);
-  
+
     return {
       perCategory,
       totalSum,
@@ -178,9 +179,13 @@ export function ChecklistsInteractive() {
       hasAnyAnswer: answeredAll > 0,
     };
   }, [answers, activeId, activeCategory.questions.length]);
-  
+
   const setAnswer = useCallback(
-    (categoryId: string, questionIndex: number, value: ChecklistAnswerValue) => {
+    (
+      categoryId: string,
+      questionIndex: number,
+      value: ChecklistAnswerValue,
+    ) => {
       setAnswers((prev) => {
         const row = prev[categoryId];
         if (!row) return prev;
@@ -331,7 +336,9 @@ export function ChecklistsInteractive() {
                     overallTone.badge,
                   )}
                 >
-                  <span className={cn("size-2 rounded-full", overallTone.dot)} />
+                  <span
+                    className={cn("size-2 rounded-full", overallTone.dot)}
+                  />
                   {bandLabelRu(derived.overallBand)}
                 </div>
               </div>
@@ -514,7 +521,11 @@ export function ChecklistsInteractive() {
                                   role="radio"
                                   aria-checked={selected}
                                   onClick={() =>
-                                    setAnswer(activeCategory.id, index, opt.value)
+                                    setAnswer(
+                                      activeCategory.id,
+                                      index,
+                                      opt.value,
+                                    )
                                   }
                                   className={cn(
                                     "group rounded-2xl border px-4 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400",
@@ -560,7 +571,11 @@ export function ChecklistsInteractive() {
                 </ol>
 
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <Button variant="secondary" type="button" onClick={resetActiveCategory}>
+                  <Button
+                    variant="secondary"
+                    type="button"
+                    onClick={resetActiveCategory}
+                  >
                     Очистить текущий раздел
                   </Button>
 
@@ -704,7 +719,8 @@ export function ChecklistsInteractive() {
                         Индекс эффективности
                       </p>
                       <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                        Перейти к сводной метрике зрелости и качества управления.
+                        Перейти к сводной метрике зрелости и качества
+                        управления.
                       </p>
                     </Link>
 
@@ -728,7 +744,8 @@ export function ChecklistsInteractive() {
                         KPI-шаблоны
                       </p>
                       <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                        Зафиксировать показатели и усилить регулярную отчётность.
+                        Зафиксировать показатели и усилить регулярную
+                        отчётность.
                       </p>
                     </Link>
                   </div>

@@ -17,8 +17,8 @@ export function ChecklistsIntro() {
           description={
             <>
               Чек-листы помогают выявить слабые места и быстро проверить
-              состояние управления по понятным критериям. Это удобный первый
-              шаг перед более глубоким анализом через{" "}
+              состояние управления по понятным критериям. Это удобный первый шаг
+              перед более глубоким анализом через{" "}
               <Link
                 href="/tools/index-efficiency"
                 className="font-medium text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-500"
@@ -46,9 +46,7 @@ export function ChecklistsIntro() {
 
         <ul className="mt-10 grid gap-4 md:grid-cols-3">
           <li className="rounded-2xl border border-black/10 bg-slate-50/80 px-5 py-4 text-sm leading-relaxed text-slate-700">
-            <span className="font-semibold text-slate-900">
-              Слабые звенья.
-            </span>{" "}
+            <span className="font-semibold text-slate-900">Слабые звенья.</span>{" "}
             Вопросы структурированы так, чтобы сразу увидеть пробелы в процессах
             и документировании.
           </li>

@@ -4,9 +4,8 @@ import { CalendarRange, FileSpreadsheet, FileText } from "lucide-react";
 
 import type { BudgetPeriod } from "@/features/analyze-budget/budgetAnalysis";
 import { PERIOD_LABELS } from "@/features/analyze-budget/budgetAnalysis";
-
-import { Button } from "@/shared/ui/Button";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
 
 type Props = {
   period: BudgetPeriod;

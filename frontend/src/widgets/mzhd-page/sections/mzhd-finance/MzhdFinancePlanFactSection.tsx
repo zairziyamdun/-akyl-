@@ -1,6 +1,6 @@
+import { PieChart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { PieChart } from "lucide-react";
 
 import { Container } from "@/shared/ui/Container";
 import { mzhdFinanceImages } from "@/widgets/mzhd-page";
@@ -14,8 +14,8 @@ export function MzhdFinancePlanFactSection() {
             <PieChart className="text-slate-700" size={32} />
             <h2 className="mt-4 text-3xl font-semibold">План-факт контроль</h2>
             <p className="mt-4 text-slate-600">
-              Ежемесячное сравнение плана и факта по статьям выявляет перерасход, экономию и риски к концу
-              года.
+              Ежемесячное сравнение плана и факта по статьям выявляет
+              перерасход, экономию и риски к концу года.
             </p>
             <Link
               href="/tools/budget-analysis"

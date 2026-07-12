@@ -1,11 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-
-import { Container } from "@/shared/ui/Container";
 import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 import {
   heroKpiRows,
   heroManagementIndex,
@@ -43,8 +42,8 @@ export function MzhdHeroSection() {
             </h1>
             <p className="mt-6 max-w-3xl text-base leading-8 text-slate-700 sm:text-lg">
               Методология AKYL объединяет архитектуру управления, роли
-              участников, бизнес-процессы, финансы, KPI и цифровые инструменты
-              в единую систему управления многоквартирным домом.
+              участников, бизнес-процессы, финансы, KPI и цифровые инструменты в
+              единую систему управления многоквартирным домом.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button asChild>
@@ -73,7 +72,9 @@ export function MzhdHeroSection() {
                 <div key={row.label}>
                   <div className="mb-1.5 flex items-center justify-between text-sm">
                     <span className="text-slate-600">{row.label}</span>
-                    <span className="font-medium text-slate-800">{row.value}%</span>
+                    <span className="font-medium text-slate-800">
+                      {row.value}%
+                    </span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-slate-100">
                     <div

@@ -11,7 +11,9 @@ export function TooltipProvider({
   return <TooltipPrimitive.Provider delayDuration={delayDuration} {...props} />;
 }
 
-export function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+export function Tooltip({
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return <TooltipPrimitive.Root {...props} />;
 }
 

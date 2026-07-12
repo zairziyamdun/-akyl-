@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 import { SIDEBAR_MOTION_TRANSITION } from "../../model/sidebarNavUtils";
 import { dashColors } from "../../model/sidebarTheme";

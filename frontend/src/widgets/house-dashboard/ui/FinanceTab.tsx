@@ -16,10 +16,9 @@ import {
 
 import { formatMoney } from "@/entities/finance-record";
 import type { DashboardViewModel } from "@/entities/house";
-
+import { ChartContainer, chartColor } from "../model/dashboardUtils";
 import { DashboardMetricCard } from "./DashboardMetricCard";
 import { DashboardSectionCard } from "./DashboardSectionCard";
-import { ChartContainer, chartColor } from "../model/dashboardUtils";
 
 type FinanceTabProps = {
   model: DashboardViewModel;
@@ -41,12 +40,30 @@ export function FinanceTab({ model }: FinanceTabProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-        <DashboardMetricCard label="Остаток на начало" value={formatMoney(finance.openingBalance)} />
-        <DashboardMetricCard label="Начислено" value={formatMoney(finance.accrued)} />
-        <DashboardMetricCard label="Собрано" value={formatMoney(finance.collected)} />
-        <DashboardMetricCard label="Расходы" value={formatMoney(finance.expenses)} />
-        <DashboardMetricCard label="Остаток на конец" value={formatMoney(finance.closingBalance)} />
-        <DashboardMetricCard label="Резервный фонд" value={formatMoney(finance.reserveFund)} />
+        <DashboardMetricCard
+          label="Остаток на начало"
+          value={formatMoney(finance.openingBalance)}
+        />
+        <DashboardMetricCard
+          label="Начислено"
+          value={formatMoney(finance.accrued)}
+        />
+        <DashboardMetricCard
+          label="Собрано"
+          value={formatMoney(finance.collected)}
+        />
+        <DashboardMetricCard
+          label="Расходы"
+          value={formatMoney(finance.expenses)}
+        />
+        <DashboardMetricCard
+          label="Остаток на конец"
+          value={formatMoney(finance.closingBalance)}
+        />
+        <DashboardMetricCard
+          label="Резервный фонд"
+          value={formatMoney(finance.reserveFund)}
+        />
       </div>
 
       <div className="grid grid-cols-12 gap-4">
@@ -92,8 +109,18 @@ export function FinanceTab({ model }: FinanceTabProps) {
                 <YAxis tick={{ fontSize: 11 }} width={32} />
                 <Tooltip />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="income" name="Поступления" fill="#2563eb" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="expense" name="Расходы" fill="#64748b" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="income"
+                  name="Поступления"
+                  fill="#2563eb"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="expense"
+                  name="Расходы"
+                  fill="#64748b"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

@@ -25,7 +25,10 @@ export function isPdfMagicValid(buffer: ArrayBuffer): boolean {
   return header === PDF_MAGIC;
 }
 
-export function logPdfDiagnostic(label: string, diagnostics: PdfDiagnostics): void {
+export function logPdfDiagnostic(
+  label: string,
+  diagnostics: PdfDiagnostics,
+): void {
   const payload = {
     label,
     timestamp: new Date().toISOString(),
@@ -80,10 +83,9 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
 
-export function serializeError(error: unknown): Pick<
-  PdfDiagnostics,
-  "errorName" | "errorMessage" | "errorStack"
-> {
+export function serializeError(
+  error: unknown,
+): Pick<PdfDiagnostics, "errorName" | "errorMessage" | "errorStack"> {
   if (error instanceof Error) {
     return {
       errorName: error.name,

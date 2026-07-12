@@ -2,7 +2,10 @@
 
 import { Lightbulb, ListOrdered } from "lucide-react";
 
-import type { BudgetRowComputed, BudgetTotals } from "@/features/analyze-budget/budgetAnalysis";
+import type {
+  BudgetRowComputed,
+  BudgetTotals,
+} from "@/features/analyze-budget/budgetAnalysis";
 import {
   formatCurrencyRub,
   formatPercent,

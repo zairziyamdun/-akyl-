@@ -1,29 +1,39 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type TouchEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
-
-import { JournalCover } from "@/widgets/journal-marketing";
-import { JournalIntroVisual } from "@/widgets/journal-marketing";
-import { JournalIssueSlider } from "@/widgets/journal-marketing";
+import Image from "next/image";
+import Link from "next/link";
 import {
-  JOURNAL_SLIDE_DURATION_MS,
-  journalHeroBenefits,
-  journalIntroBackground,
-  JOURNAL_ACCESS_HREF,
-} from "@/widgets/journal-marketing";
+  type TouchEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { HeroSlide } from "@/entities/journal-issue";
 import { getJournalIssuePath } from "@/entities/journal-issue";
 import { cn } from "@/shared/lib";
+import {
+  JOURNAL_ACCESS_HREF,
+  JOURNAL_SLIDE_DURATION_MS,
+  JournalCover,
+  JournalIntroVisual,
+  JournalIssueSlider,
+  journalHeroBenefits,
+  journalIntroBackground,
+} from "@/widgets/journal-marketing";
 
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 sm:h-6 sm:w-6">
       <path
-        d={direction === "left" ? "M14.5 6.5L9 12l5.5 5.5" : "M9.5 6.5L15 12l-5.5 5.5"}
+        d={
+          direction === "left"
+            ? "M14.5 6.5L9 12l5.5 5.5"
+            : "M9.5 6.5L15 12l-5.5 5.5"
+        }
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
@@ -56,7 +66,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
 
   useEffect(() => {
     setActiveIndex(0);
-  }, [slides.length]);
+  }, []);
 
   const touchStartX = useRef<number | null>(null);
 
@@ -79,7 +89,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
     }, JOURNAL_SLIDE_DURATION_MS);
 
     return () => window.clearTimeout(timer);
-  }, [activeIndex, slides.length]);
+  }, [slides.length]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -143,7 +153,9 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
               className="object-cover"
               sizes="100vw"
               priority={activeIndex === 0}
-              unoptimized={activeSlide.kind === "issue" && bgSrc.includes("supabase.co")}
+              unoptimized={
+                activeSlide.kind === "issue" && bgSrc.includes("supabase.co")
+              }
             />
           </motion.div>
         </AnimatePresence>
@@ -194,8 +206,8 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                       Журнал AKYL
                     </h1>
                     <p className="mt-4 text-[15px] leading-7 text-white/75 sm:mt-5 sm:text-base sm:leading-relaxed md:text-lg md:leading-8">
-                      Экспертные статьи, аналитика и публикации о профессиональном
-                      управлении МЖД.
+                      Экспертные статьи, аналитика и публикации о
+                      профессиональном управлении МЖД.
                     </p>
                     <ul className="mt-5 space-y-2 sm:mt-6 sm:space-y-2.5 md:mt-8">
                       {journalHeroBenefits.map((item) => (
@@ -303,7 +315,9 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
 
       {slides.length > 1 ? (
         <div className="pointer-events-none absolute bottom-[4.75rem] left-0 right-0 flex justify-center md:hidden">
-          <span className="text-[10px] text-white/35">Свайп для переключения</span>
+          <span className="text-[10px] text-white/35">
+            Свайп для переключения
+          </span>
         </div>
       ) : null}
     </section>

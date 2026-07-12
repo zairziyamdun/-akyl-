@@ -1,10 +1,13 @@
-import { cn } from "@/shared/lib";
-import type { JournalAccessType, JournalIssueStatus } from "@/entities/journal-issue";
+import type {
+  JournalAccessType,
+  JournalIssueStatus,
+} from "@/entities/journal-issue";
 import {
   accessTypeLabels,
   issueStatusLabels,
   publicAccessBadgeLabels,
 } from "@/entities/journal-issue";
+import { cn } from "@/shared/lib";
 
 const statusStyles: Record<JournalIssueStatus, string> = {
   DRAFT: "bg-slate-100 text-slate-600 ring-slate-200",

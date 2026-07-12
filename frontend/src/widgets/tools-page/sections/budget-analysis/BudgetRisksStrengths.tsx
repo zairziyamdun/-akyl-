@@ -2,7 +2,10 @@
 
 import { AlertTriangle, ShieldCheck, Sparkles } from "lucide-react";
 
-import type { BudgetRowComputed, BudgetTotals } from "@/features/analyze-budget/budgetAnalysis";
+import type {
+  BudgetRowComputed,
+  BudgetTotals,
+} from "@/features/analyze-budget/budgetAnalysis";
 import { formatCurrencyRub } from "@/features/analyze-budget/budgetAnalysis";
 
 type Props = {
@@ -26,9 +29,7 @@ export function BudgetRisksStrengths({ rows, totals }: Props) {
             <AlertTriangle className="size-5" aria-hidden />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-950">
-              Ключевые риски
-            </h3>
+            <h3 className="text-lg font-bold text-slate-950">Ключевые риски</h3>
             <p className="text-sm text-slate-600">
               Зоны, где бюджет наиболее напряжён
             </p>
@@ -59,8 +60,7 @@ export function BudgetRisksStrengths({ rows, totals }: Props) {
             </li>
           ))}
 
-          {!riskArticles.length &&
-          totals.totalBudgetKpi >= 0.65 ? (
+          {!riskArticles.length && totals.totalBudgetKpi >= 0.65 ? (
             <li className="text-sm text-slate-600">
               Явных критических зон не выявлено по текущим данным.
             </li>

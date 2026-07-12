@@ -16,7 +16,10 @@ export function JournalIntroVisual() {
         <div className="absolute inset-0 bg-gradient-to-br from-sky-950 via-slate-900 to-slate-950" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(56,189,248,0.15),transparent_50%)]" />
         <div className="relative flex h-full flex-col items-center justify-center p-6 text-center sm:p-8">
-          <BookOpen className="h-11 w-11 text-sky-300/80 sm:h-14 sm:w-14" strokeWidth={1.25} />
+          <BookOpen
+            className="h-11 w-11 text-sky-300/80 sm:h-14 sm:w-14"
+            strokeWidth={1.25}
+          />
           <p className="mt-4 text-[10px] font-semibold tracking-[0.28em] text-white/70 uppercase sm:mt-6">
             AKYL Journal
           </p>

@@ -3,22 +3,21 @@
 import { useRouter } from "next/navigation";
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
 
-import {
-  getRoleDashboardPath,
-  type AkylRole,
-  type AuthProfile,
-  type AuthUser,
-  type LoginPayload,
-  type RegisterPayload,
-  type UpdateProfilePayload,
+import type {
+  AkylRole,
+  AuthProfile,
+  AuthUser,
+  LoginPayload,
+  RegisterPayload,
+  UpdateProfilePayload,
 } from "@/entities/session";
 import {
   clearAccessToken,
@@ -32,9 +31,8 @@ import {
   meRequest,
   registerRequest,
   updateProfileRequest,
-  AuthApiError,
 } from "./api";
-import { profileToAuthUser, getInitials } from "./authUtils";
+import { profileToAuthUser } from "./authUtils";
 
 type AuthContextValue = {
   isAuthenticated: boolean;
@@ -59,7 +57,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<AkylRole | null>(null);
 
   const applySession = useCallback(
-    (me: { user: { id: string; email: string }; profile: AuthProfile; role: AkylRole }) => {
+    (me: {
+      user: { id: string; email: string };
+      profile: AuthProfile;
+      role: AkylRole;
+    }) => {
       setUser(profileToAuthUser(me.user, me.profile));
       setProfile(me.profile);
       setRole(me.role);
@@ -141,7 +143,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout,
       refresh,
     }),
-    [user, role, profile, isLoading, login, register, updateProfile, logout, refresh],
+    [
+      user,
+      role,
+      profile,
+      isLoading,
+      login,
+      register,
+      updateProfile,
+      logout,
+      refresh,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
@@ -29,7 +29,11 @@ const tools = [
     title: "Чек-листы",
     description:
       "Пошаговый аудит операционных процессов для фиксации фактов и контроля качества исполнения.",
-    features: ["Аудит процессов", "Контроль регламентов", "Единый формат проверки"],
+    features: [
+      "Аудит процессов",
+      "Контроль регламентов",
+      "Единый формат проверки",
+    ],
     audience: "Полезен: операционный менеджер, инспектор",
     href: "/tools/checklists",
     cta: "Открыть чек-листы",
@@ -38,7 +42,11 @@ const tools = [
     title: "Управленческий отчет",
     description:
       "Формирует понятную картину по состоянию дома: показатели, выводы и приоритеты действий.",
-    features: ["Сводный отчет", "Выводы и рекомендации", "Презентационный формат"],
+    features: [
+      "Сводный отчет",
+      "Выводы и рекомендации",
+      "Презентационный формат",
+    ],
     audience: "Полезен: руководство, собственники, акимат",
     href: "/tools/management-report",
     cta: "Сформировать отчет",
@@ -59,8 +67,12 @@ export function ToolsGrid() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.35, delay: index * 0.05 }}
             >
-              <h3 className="text-2xl font-semibold tracking-tight text-slate-950">{tool.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">{tool.description}</p>
+              <h3 className="text-2xl font-semibold tracking-tight text-slate-950">
+                {tool.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                {tool.description}
+              </p>
               <ul className="mt-4 space-y-2 text-sm text-slate-700">
                 {tool.features.map((item) => (
                   <li key={item} className="flex items-center gap-2">
@@ -69,7 +81,9 @@ export function ToolsGrid() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-xs font-medium uppercase tracking-wide text-slate-500">{tool.audience}</p>
+              <p className="mt-4 text-xs font-medium uppercase tracking-wide text-slate-500">
+                {tool.audience}
+              </p>
               <Link href={tool.href} className="mt-5 inline-flex">
                 <Button variant="secondary">{tool.cta}</Button>
               </Link>

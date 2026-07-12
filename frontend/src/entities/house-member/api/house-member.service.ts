@@ -1,8 +1,8 @@
-import { apiFetch, ApiError } from "@/shared/api";
 import type {
   AssignHouseUserPayload,
   HouseUserWithProfile,
 } from "@/entities/house";
+import { ApiError, apiFetch } from "@/shared/api";
 
 export class HouseUsersApiError extends ApiError {
   constructor(message: string, status: number) {
@@ -16,7 +16,10 @@ async function houseUsersFetch<T>(
   options: RequestInit = {},
 ): Promise<T> {
   try {
-    return await apiFetch<T>(path, { ...options, errorName: "HouseUsersApiError" });
+    return await apiFetch<T>(path, {
+      ...options,
+      errorName: "HouseUsersApiError",
+    });
   } catch (err) {
     if (err instanceof ApiError) {
       throw new HouseUsersApiError(err.message, err.status);

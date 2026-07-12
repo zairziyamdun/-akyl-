@@ -24,8 +24,14 @@ export function DashboardSectionCard({
     >
       {title ? (
         <div className="mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 md:text-base">{title}</h3>
-          {subtitle ? <p className="mt-0.5 text-xs text-slate-500 md:text-sm">{subtitle}</p> : null}
+          <h3 className="text-sm font-semibold text-slate-900 md:text-base">
+            {title}
+          </h3>
+          {subtitle ? (
+            <p className="mt-0.5 text-xs text-slate-500 md:text-sm">
+              {subtitle}
+            </p>
+          ) : null}
         </div>
       ) : null}
       {children}

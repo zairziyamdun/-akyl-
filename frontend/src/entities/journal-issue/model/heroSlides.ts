@@ -51,7 +51,9 @@ function accessToCategory(access: JournalIssueRecord["accessType"]): string {
 }
 
 /** Latest published issues for hero carousel (max 5). */
-export function selectHeroIssues(records: JournalIssueRecord[]): HeroIssueSlide[] {
+export function selectHeroIssues(
+  records: JournalIssueRecord[],
+): HeroIssueSlide[] {
   return records
     .filter((r) => r.status === "PUBLISHED")
     .sort(
@@ -63,5 +65,8 @@ export function selectHeroIssues(records: JournalIssueRecord[]): HeroIssueSlide[
 }
 
 export function buildHeroSlides(issues: HeroIssueSlide[]): HeroSlide[] {
-  return [{ kind: "intro", id: "intro" }, ...issues.map((issue) => ({ kind: "issue" as const, ...issue }))];
+  return [
+    { kind: "intro", id: "intro" },
+    ...issues.map((issue) => ({ kind: "issue" as const, ...issue })),
+  ];
 }

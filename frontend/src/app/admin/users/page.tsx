@@ -1,30 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
+import type { AkylRole } from "@/entities/session";
 import {
   ADMIN_USER_ROLE_LABELS,
   ADMIN_USER_ROLES,
   ADMIN_USER_STATUS_LABELS,
   ADMIN_USER_STATUSES,
-  adminUserDisplayName,
-  adminUserStatusVariant,
-  formatAdminUserDate,
-  normalizeAdminUserStatus,
   type AdminUser,
   type AdminUserRole,
   type AdminUserStatus,
-} from "@/entities/user";
-import {
   AdminUsersApiError,
+  adminUserDisplayName,
+  adminUserStatusVariant,
+  formatAdminUserDate,
   getAdminUsers,
+  normalizeAdminUserStatus,
   updateUserRole,
   updateUserStatus,
 } from "@/entities/user";
-import type { AkylRole } from "@/entities/session";
+import { DataTable, PageHeader, StatusBadge } from "@/widgets/dashboard-shell";
 
 type RoleFilter = AkylRole | "all";
 
@@ -91,7 +86,10 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleStatusChange = async (userId: string, status: AdminUserStatus) => {
+  const handleStatusChange = async (
+    userId: string,
+    status: AdminUserStatus,
+  ) => {
     const current = users.find((user) => user.id === userId);
     if (!current || normalizeAdminUserStatus(current.status) === status) {
       return;

@@ -1,7 +1,6 @@
 import Link from "next/link";
-
-import { AccessDenied } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
+import { AccessDenied } from "@/widgets/dashboard-shell";
 
 export default function ForbiddenPage() {
   return (

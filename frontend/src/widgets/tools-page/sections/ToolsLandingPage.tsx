@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -14,16 +12,17 @@ import {
   Gauge,
   Landmark,
   ListChecks,
+  type LucideIcon,
   ShieldCheck,
   Sparkles,
   Users,
   Wallet,
-  type LucideIcon,
 } from "lucide-react";
-
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
-import { cn } from "@/shared/lib";
 
 type ToolItem = {
   id: string;
@@ -33,7 +32,11 @@ type ToolItem = {
   cta: string;
   tag: string;
   icon: LucideIcon;
-  href: "/tools/index-efficiency" | "/tools/budget-analysis" | "/tools/checklists" | "/tools/management-report";
+  href:
+    | "/tools/index-efficiency"
+    | "/tools/budget-analysis"
+    | "/tools/checklists"
+    | "/tools/management-report";
   accent: string;
 };
 
@@ -91,7 +94,10 @@ const TOOLS: ToolItem[] = [
 const PROCESS_FLOW = [
   { title: "Чек-листы", text: "собирают факты" },
   { title: "Анализ бюджета", text: "показывает финансовые отклонения" },
-  { title: "Индекс эффективности", text: "переводит состояние управления в оценку 0–100" },
+  {
+    title: "Индекс эффективности",
+    text: "переводит состояние управления в оценку 0–100",
+  },
   { title: "Управленческий отчет", text: "собирает выводы" },
   { title: "Решения", text: "запускают улучшения" },
 ] as const;
@@ -126,8 +132,9 @@ function HeroSection() {
               Инструменты профессионального управления МЖД
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
-              Практические цифровые решения для оценки эффективности, анализа бюджета, контроля
-              процессов и формирования управленческой отчетности.
+              Практические цифровые решения для оценки эффективности, анализа
+              бюджета, контроля процессов и формирования управленческой
+              отчетности.
             </p>
 
             <AnimatePresence mode="wait">
@@ -142,7 +149,9 @@ function HeroSection() {
                   activeTool.accent,
                 )}
               >
-                <p className="text-sm font-medium text-slate-500">{activeTool.name}</p>
+                <p className="text-sm font-medium text-slate-500">
+                  {activeTool.name}
+                </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
                   {activeTool.headline}
                 </h2>
@@ -173,7 +182,11 @@ function HeroSection() {
                     <motion.button
                       key={`${tool.id}-${index}`}
                       type="button"
-                      onClick={() => setActive(TOOLS.findIndex((item) => item.id === tool.id))}
+                      onClick={() =>
+                        setActive(
+                          TOOLS.findIndex((item) => item.id === tool.id),
+                        )
+                      }
                       className={cn(
                         "absolute left-1/2 top-1/2 h-[250px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-3xl border text-left",
                         "bg-gradient-to-br p-7 shadow-[0_24px_80px_-35px_rgba(15,23,42,0.55)] transition",
@@ -183,7 +196,9 @@ function HeroSection() {
                       animate={{
                         x: offset * 118,
                         y: Math.abs(offset) * 10,
-                        scale: isActive ? 1 : 0.86 - Math.min(Math.abs(offset), 2) * 0.04,
+                        scale: isActive
+                          ? 1
+                          : 0.86 - Math.min(Math.abs(offset), 2) * 0.04,
                         opacity: isActive ? 1 : 0.42,
                         rotate: isActive ? 0 : offset * 7,
                         zIndex: isActive ? 30 : 20 - Math.abs(offset),
@@ -193,7 +208,9 @@ function HeroSection() {
                       <div
                         className={cn(
                           "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium",
-                          isActive ? "bg-slate-900 text-white" : "bg-white/85 text-slate-700",
+                          isActive
+                            ? "bg-slate-900 text-white"
+                            : "bg-white/85 text-slate-700",
                         )}
                       >
                         <Icon className="h-3.5 w-3.5" />
@@ -222,21 +239,30 @@ function HeroSection() {
                   <motion.button
                     key={`${tool.id}-mobile-${index}`}
                     type="button"
-                    onClick={() => setActive(TOOLS.findIndex((item) => item.id === tool.id))}
+                    onClick={() =>
+                      setActive(TOOLS.findIndex((item) => item.id === tool.id))
+                    }
                     className={cn(
                       "min-w-[240px] rounded-2xl border bg-gradient-to-br p-5 text-left",
                       tool.accent,
                       isActive ? "border-slate-900/35" : "border-black/10",
                     )}
-                    animate={{ scale: isActive ? 1 : 0.95, opacity: isActive ? 1 : 0.72 }}
+                    animate={{
+                      scale: isActive ? 1 : 0.95,
+                      opacity: isActive ? 1 : 0.72,
+                    }}
                     transition={{ duration: 0.35 }}
                   >
                     <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700">
                       <Icon className="h-3.5 w-3.5" />
                       {tool.tag}
                     </div>
-                    <p className="mt-4 text-lg font-semibold tracking-tight text-slate-950">{tool.name}</p>
-                    <p className="mt-2 text-sm text-slate-700">{tool.headline}</p>
+                    <p className="mt-4 text-lg font-semibold tracking-tight text-slate-950">
+                      {tool.name}
+                    </p>
+                    <p className="mt-2 text-sm text-slate-700">
+                      {tool.headline}
+                    </p>
                   </motion.button>
                 );
               })}
@@ -299,8 +325,12 @@ function ToolsSystemSection() {
               transition={{ duration: 0.35, delay: i * 0.06 }}
               className="relative rounded-2xl border border-black/10 bg-white p-5"
             >
-              <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+              <p className="text-sm font-semibold text-slate-900">
+                {item.title}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                {item.text}
+              </p>
               {i < PROCESS_FLOW.length - 1 && (
                 <ArrowRight className="absolute -right-3 top-1/2 hidden h-5 w-5 -translate-y-1/2 text-slate-400 md:block" />
               )}
@@ -316,29 +346,49 @@ function ToolsGridSection() {
   const cards = [
     {
       title: "Индекс эффективности",
-      description: "Диагностический продукт для быстрой оценки качества управления по ключевым блокам.",
-      features: ["Интегральный балл 0–100", "Сравнение по блокам KPI", "Сигналы проблемных зон"],
+      description:
+        "Диагностический продукт для быстрой оценки качества управления по ключевым блокам.",
+      features: [
+        "Интегральный балл 0–100",
+        "Сравнение по блокам KPI",
+        "Сигналы проблемных зон",
+      ],
       audience: "Для УК, акимата и консультантов",
       href: "/tools/index-efficiency" as const,
     },
     {
       title: "Анализ бюджета",
-      description: "Финансовый модуль, который показывает отклонения, риски и точки для оптимизации затрат.",
-      features: ["План-факт по статьям", "Оценка дефицита и риска", "Подсветка неэффективных расходов"],
+      description:
+        "Финансовый модуль, который показывает отклонения, риски и точки для оптимизации затрат.",
+      features: [
+        "План-факт по статьям",
+        "Оценка дефицита и риска",
+        "Подсветка неэффективных расходов",
+      ],
       audience: "Для финблоков УК и советов домов",
       href: "/tools/budget-analysis" as const,
     },
     {
       title: "Чек-листы",
-      description: "Операционный аудит процессов эксплуатации и сервиса с быстрым выявлением нарушений.",
-      features: ["Шаблоны проверок", "Статусы выполнения", "Фиксация замечаний и приоритетов"],
+      description:
+        "Операционный аудит процессов эксплуатации и сервиса с быстрым выявлением нарушений.",
+      features: [
+        "Шаблоны проверок",
+        "Статусы выполнения",
+        "Фиксация замечаний и приоритетов",
+      ],
       audience: "Для операционных команд и инспекции",
       href: "/tools/checklists" as const,
     },
     {
       title: "Управленческий отчет",
-      description: "Конструктор сводной управленческой картины по дому для руководства и собственников.",
-      features: ["Единая структура отчета", "Выводы и рекомендации", "Готовность к презентации решений"],
+      description:
+        "Конструктор сводной управленческой картины по дому для руководства и собственников.",
+      features: [
+        "Единая структура отчета",
+        "Выводы и рекомендации",
+        "Готовность к презентации решений",
+      ],
       audience: "Для руководителей УК и ОСИ",
       href: "/tools/management-report" as const,
     },
@@ -357,19 +407,28 @@ function ToolsGridSection() {
               transition={{ duration: 0.4, delay: i * 0.05 }}
               className="rounded-3xl border border-black/10 bg-gradient-to-b from-white to-slate-50 p-6 md:p-7"
             >
-              <h3 className="text-2xl font-semibold tracking-tight text-slate-950">{card.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-600 md:text-base">{card.description}</p>
+              <h3 className="text-2xl font-semibold tracking-tight text-slate-950">
+                {card.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 md:text-base">
+                {card.description}
+              </p>
 
               <ul className="mt-5 space-y-2">
                 {card.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-slate-700">
+                  <li
+                    key={feature}
+                    className="flex items-start gap-2 text-sm text-slate-700"
+                  >
                     <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
                     {feature}
                   </li>
                 ))}
               </ul>
 
-              <p className="mt-5 text-sm font-medium text-slate-800">{card.audience}</p>
+              <p className="mt-5 text-sm font-medium text-slate-800">
+                {card.audience}
+              </p>
               <div className="mt-5">
                 <Button asChild variant="secondary">
                   <Link href={card.href}>Перейти к инструменту</Link>
@@ -399,7 +458,10 @@ function WorkflowSection() {
         </h2>
         <ol className="mt-10 grid gap-4 md:grid-cols-5">
           {steps.map((step, i) => (
-            <li key={step} className="rounded-2xl border border-white/15 bg-white/5 p-4">
+            <li
+              key={step}
+              className="rounded-2xl border border-white/15 bg-white/5 p-4"
+            >
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Шаг {i + 1}
               </p>
@@ -445,9 +507,14 @@ function AudiencesSection() {
           {items.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="rounded-2xl border border-black/10 bg-slate-50 p-5">
+              <div
+                key={item.title}
+                className="rounded-2xl border border-black/10 bg-slate-50 p-5"
+              >
                 <Icon className="h-5 w-5 text-slate-900" />
-                <h3 className="mt-3 text-base font-semibold text-slate-950">{item.title}</h3>
+                <h3 className="mt-3 text-base font-semibold text-slate-950">
+                  {item.title}
+                </h3>
                 <p className="mt-2 text-sm text-slate-600">{item.text}</p>
               </div>
             );
@@ -486,7 +553,9 @@ function ToolsCtaSection() {
           </div>
           <div className="mt-6 flex items-center gap-2 text-sm text-slate-300">
             <CheckCheck className="h-4 w-4" />
-            <span>Без тяжёлых библиотек. Только быстрые и понятные интерфейсы.</span>
+            <span>
+              Без тяжёлых библиотек. Только быстрые и понятные интерфейсы.
+            </span>
           </div>
         </div>
       </Container>

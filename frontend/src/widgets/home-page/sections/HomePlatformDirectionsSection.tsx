@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import { homePlatformDirections } from "../model/home-platform-directions.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const directions = homePlatformDirections;
 
@@ -29,7 +29,8 @@ export function HomePlatformDirectionsSection() {
             Направления платформы
           </h2>
           <p className="mt-4 text-base text-slate-400 sm:text-lg">
-            Точки входа в методологию, данные и практику — каждая ведёт в свой контур работы.
+            Точки входа в методологию, данные и практику — каждая ведёт в свой
+            контур работы.
           </p>
         </motion.div>
 
@@ -55,8 +56,12 @@ export function HomePlatformDirectionsSection() {
                     <ArrowUpRight className="h-5 w-5 shrink-0 text-slate-500 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold tracking-tight">{d.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-400">{d.desc}</p>
+                    <h3 className="text-xl font-semibold tracking-tight">
+                      {d.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                      {d.desc}
+                    </p>
                   </div>
                 </Link>
               </motion.div>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback } from "react";
-
-import { PdfViewer, type PdfViewerErrorPayload } from "@/shared/pdf/ui/PdfViewer";
 import { fetchIssuePdfArrayBuffer } from "@/entities/journal-issue";
+import {
+  PdfViewer,
+  type PdfViewerErrorPayload,
+} from "@/shared/pdf/ui/PdfViewer";
 
 export type { PdfViewerErrorPayload };
 
@@ -12,7 +14,10 @@ type JournalPdfJsViewerProps = {
   onLoadError: (error: PdfViewerErrorPayload) => void;
 };
 
-export function JournalPdfJsViewer({ issueId, onLoadError }: JournalPdfJsViewerProps) {
+export function JournalPdfJsViewer({
+  issueId,
+  onLoadError,
+}: JournalPdfJsViewerProps) {
   const loadBytes = useCallback(async () => {
     const result = await fetchIssuePdfArrayBuffer(issueId);
     return result.buffer;

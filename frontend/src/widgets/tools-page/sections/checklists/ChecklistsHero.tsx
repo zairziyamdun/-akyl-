@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ClipboardCheck, Gauge, ListChecks } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";

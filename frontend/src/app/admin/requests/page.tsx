@@ -1,7 +1,9 @@
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
-import { mockConsultationRequests } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  mockConsultationRequests,
+  PageHeader,
+  StatusBadge,
+} from "@/widgets/dashboard-shell";
 
 export default function AdminRequestsPage() {
   return (
@@ -16,7 +18,11 @@ export default function AdminRequestsPage() {
         keyExtractor={(r) => r.id}
         columns={[
           { key: "name", header: "Имя", render: (r) => r.name },
-          { key: "organization", header: "Организация", render: (r) => r.organization },
+          {
+            key: "organization",
+            header: "Организация",
+            render: (r) => r.organization,
+          },
           { key: "role", header: "Роль", render: (r) => r.role },
           { key: "email", header: "Email", render: (r) => r.email },
           {
@@ -29,7 +35,9 @@ export default function AdminRequestsPage() {
             key: "message",
             header: "Сообщение",
             render: (r) => (
-              <span className="line-clamp-1 max-w-xs text-slate-500">{r.message}</span>
+              <span className="line-clamp-1 max-w-xs text-slate-500">
+                {r.message}
+              </span>
             ),
           },
         ]}

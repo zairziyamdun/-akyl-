@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { cn } from "@/shared/lib";
 
@@ -75,7 +75,6 @@ export function FileDropzone({
         />
 
         {previewType === "image" && previewUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={previewUrl}
             alt="Обложка"
@@ -88,7 +87,9 @@ export function FileDropzone({
             <span className="text-lg" aria-hidden>
               📄
             </span>
-            <span className="text-sm font-medium text-slate-800">{fileName}</span>
+            <span className="text-sm font-medium text-slate-800">
+              {fileName}
+            </span>
           </div>
         ) : null}
 
@@ -112,7 +113,9 @@ export function FileDropzone({
         <p className="mt-1 text-xs text-slate-400">{hint}</p>
       </label>
       {error ? (
-        <pre className="mt-2 whitespace-pre-wrap text-xs text-red-600">{error}</pre>
+        <pre className="mt-2 whitespace-pre-wrap text-xs text-red-600">
+          {error}
+        </pre>
       ) : null}
     </div>
   );

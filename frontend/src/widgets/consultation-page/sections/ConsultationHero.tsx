@@ -1,16 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Activity, ClipboardList } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/shared/ui/Button";
-import {
-  consultationImages,
-  heroKpiRows,
-} from "@/widgets/consultation-page";
+import { Container } from "@/shared/ui/Container";
+import { consultationImages, heroKpiRows } from "@/widgets/consultation-page";
 
 import {
   consultationFloatPanel,

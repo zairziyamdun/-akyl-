@@ -1,9 +1,8 @@
 import Link from "next/link";
-
-import { Button } from "@/shared/ui/Button";
-import { IssueStatusBadge } from ".";
 import type { JournalIssueStatus } from "@/entities/journal-issue";
 import { issueStatusLabels } from "@/entities/journal-issue";
+import { Button } from "@/shared/ui/Button";
+import { IssueStatusBadge } from ".";
 
 export function IssueEditDenied({
   status,

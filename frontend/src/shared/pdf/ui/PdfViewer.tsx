@@ -2,9 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Document, Page } from "react-pdf";
-
-import { PdfErrorState } from "@/shared/pdf/ui/PdfErrorState";
-import { PdfLoadingState } from "@/shared/pdf/ui/PdfLoadingState";
 import { PdfLoadError } from "@/entities/journal-issue";
 import type { PdfDiagnostics } from "@/shared/pdf/pdfDiagnostics";
 import { serializeError } from "@/shared/pdf/pdfDiagnostics";
@@ -13,6 +10,8 @@ import {
   getPdfJsVersion,
   getPdfJsWorkerSrc,
 } from "@/shared/pdf/pdfjsConfig";
+import { PdfErrorState } from "@/shared/pdf/ui/PdfErrorState";
+import { PdfLoadingState } from "@/shared/pdf/ui/PdfLoadingState";
 
 export type PdfViewerErrorPayload = {
   message: string;
@@ -51,7 +50,9 @@ async function fetchUrlAsArrayBuffer(url: string): Promise<ArrayBuffer> {
   }
   const contentType = response.headers.get("content-type") ?? "";
   if (contentType.includes("text/html")) {
-    throw new Error("Сервер вернул HTML вместо PDF — проверьте URL или срок signed URL");
+    throw new Error(
+      "Сервер вернул HTML вместо PDF — проверьте URL или срок signed URL",
+    );
   }
   return response.arrayBuffer();
 }
@@ -99,23 +100,28 @@ export function PdfViewer({
     const observer = new ResizeObserver(updateWidth);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [phase, pdfBytes]);
-
-  const emitLoadError = useCallback((message: string, diagnostics: PdfDiagnostics) => {
-    console.error("[pdf] load-error", message, diagnostics);
-    setErrorMessage(message);
-    setErrorDetails(
-      [
-        diagnostics.errorMessage,
-        diagnostics.workerSrc ? `worker: ${diagnostics.workerSrc}` : null,
-        diagnostics.pdfJsVersion ? `pdf.js: ${diagnostics.pdfJsVersion}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n"),
-    );
-    setPhase("error");
-    onErrorRef.current?.({ message, diagnostics });
   }, []);
+
+  const emitLoadError = useCallback(
+    (message: string, diagnostics: PdfDiagnostics) => {
+      console.error("[pdf] load-error", message, diagnostics);
+      setErrorMessage(message);
+      setErrorDetails(
+        [
+          diagnostics.errorMessage,
+          diagnostics.workerSrc ? `worker: ${diagnostics.workerSrc}` : null,
+          diagnostics.pdfJsVersion
+            ? `pdf.js: ${diagnostics.pdfJsVersion}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      );
+      setPhase("error");
+      onErrorRef.current?.({ message, diagnostics });
+    },
+    [],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -180,7 +186,7 @@ export function PdfViewer({
     return () => {
       cancelled = true;
     };
-  }, [fileUrl, loadBytes, reloadToken, emitLoadError]);
+  }, [fileUrl, loadBytes, emitLoadError]);
 
   const retryLoad = useCallback(() => {
     setReloadToken((token) => token + 1);
@@ -264,7 +270,9 @@ export function PdfViewer({
           details={errorDetails || undefined}
           onRetry={retryLoad}
           onOpenInBrowser={
-            showOpenInBrowser && browserUrl ? () => void openInBrowser() : undefined
+            showOpenInBrowser && browserUrl
+              ? () => void openInBrowser()
+              : undefined
           }
           opening={openingExternal}
         />
@@ -293,7 +301,9 @@ export function PdfViewer({
             message="PDF.js не смог загрузить документ"
             onRetry={retryLoad}
             onOpenInBrowser={
-              showOpenInBrowser && browserUrl ? () => void openInBrowser() : undefined
+              showOpenInBrowser && browserUrl
+                ? () => void openInBrowser()
+                : undefined
             }
           />
         }
@@ -311,7 +321,10 @@ export function PdfViewer({
             loading={
               <div
                 className="mx-auto mb-4 max-w-full animate-pulse rounded-lg border border-slate-100 bg-white shadow-sm"
-                style={{ width: pageWidth, height: Math.round(pageWidth * 1.414) }}
+                style={{
+                  width: pageWidth,
+                  height: Math.round(pageWidth * Math.SQRT2),
+                }}
                 aria-hidden
               />
             }

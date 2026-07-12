@@ -1,31 +1,28 @@
 "use client";
 
+import { Download, ExternalLink, Lock } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Download, ExternalLink, Lock } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-
-import { JournalListSkeleton } from ".";
-import { PdfDiagnosticsPanel } from ".";
-import type { PdfViewerErrorPayload } from "@/shared/pdf/ui/PdfViewer";
-import { PdfLoadingState } from "@/shared/pdf/ui/PdfLoadingState";
-import { Button } from "@/shared/ui/Button";
-import { Container } from "@/shared/ui/Container";
-import { JOURNAL_ACCESS_HREF } from "../model/journal-public.const";
-import { fromApiIssue } from "@/entities/journal-issue";
+import type { JournalIssueRecord } from "@/entities/journal-issue";
 import {
-  JournalApiError,
   downloadIssuePdf,
   fetchIssuePdfUrl,
   fetchJournalIssue,
+  fromApiIssue,
+  JournalApiError,
 } from "@/entities/journal-issue";
-import type { JournalIssueRecord } from "@/entities/journal-issue";
 import type { PdfDiagnostics } from "@/shared/pdf/pdfDiagnostics";
+import { PdfLoadingState } from "@/shared/pdf/ui/PdfLoadingState";
+import type { PdfViewerErrorPayload } from "@/shared/pdf/ui/PdfViewer";
 import { usePdfViewerMode } from "@/shared/pdf/usePdfViewerMode";
+import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
+import { JOURNAL_ACCESS_HREF } from "../model/journal-public.const";
+import { JournalListSkeleton, PdfDiagnosticsPanel } from ".";
 
 const JournalPdfJsViewer = dynamic(
-  () =>
-    import("./JournalPdfJsViewer").then((mod) => mod.JournalPdfJsViewer),
+  () => import("./JournalPdfJsViewer").then((mod) => mod.JournalPdfJsViewer),
   {
     ssr: false,
     loading: () => <PdfLoadingState />,
@@ -127,7 +124,9 @@ function PdfViewerErrorFallback({
         diagnostics={diagnostics}
       />
       {actionError ? (
-        <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{actionError}</p>
+        <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
+          {actionError}
+        </p>
       ) : null}
       <div className="flex flex-wrap justify-center gap-3">
         <Button onClick={() => void openInNewTab()} disabled={opening}>
@@ -162,9 +161,8 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
   const [viewerKey, setViewerKey] = useState(0);
-  const [viewerDiagnostics, setViewerDiagnostics] = useState<PdfDiagnostics | null>(
-    null,
-  );
+  const [viewerDiagnostics, setViewerDiagnostics] =
+    useState<PdfDiagnostics | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -211,7 +209,9 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
       setPdfUrl(url);
     } catch (err) {
       setPdfError(
-        err instanceof JournalApiError ? err.message : "Не удалось загрузить PDF",
+        err instanceof JournalApiError
+          ? err.message
+          : "Не удалось загрузить PDF",
       );
       setPdfUrl(null);
     } finally {
@@ -220,16 +220,19 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   }, [issue]);
 
   useEffect(() => {
-    if (!issue || issue.accessType !== "FREE") return;
+    if (issue?.accessType !== "FREE") return;
     if (viewerMode !== "iframe") return;
     void loadSignedPdfUrl();
   }, [issue, viewerMode, loadSignedPdfUrl]);
 
-  const handlePdfJsError = useCallback(({ message, diagnostics }: PdfViewerErrorPayload) => {
-    setPdfError(message);
-    setViewerDiagnostics(diagnostics);
-    setViewerError(true);
-  }, []);
+  const handlePdfJsError = useCallback(
+    ({ message, diagnostics }: PdfViewerErrorPayload) => {
+      setPdfError(message);
+      setViewerDiagnostics(diagnostics);
+      setViewerError(true);
+    },
+    [],
+  );
 
   const handleDownload = async () => {
     if (!issue) return;
@@ -290,7 +293,8 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   }
 
   const fileName = issue.pdfFileName || `${issue.title}.pdf`;
-  const showIframe = viewerMode === "iframe" && pdfUrl && !viewerError && !pdfError;
+  const showIframe =
+    viewerMode === "iframe" && pdfUrl && !viewerError && !pdfError;
   const showPdfJs = viewerMode === "pdfjs" && !viewerError && !pdfError;
   const showFallback =
     viewerError || (viewerMode === "iframe" && pdfError && !pdfLoading);
@@ -332,14 +336,18 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
             : "w-full max-w-full overflow-x-hidden"
         }
       >
-        {viewerMode === "iframe" && pdfLoading ? (
-          <PdfLoadingState />
-        ) : null}
+        {viewerMode === "iframe" && pdfLoading ? <PdfLoadingState /> : null}
 
         {viewerMode === "iframe" && pdfError && !showFallback ? (
           <div className="flex h-full min-h-[50vh] flex-col items-center justify-center gap-4 bg-slate-100 px-6 text-center">
-            <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">{pdfError}</p>
-            <Button variant="secondary" size="sm" onClick={() => void loadSignedPdfUrl()}>
+            <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
+              {pdfError}
+            </p>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => void loadSignedPdfUrl()}
+            >
               Повторить
             </Button>
           </div>

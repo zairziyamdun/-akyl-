@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Download } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
+import { books } from "@/widgets/books-page";
 import { BookCoverPlaceholder } from "../ui/BookCoverPlaceholder";
 import { Bullets } from "../ui/Bullets";
 import { SectionEyebrow } from "../ui/SectionEyebrow";
-import { books } from "@/widgets/books-page";
 
 export function BookOneSection() {
   const book = books.book1;

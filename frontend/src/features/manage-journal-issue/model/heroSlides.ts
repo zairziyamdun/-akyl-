@@ -1,4 +1,11 @@
 ﻿/**
  * @deprecated Import from `@/entities/journal-issue` instead.
  */
-export { HERO_MAX_ISSUES, toHeroIssueSlide, selectHeroIssues, buildHeroSlides, type HeroIssueSlide, type HeroSlide } from "@/entities/journal-issue";
+export {
+  buildHeroSlides,
+  HERO_MAX_ISSUES,
+  type HeroIssueSlide,
+  type HeroSlide,
+  selectHeroIssues,
+  toHeroIssueSlide,
+} from "@/entities/journal-issue";

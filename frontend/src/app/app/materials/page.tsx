@@ -1,7 +1,9 @@
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
-import { mockUserMaterials } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  mockUserMaterials,
+  PageHeader,
+} from "@/widgets/dashboard-shell";
 
 export default function UserMaterialsPage() {
   return (

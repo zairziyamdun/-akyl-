@@ -58,10 +58,7 @@ function statusFromKpi(kpi: number): {
   return { status: "risk", label: "Риск" };
 }
 
-function scaleRow(
-  row: BudgetRowInput,
-  factor: number,
-): BudgetRowInput {
+function scaleRow(row: BudgetRowInput, factor: number): BudgetRowInput {
   return {
     ...row,
     plan: row.plan * factor,
@@ -103,8 +100,7 @@ export function computeTotals(computedRows: BudgetRowComputed[]): BudgetTotals {
   const totalPlan = computedRows.reduce((sum, r) => sum + r.plan, 0);
   const totalFact = computedRows.reduce((sum, r) => sum + r.fact, 0);
   const totalDeviation = totalFact - totalPlan;
-  const totalDelta =
-    totalPlan === 0 ? 0 : totalDeviation / totalPlan;
+  const totalDelta = totalPlan === 0 ? 0 : totalDeviation / totalPlan;
   const totalBudgetKpi =
     totalPlan === 0 ? 0 : Math.max(0, 1 - Math.abs(totalDelta));
   return {

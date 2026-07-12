@@ -1,14 +1,14 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import {
   homeEducationBlocks,
   homeEducationImage,
 } from "../model/home-education.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const blocks = homeEducationBlocks;
 
@@ -48,8 +48,8 @@ export function HomeEducationSpotlightSection() {
                 Учиться системе — не пересказывать регламенты
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-                Образовательный контур закрепляет язык методологии и переводит его в ежедневную
-                практику.
+                Образовательный контур закрепляет язык методологии и переводит
+                его в ежедневную практику.
               </p>
             </motion.div>
 
@@ -69,7 +69,9 @@ export function HomeEducationSpotlightSection() {
                       <Icon className="h-5 w-5" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-900">{b.title}</h3>
+                      <h3 className="font-semibold text-slate-900">
+                        {b.title}
+                      </h3>
                       <p className="mt-1 text-sm text-slate-600">{b.text}</p>
                     </div>
                   </motion.div>

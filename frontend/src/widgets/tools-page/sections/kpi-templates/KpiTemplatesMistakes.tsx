@@ -16,10 +16,7 @@ const correct = [
 
 export function KpiTemplatesMistakes() {
   return (
-    <section
-      className="py-16 md:py-20"
-      aria-labelledby="kpi-mistakes-heading"
-    >
+    <section className="py-16 md:py-20" aria-labelledby="kpi-mistakes-heading">
       <Container>
         <div className="mx-auto max-w-2xl text-center">
           <h2

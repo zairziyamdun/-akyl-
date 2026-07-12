@@ -4,9 +4,6 @@ import type {
   ApiJournalIssue,
   ApiJournalStatus,
   ApiUpdateJournalIssue,
-  IssuePdfResponse,
-  UploadCoverResponse,
-  UploadPdfResponse,
 } from "./apiTypes";
 import type {
   CreateJournalIssuePayload,
@@ -86,7 +83,8 @@ export function toApiUpdatePayload(
   const body: ApiUpdateJournalIssue = {};
 
   if (payload.title !== undefined) body.title = payload.title;
-  if (payload.issueNumber !== undefined) body.issue_number = payload.issueNumber;
+  if (payload.issueNumber !== undefined)
+    body.issue_number = payload.issueNumber;
   if (payload.description !== undefined) body.description = payload.description;
   if (payload.coverUrl !== undefined) body.cover_url = payload.coverUrl;
   if (payload.pdfUrl !== undefined) body.pdf_url = payload.pdfUrl;
@@ -97,4 +95,4 @@ export function toApiUpdatePayload(
   return body;
 }
 
-export { STATUS_TO_API, ACCESS_TO_API };
+export { ACCESS_TO_API, STATUS_TO_API };

@@ -1,16 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-
-import { Container } from "@/shared/ui/Container";
+import Link from "next/link";
 import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 
 import { sectionMotion } from "../../model/mzhdMotion";
 
 export function MzhdCtaSection() {
   return (
-    <motion.section className="pb-18 pt-14 sm:pb-22 sm:pt-18" {...sectionMotion}>
+    <motion.section
+      className="pb-18 pt-14 sm:pb-22 sm:pt-18"
+      {...sectionMotion}
+    >
       <Container>
         <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-[0_24px_70px_rgba(15,23,42,0.1)] sm:p-10 lg:p-12">
           <div className="absolute -top-20 right-0 h-52 w-52 rounded-full bg-slate-100 blur-3xl" />

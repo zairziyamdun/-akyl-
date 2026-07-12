@@ -1,8 +1,7 @@
 import Link from "next/link";
-
-import { Button } from "@/shared/ui/Button";
-import { getRoleDashboardPath } from "@/entities/session";
 import type { AkylRole } from "@/entities/session";
+import { getRoleDashboardPath } from "@/entities/session";
+import { Button } from "@/shared/ui/Button";
 
 export function AccessDenied({ role }: { role?: AkylRole }) {
   const home = role ? getRoleDashboardPath(role) : "/";

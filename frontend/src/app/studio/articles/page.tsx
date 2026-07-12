@@ -1,10 +1,11 @@
 import Link from "next/link";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
-import { mockArticles } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  mockArticles,
+  PageHeader,
+  StatusBadge,
+} from "@/widgets/dashboard-shell";
 
 export default function StudioArticlesPage() {
   return (

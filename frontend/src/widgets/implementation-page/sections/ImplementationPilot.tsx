@@ -127,7 +127,10 @@ export function ImplementationPilot() {
                           style={{ width: `${d.before}%` }}
                         />
                       </div>
-                      <span className="shrink-0 text-[10px] text-stone-400" aria-hidden="true">
+                      <span
+                        className="shrink-0 text-[10px] text-stone-400"
+                        aria-hidden="true"
+                      >
                         →
                       </span>
                       <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-stone-100">

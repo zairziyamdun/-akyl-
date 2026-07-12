@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { FileDown, RefreshCw } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 
@@ -33,7 +33,9 @@ export function HouseDashboardHeader({
             ← К списку ЖК
           </Link>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="truncate text-lg font-bold text-slate-900 md:text-xl">{houseName}</h1>
+            <h1 className="truncate text-lg font-bold text-slate-900 md:text-xl">
+              {houseName}
+            </h1>
             <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
               {period}
             </span>
@@ -47,14 +49,23 @@ export function HouseDashboardHeader({
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => window.alert("Экспорт PDF будет доступен в следующей версии")}
+            onClick={() =>
+              window.alert("Экспорт PDF будет доступен в следующей версии")
+            }
           >
             <FileDown className="mr-1.5 h-4 w-4" />
             Экспорт PDF
           </Button>
-          <Button variant="secondary" size="sm" disabled={refreshing} onClick={onRefresh}>
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={refreshing}
+            onClick={onRefresh}
+          >
             <RefreshCw
-              className={refreshing ? "mr-1.5 h-4 w-4 animate-spin" : "mr-1.5 h-4 w-4"}
+              className={
+                refreshing ? "mr-1.5 h-4 w-4 animate-spin" : "mr-1.5 h-4 w-4"
+              }
             />
             Обновить
           </Button>

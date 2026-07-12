@@ -1,17 +1,25 @@
 import type { ReactNode } from "react";
-
-import { cn } from "@/shared/lib";
 import type { TrafficStatus } from "@/entities/house";
+import { cn } from "@/shared/lib";
 
 export const BRAND_NAVY = "#0c1e3a";
 
-const CHART_COLORS = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#64748b"];
+const CHART_COLORS = [
+  "#2563eb",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#64748b",
+];
 
 export function chartColor(index: number): string {
   return CHART_COLORS[index % CHART_COLORS.length] ?? "#2563eb";
 }
 
-export function statusToBadge(status: TrafficStatus): "ok" | "warning" | "error" {
+export function statusToBadge(
+  status: TrafficStatus,
+): "ok" | "warning" | "error" {
   if (status === "green") return "ok";
   if (status === "yellow") return "warning";
   return "error";
@@ -33,7 +41,14 @@ export function TrafficDot({ status }: { status: TrafficStatus }) {
     yellow: "bg-amber-400",
     red: "bg-red-500",
   };
-  return <span className={cn("inline-block h-2 w-2 shrink-0 rounded-full", colors[status])} />;
+  return (
+    <span
+      className={cn(
+        "inline-block h-2 w-2 shrink-0 rounded-full",
+        colors[status],
+      )}
+    />
+  );
 }
 
 export function ProgressTrack({
@@ -70,15 +85,25 @@ export function ProgressTrack({
   );
 }
 
-export function ChartContainer({ children, className }: { children: ReactNode; className?: string }) {
+export function ChartContainer({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={cn("h-[260px] w-full min-w-0", className)}>
-      {children}
-    </div>
+    <div className={cn("h-[260px] w-full min-w-0", className)}>{children}</div>
   );
 }
 
-export function IeuGauge({ score, subtitle }: { score: number; subtitle?: string }) {
+export function IeuGauge({
+  score,
+  subtitle,
+}: {
+  score: number;
+  subtitle?: string;
+}) {
   const clamped = Math.min(Math.max(score, 0), 100);
   const degrees = clamped * 3.6;
 
@@ -92,10 +117,14 @@ export function IeuGauge({ score, subtitle }: { score: number; subtitle?: string
       >
         <div className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-white shadow-inner">
           <span className="text-3xl font-bold text-slate-900">{clamped}</span>
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">IEU</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+            IEU
+          </span>
         </div>
       </div>
-      {subtitle ? <p className="mt-3 text-sm text-slate-600">{subtitle}</p> : null}
+      {subtitle ? (
+        <p className="mt-3 text-sm text-slate-600">{subtitle}</p>
+      ) : null}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Container } from "@/shared/ui/Container";
-import { homeTransition } from "../model/homePageMotion";
 import { homeWhyItems } from "../model/home-why-new-system.data";
+import { homeTransition } from "../model/homePageMotion";
 import { HomeSectionMotion } from "../ui/HomeSectionMotion";
 
 const items = homeWhyItems;
@@ -17,8 +17,8 @@ export function HomeWhyNewSystemSection() {
             Почему нужна новая система управления
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-            Текущая модель часто не даёт предсказуемого результата: есть активность, но нет
-            управляемой системы.
+            Текущая модель часто не даёт предсказуемого результата: есть
+            активность, но нет управляемой системы.
           </p>
         </HomeSectionMotion>
 
@@ -35,8 +35,12 @@ export function HomeWhyNewSystemSection() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white transition-transform duration-300 group-hover:scale-105">
                   <Icon className="h-5 w-5" strokeWidth={1.5} />
                 </div>
-                <h3 className="mt-4 text-base font-semibold text-slate-900">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+                <h3 className="mt-4 text-base font-semibold text-slate-900">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {item.text}
+                </p>
               </HomeSectionMotion>
             );
           })}

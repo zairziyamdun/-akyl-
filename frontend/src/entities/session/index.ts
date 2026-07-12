@@ -1,26 +1,25 @@
-export type {
-  AkylRole,
-  ProfileStatus,
-  AuthProfile,
-  AuthUser,
-  LoginResponse,
-  MeResponse,
-  RegisterPayload,
-  UpdateProfilePayload,
-  LoginPayload,
-} from "./model/types";
+/** Token helpers live in shared (infra); re-exported for convenience. */
+export {
+  AUTH_COOKIE_KEY,
+  clearAccessToken,
+  getAccessToken,
+  setAccessToken,
+} from "@/shared/auth";
 
 export {
-  getAllowedRolesForPath,
   canAccessPath,
+  getAllowedRolesForPath,
   getRequiredRoleForPath,
   getRoleDashboardPath,
 } from "./lib/roleAccess";
-
-/** Token helpers live in shared (infra); re-exported for convenience. */
-export {
-  getAccessToken,
-  setAccessToken,
-  clearAccessToken,
-  AUTH_COOKIE_KEY,
-} from "@/shared/auth";
+export type {
+  AkylRole,
+  AuthProfile,
+  AuthUser,
+  LoginPayload,
+  LoginResponse,
+  MeResponse,
+  ProfileStatus,
+  RegisterPayload,
+  UpdateProfilePayload,
+} from "./model/types";

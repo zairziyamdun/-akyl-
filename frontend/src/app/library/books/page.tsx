@@ -1,9 +1,11 @@
-import { BookOneSection } from "@/widgets/books-page";
-import { BookThreeSection } from "@/widgets/books-page";
-import { BookTwoSection } from "@/widgets/books-page";
-import { BooksCtaSection } from "@/widgets/books-page";
-import { BooksHeroSection } from "@/widgets/books-page";
-import { BooksSystemSection } from "@/widgets/books-page";
+import {
+  BookOneSection,
+  BooksCtaSection,
+  BooksHeroSection,
+  BooksSystemSection,
+  BookThreeSection,
+  BookTwoSection,
+} from "@/widgets/books-page";
 
 export default function Page() {
   return (
@@ -17,4 +19,3 @@ export default function Page() {
     </div>
   );
 }
-

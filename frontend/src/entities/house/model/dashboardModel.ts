@@ -134,7 +134,8 @@ export const DASHBOARD_TABS: { id: DashboardTabId; label: string }[] = [
 
 /** @deprecated use DASHBOARD_TABS */
 export const DASHBOARD_SECTIONS = DASHBOARD_TABS.filter(
-  (tab): tab is { id: DashboardSectionId; label: string } => tab.id !== "overview",
+  (tab): tab is { id: DashboardSectionId; label: string } =>
+    tab.id !== "overview",
 );
 
 function hasFinanceData(finance: HouseDashboard["financeSummary"]): boolean {

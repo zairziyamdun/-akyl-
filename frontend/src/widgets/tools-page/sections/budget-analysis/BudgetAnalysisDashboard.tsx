@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
 import { ArrowLeft, Calculator } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 import {
   type BudgetPeriod,
@@ -13,17 +13,16 @@ import {
   PERIOD_FACTORS,
   PERIOD_LABELS,
 } from "@/features/analyze-budget/budgetAnalysis";
-
-import { Container } from "@/shared/ui/Container";
 import { Button } from "@/shared/ui/Button";
-import { BudgetHero } from "./BudgetHero";
-import { BudgetToolbar } from "./BudgetToolbar";
-import { BudgetInputForm } from "./BudgetInputForm";
-import { BudgetSummaryCards } from "./BudgetSummaryCards";
+import { Container } from "@/shared/ui/Container";
 import { BudgetAnalysisTable } from "./BudgetAnalysisTable";
 import { BudgetCharts } from "./BudgetCharts";
-import { BudgetRisksStrengths } from "./BudgetRisksStrengths";
+import { BudgetHero } from "./BudgetHero";
+import { BudgetInputForm } from "./BudgetInputForm";
 import { BudgetInsights } from "./BudgetInsights";
+import { BudgetRisksStrengths } from "./BudgetRisksStrengths";
+import { BudgetSummaryCards } from "./BudgetSummaryCards";
+import { BudgetToolbar } from "./BudgetToolbar";
 
 export function BudgetAnalysisDashboard() {
   const [period, setPeriod] = useState<BudgetPeriod>("month");
@@ -31,10 +30,7 @@ export function BudgetAnalysisDashboard() {
 
   const factor = PERIOD_FACTORS[period];
 
-  const computed = useMemo(
-    () => computeRows(rows, factor),
-    [rows, factor],
-  );
+  const computed = useMemo(() => computeRows(rows, factor), [rows, factor]);
 
   const totals = useMemo(() => computeTotals(computed), [computed]);
 
@@ -48,8 +44,7 @@ export function BudgetAnalysisDashboard() {
             href="/tools"
             className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-slate-900"
           >
-            <ArrowLeft className="size-4" aria-hidden />
-            К инструментам
+            <ArrowLeft className="size-4" aria-hidden />К инструментам
           </Link>
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
             <Calculator className="size-3.5 text-indigo-600" aria-hidden />

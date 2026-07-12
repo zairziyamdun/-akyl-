@@ -1,6 +1,6 @@
 import fs from "node:fs";
-import path from "node:path";
 import { createRequire } from "node:module";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -48,9 +48,7 @@ function resolvePdfJsDistRoot() {
   if (fs.existsSync(pnpmDir)) {
     for (const entry of fs.readdirSync(pnpmDir)) {
       if (!entry.startsWith("pdfjs-dist@")) continue;
-      candidates.push(
-        path.join(pnpmDir, entry, "node_modules", "pdfjs-dist"),
-      );
+      candidates.push(path.join(pnpmDir, entry, "node_modules", "pdfjs-dist"));
     }
   }
 

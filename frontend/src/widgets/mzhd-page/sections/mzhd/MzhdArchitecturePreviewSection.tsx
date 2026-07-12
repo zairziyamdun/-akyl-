@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 import { Container } from "@/shared/ui/Container";
 import {
@@ -22,12 +22,16 @@ export function MzhdArchitecturePreviewSection() {
               Архитектура управления домом
             </h2>
             <p className="mt-4 text-slate-600">
-              Профессиональная модель управления выстраивается по уровням,
-              где каждый уровень имеет свои роли, решения и цифровой контур контроля.
+              Профессиональная модель управления выстраивается по уровням, где
+              каждый уровень имеет свои роли, решения и цифровой контур
+              контроля.
             </p>
             <ul className="mt-6 space-y-3 text-sm">
               {architectureLevels.map((item) => (
-                <li key={item} className="flex items-center gap-2 text-slate-700">
+                <li
+                  key={item}
+                  className="flex items-center gap-2 text-slate-700"
+                >
                   <span className="h-2 w-2 rounded-full bg-slate-900" />
                   {item}
                 </li>

@@ -1,4 +1,4 @@
 export * from "./api";
-export * from "./lib";
-export * from "./config";
 export * from "./auth";
+export * from "./config";
+export * from "./lib";

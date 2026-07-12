@@ -1,12 +1,12 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Container } from "@/shared/ui/Container";
 import { cn } from "@/shared/lib";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
+import { Container } from "@/shared/ui/Container";
 import { homeKnowledgeTabs } from "../model/home-knowledge-library.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const tabs = homeKnowledgeTabs;
 
@@ -66,8 +66,12 @@ export function HomeKnowledgeLibrarySection() {
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
               <Icon className="h-7 w-7 text-slate-900" strokeWidth={1.4} />
             </div>
-            <h3 className="mt-6 text-2xl font-semibold text-slate-900">{current.label}</h3>
-            <p className="mt-3 max-w-lg text-base leading-relaxed text-slate-600">{current.blurb}</p>
+            <h3 className="mt-6 text-2xl font-semibold text-slate-900">
+              {current.label}
+            </h3>
+            <p className="mt-3 max-w-lg text-base leading-relaxed text-slate-600">
+              {current.blurb}
+            </p>
           </div>
           <Link
             href={current.href}

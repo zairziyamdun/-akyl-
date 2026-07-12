@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { PublicIssueCard } from ".";
-import { JournalListSkeleton } from ".";
 import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
 import { useJournalIssues } from "../JournalIssuesProvider";
+import { JournalListSkeleton, PublicIssueCard } from ".";
 
 export function PublicJournalIssuesGrid() {
   const { getPublishedIssues, isLoading } = useJournalIssues();
@@ -18,7 +16,10 @@ export function PublicJournalIssuesGrid() {
   const published = getPublishedIssues();
 
   return (
-    <Section id="journal-all-issues" className="scroll-mt-20 bg-white sm:scroll-mt-24">
+    <Section
+      id="journal-all-issues"
+      className="scroll-mt-20 bg-white sm:scroll-mt-24"
+    >
       <Container className="px-4 sm:px-6">
         <SectionHeading
           eyebrow="Архив"

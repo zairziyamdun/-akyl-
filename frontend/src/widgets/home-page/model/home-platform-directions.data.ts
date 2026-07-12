@@ -3,8 +3,8 @@ import {
   Building2,
   GraduationCap,
   Landmark,
-  Wrench,
   type LucideIcon,
+  Wrench,
 } from "lucide-react";
 
 export type HomePlatformDirection = {

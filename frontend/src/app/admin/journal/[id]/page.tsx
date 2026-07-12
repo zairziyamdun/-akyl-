@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-
-import { IssueDetailView } from "@/features/manage-journal-issue";
-import { IssueForm } from "@/features/manage-journal-issue";
-import { JournalTableSkeleton } from "@/features/manage-journal-issue";
-import { EmptyState } from "@/widgets/dashboard-shell";
+import { use, useEffect, useState } from "react";
+import {
+  IssueDetailView,
+  IssueForm,
+  JournalTableSkeleton,
+  useJournalIssues,
+} from "@/features/manage-journal-issue";
 import { Button } from "@/shared/ui/Button";
-import { useJournalIssues } from "@/features/manage-journal-issue";
+import { EmptyState } from "@/widgets/dashboard-shell";
 
 export default function AdminJournalDetailPage({
   params,
@@ -50,12 +51,7 @@ export default function AdminJournalDetailPage({
 
   if (edit) {
     return (
-      <IssueForm
-        mode="edit"
-        issue={issue}
-        isAdmin
-        listPath="/admin/journal"
-      />
+      <IssueForm mode="edit" issue={issue} isAdmin listPath="/admin/journal" />
     );
   }
 

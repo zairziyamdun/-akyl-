@@ -1,8 +1,10 @@
-import { DataTable } from "@/widgets/dashboard-shell";
-import { EmptyState } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
-import { mockMediaFiles } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  EmptyState,
+  mockMediaFiles,
+  PageHeader,
+} from "@/widgets/dashboard-shell";
 
 export default function StudioMediaPage() {
   return (
@@ -10,9 +12,7 @@ export default function StudioMediaPage() {
       <PageHeader
         title="Медиафайлы"
         description="Изображения, PDF и вложения для статей журнала"
-        actions={
-          <Button size="sm">Загрузить файл</Button>
-        }
+        actions={<Button size="sm">Загрузить файл</Button>}
       />
 
       {mockMediaFiles.length === 0 ? (

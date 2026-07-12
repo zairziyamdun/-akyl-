@@ -1,6 +1,8 @@
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { mockLibraryItems } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  mockLibraryItems,
+  PageHeader,
+} from "@/widgets/dashboard-shell";
 
 const typeLabels: Record<string, string> = {
   article: "Article",

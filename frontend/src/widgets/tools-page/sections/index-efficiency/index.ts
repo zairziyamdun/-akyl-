@@ -1,9 +1,9 @@
+export { IEUBlockAccordions } from "./IEUBlockAccordions";
+export { IEUCalculatorWizard } from "./IEUCalculatorWizard";
+export { IEUCta } from "./IEUCta";
+export { IEUFormula } from "./IEUFormula";
 export { IEUHero } from "./IEUHero";
+export { IEUNotJustNumber } from "./IEUNotJustNumber";
 export { IEUWhatIs } from "./IEUWhatIs";
 export { IEUWhatShows } from "./IEUWhatShows";
 export { IEUWhyMatters } from "./IEUWhyMatters";
-export { IEUBlockAccordions } from "./IEUBlockAccordions";
-export { IEUCta } from "./IEUCta";
-export { IEUCalculatorWizard } from "./IEUCalculatorWizard";
-export { IEUFormula } from "./IEUFormula";
-export { IEUNotJustNumber } from "./IEUNotJustNumber";

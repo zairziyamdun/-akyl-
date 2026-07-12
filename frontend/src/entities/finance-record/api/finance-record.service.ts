@@ -1,4 +1,4 @@
-import { apiFetch, ApiError } from "@/shared/api";
+import { ApiError, apiFetch } from "@/shared/api";
 
 import type {
   CreateFinanceRecordPayload,
@@ -18,7 +18,10 @@ async function financeFetch<T>(
   options: RequestInit = {},
 ): Promise<T> {
   try {
-    return await apiFetch<T>(path, { ...options, errorName: "FinanceApiError" });
+    return await apiFetch<T>(path, {
+      ...options,
+      errorName: "FinanceApiError",
+    });
   } catch (err) {
     if (err instanceof ApiError) {
       throw new FinanceApiError(err.message, err.status);

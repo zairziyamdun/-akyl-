@@ -1,14 +1,14 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
+import { books } from "@/widgets/books-page";
 import { BookCoverPlaceholder } from "../ui/BookCoverPlaceholder";
 import { SectionEyebrow } from "../ui/SectionEyebrow";
-import { books } from "@/widgets/books-page";
 
 const bookItems = [books.book1, books.book2, books.book3] as const;
 

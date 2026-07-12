@@ -7,7 +7,10 @@ import { Container } from "@/shared/ui/Container";
 const systemSteps = [
   { title: "Чек-листы", text: "Чек-листы собирают факты" },
   { title: "Анализ бюджета", text: "Бюджет показывает финансовые отклонения" },
-  { title: "Индекс эффективности", text: "Индекс переводит состояние управления в оценку 0-100" },
+  {
+    title: "Индекс эффективности",
+    text: "Индекс переводит состояние управления в оценку 0-100",
+  },
   { title: "Управленческий отчет", text: "Отчет собирает выводы" },
   { title: "Решения", text: "Решения запускают улучшения" },
 ] as const;
@@ -32,8 +35,12 @@ export function FeaturedTool() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.35, delay: index * 0.06 }}
             >
-              <p className="text-sm font-semibold text-slate-900">{step.title}</p>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">{step.text}</p>
+              <p className="text-sm font-semibold text-slate-900">
+                {step.title}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                {step.text}
+              </p>
               {index < systemSteps.length - 1 && (
                 <span className="pointer-events-none absolute -right-2 top-1/2 hidden -translate-y-1/2 text-sky-400 md:block">
                   {"->"}

@@ -1,6 +1,6 @@
-import { JournalApiError } from "./journalApiError";
 import type { PdfDiagnostics } from "@/shared/pdf/pdfDiagnostics";
 import { formatPdfDiagnostics } from "@/shared/pdf/pdfDiagnostics";
+import { JournalApiError } from "./journalApiError";
 
 export class PdfLoadError extends JournalApiError {
   diagnostics: PdfDiagnostics;

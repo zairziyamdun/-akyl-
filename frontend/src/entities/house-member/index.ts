@@ -3,8 +3,8 @@
  * Types live on `house` entity; this slice owns the membership API.
  */
 export {
-  fetchHouseUsers,
   assignHouseUser,
-  removeHouseUser,
+  fetchHouseUsers,
   HouseUsersApiError,
+  removeHouseUser,
 } from "./api/house-member.service";

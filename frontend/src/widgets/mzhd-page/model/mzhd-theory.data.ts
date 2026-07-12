@@ -2,8 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { GitBranch, Layers, LineChart } from "lucide-react";
 
 export const mzhdTheoryImages = {
-  hero:
-    "https://images.unsplash.com/photo-1454165804606-c3bed3493415?auto=format&fit=crop&w=2400&q=85",
+  hero: "https://images.unsplash.com/photo-1454165804606-c3bed3493415?auto=format&fit=crop&w=2400&q=85",
   social:
     "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=85",
 } as const;
@@ -42,5 +41,6 @@ export const mzhdTheoryDataCycle = {
 
 export const mzhdTheoryCta = {
   title: "Углубите теорию на практике",
-  description: "Свяжите концепции с инструментами и внедрением в вашем доме или УК.",
+  description:
+    "Свяжите концепции с инструментами и внедрением в вашем доме или УК.",
 } as const;

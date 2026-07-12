@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-import { cn } from "@/shared/lib";
 import type { HeroSlide } from "@/entities/journal-issue";
+import { cn } from "@/shared/lib";
 
 type JournalIssueSliderProps = {
   slides: HeroSlide[];
@@ -35,7 +34,8 @@ export function JournalIssueSlider({
       <div
         className={cn(
           "flex items-end gap-1.5 sm:gap-3",
-          useScroll && "overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          useScroll &&
+            "overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         )}
       >
         {slides.map((item, index) => {
@@ -63,7 +63,9 @@ export function JournalIssueSlider({
               <span
                 className={cn(
                   "text-[10px] font-medium tabular-nums transition-colors sm:text-xs",
-                  isActive ? "text-white/75" : "text-white/30 group-hover:text-white/45",
+                  isActive
+                    ? "text-white/75"
+                    : "text-white/30 group-hover:text-white/45",
                 )}
               >
                 {slideLabel(item)}

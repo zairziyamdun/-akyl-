@@ -24,7 +24,10 @@ export function JournalTableSkeleton({ rows = 5 }: { rows?: number }) {
     <div className="animate-pulse overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <div className="h-11 bg-slate-100" />
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4 border-t border-slate-100 px-4 py-4">
+        <div
+          key={i}
+          className="flex items-center gap-4 border-t border-slate-100 px-4 py-4"
+        >
           <div className="h-14 w-10 rounded bg-slate-100" />
           <div className="h-4 flex-1 rounded bg-slate-100" />
           <div className="h-4 w-16 rounded bg-slate-100" />

@@ -23,7 +23,9 @@ export function HowToUseManagementReport() {
               1
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-950">Выберите период анализа</p>
+              <p className="text-sm font-semibold text-slate-950">
+                Выберите период анализа
+              </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Чтобы управленческие выводы были сопоставимыми и не потеряли
                 динамику.
@@ -35,10 +37,12 @@ export function HowToUseManagementReport() {
               2
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-950">Отметьте нужные разделы</p>
+              <p className="text-sm font-semibold text-slate-950">
+                Отметьте нужные разделы
+              </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                Финансы, эксплуатация, жители, подрядчики — выбирайте только то, что
-                действительно нужно.
+                Финансы, эксплуатация, жители, подрядчики — выбирайте только то,
+                что действительно нужно.
               </p>
             </div>
           </li>
@@ -47,7 +51,9 @@ export function HowToUseManagementReport() {
               3
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-950">Посмотрите структуру управленческого отчета</p>
+              <p className="text-sm font-semibold text-slate-950">
+                Посмотрите структуру управленческого отчета
+              </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Вы увидите preview с карточками метрик и summary по KPI.
               </p>
@@ -58,9 +64,12 @@ export function HowToUseManagementReport() {
               4
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-950">Выявите отклонения и проблемные зоны</p>
+              <p className="text-sm font-semibold text-slate-950">
+                Выявите отклонения и проблемные зоны
+              </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                Сильные стороны и риски подсветят, где нужны действия уже сейчас.
+                Сильные стороны и риски подсветят, где нужны действия уже
+                сейчас.
               </p>
             </div>
           </li>
@@ -69,10 +78,12 @@ export function HowToUseManagementReport() {
               5
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-950">Используйте отчет для управленческих решений</p>
+              <p className="text-sm font-semibold text-slate-950">
+                Используйте отчет для управленческих решений
+              </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                Дальше подключайте инструменты AKYL: индекс эффективности, анализ
-                бюджета и KPI-шаблоны.
+                Дальше подключайте инструменты AKYL: индекс эффективности,
+                анализ бюджета и KPI-шаблоны.
               </p>
             </div>
           </li>
@@ -81,4 +92,3 @@ export function HowToUseManagementReport() {
     </section>
   );
 }
-

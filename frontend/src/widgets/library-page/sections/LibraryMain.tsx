@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -12,15 +11,16 @@ import {
   Search,
   Video,
 } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/shared/ui/Button";
 
 import {
   contentTypes,
+  type LibraryItemType,
   libraryItems,
   topics,
   typeLabelsRu,
-  type LibraryItemType,
 } from "@/widgets/library-page";
 
 const filterChipBase =
@@ -86,9 +86,10 @@ export function LibraryMain() {
               </h1>
 
               <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
-                Единое пространство для теории и практики, аналитики, нормативных
-                материалов, шаблонов и практических решений. Всё, что помогает
-                перейти от хаотичного управления к системной модели.
+                Единое пространство для теории и практики, аналитики,
+                нормативных материалов, шаблонов и практических решений. Всё,
+                что помогает перейти от хаотичного управления к системной
+                модели.
               </p>
             </div>
 
@@ -272,7 +273,9 @@ export function LibraryMain() {
                       type="button"
                       className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
                     >
-                      {item.type === "template" ? "Скачать материал" : "Открыть материал"}
+                      {item.type === "template"
+                        ? "Скачать материал"
+                        : "Открыть материал"}
                       <ArrowRight className="h-4 w-4" />
                     </button>
                   </div>

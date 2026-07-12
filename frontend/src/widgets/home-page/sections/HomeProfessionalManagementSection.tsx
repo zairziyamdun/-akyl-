@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import { homeProfessionalPillars } from "../model/home-professional-management.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const pillars = homeProfessionalPillars;
 
@@ -28,8 +28,8 @@ export function HomeProfessionalManagementSection() {
               Что такое профессиональное управление МЖД
             </h2>
             <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-              Это не набор разрозненных задач, а единая управленческая логика: процессы, роли,
-              финансы и показатели связаны между собой.
+              Это не набор разрозненных задач, а единая управленческая логика:
+              процессы, роли, финансы и показатели связаны между собой.
             </p>
             <Link
               href="/mzhd"
@@ -44,7 +44,13 @@ export function HomeProfessionalManagementSection() {
             {pillars.map((p, i) => {
               const Icon = p.icon;
               return (
-                <motion.div key={p.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={homeViewport} transition={{ ...homeTransition, delay: i * 0.04 }}>
+                <motion.div
+                  key={p.title}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={homeViewport}
+                  transition={{ ...homeTransition, delay: i * 0.04 }}
+                >
                   <Link
                     href={p.href}
                     className="flex h-full flex-col rounded-2xl border border-slate-200 bg-slate-50/80 p-5 transition duration-300 hover:border-slate-300 hover:bg-white hover:shadow-md"
@@ -58,7 +64,9 @@ export function HomeProfessionalManagementSection() {
                     <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">
                       {p.hint}
                     </p>
-                    <p className="mt-1 text-sm font-semibold leading-snug text-slate-900">{p.title}</p>
+                    <p className="mt-1 text-sm font-semibold leading-snug text-slate-900">
+                      {p.title}
+                    </p>
                   </Link>
                 </motion.div>
               );

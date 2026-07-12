@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 import { ChecklistsHero } from "@/widgets/tools-page/sections/checklists/ChecklistsHero";
-import { ChecklistsIntro } from "@/widgets/tools-page/sections/checklists/ChecklistsIntro";
 import { ChecklistsInteractive } from "@/widgets/tools-page/sections/checklists/ChecklistsInteractive";
+import { ChecklistsIntro } from "@/widgets/tools-page/sections/checklists/ChecklistsIntro";
 import { ChecklistsNextTools } from "@/widgets/tools-page/sections/checklists/ChecklistsNextTools";
 
 export const metadata: Metadata = {

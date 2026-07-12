@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { PageHeader } from "@/widgets/dashboard-shell";
+import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
-import { cn } from "@/shared/lib";
+import { PageHeader } from "@/widgets/dashboard-shell";
 
 export default function StudioArticleNewPage() {
   const [autosave, setAutosave] = useState<"idle" | "saving" | "saved">("idle");
@@ -69,7 +68,10 @@ export default function StudioArticleNewPage() {
           </div>
 
           <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
-            <Button variant="secondary" onClick={() => alert("Mock: черновик сохранён")}>
+            <Button
+              variant="secondary"
+              onClick={() => alert("Mock: черновик сохранён")}
+            >
               Save draft
             </Button>
             <Button variant="ghost" onClick={() => alert("Mock: preview")}>
@@ -83,10 +85,14 @@ export default function StudioArticleNewPage() {
 
         <aside className="space-y-4">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold text-slate-900">Метаданные</h3>
+            <h3 className="mb-3 text-sm font-semibold text-slate-900">
+              Метаданные
+            </h3>
             <div className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs text-slate-500">Категория</label>
+                <label className="mb-1 block text-xs text-slate-500">
+                  Категория
+                </label>
                 <select className="h-10 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10">
                   <option>Управление МЖД</option>
                   <option>Финансы</option>
@@ -94,14 +100,18 @@ export default function StudioArticleNewPage() {
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs text-slate-500">Выпуск</label>
+                <label className="mb-1 block text-xs text-slate-500">
+                  Выпуск
+                </label>
                 <select className="h-10 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10">
                   <option>04 — Стандарты</option>
                   <option>03 — Финансы</option>
                 </select>
               </div>
               <div>
-                <label className="mb-1 block text-xs text-slate-500">Теги</label>
+                <label className="mb-1 block text-xs text-slate-500">
+                  Теги
+                </label>
                 <Input placeholder="KPI, ОСИ, финансы" />
               </div>
             </div>

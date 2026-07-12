@@ -1,9 +1,4 @@
-import {
-  Award,
-  BookOpen,
-  MonitorPlay,
-  type LucideIcon,
-} from "lucide-react";
+import { Award, BookOpen, type LucideIcon, MonitorPlay } from "lucide-react";
 
 export type HomeEducationBlock = {
   title: string;

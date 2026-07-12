@@ -43,8 +43,12 @@ export function ToolsResults() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.35, delay: index * 0.06 }}
             >
-              <h3 className="text-lg font-semibold tracking-tight text-slate-900">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+              <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                {item.text}
+              </p>
             </motion.article>
           ))}
         </div>

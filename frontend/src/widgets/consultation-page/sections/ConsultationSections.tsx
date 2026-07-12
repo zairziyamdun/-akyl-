@@ -1,15 +1,14 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
+import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
-import { cn } from "@/shared/lib";
 import {
   consultationAudience,
   consultationFormats,

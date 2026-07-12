@@ -2,13 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { EmptyState } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { HousesApiError, fetchHouses } from "@/entities/house";
 import type { House } from "@/entities/house";
+import { fetchHouses, HousesApiError } from "@/entities/house";
+import { Button } from "@/shared/ui/Button";
+import { DataTable, EmptyState, PageHeader } from "@/widgets/dashboard-shell";
 
 type HousesListProps = {
   basePath: "/admin/houses" | "/manager/houses";
@@ -44,7 +41,9 @@ export function HousesList({
           return;
         }
         setError(
-          err instanceof HousesApiError ? err.message : "Не удалось загрузить список ЖК",
+          err instanceof HousesApiError
+            ? err.message
+            : "Не удалось загрузить список ЖК",
         );
       } finally {
         if (!cancelled) setLoading(false);
@@ -135,7 +134,9 @@ export function HousesList({
               key: "apartments",
               header: "Квартир",
               render: (house) =>
-                house.apartments_count !== null ? String(house.apartments_count) : "—",
+                house.apartments_count !== null
+                  ? String(house.apartments_count)
+                  : "—",
             },
             {
               key: "address",

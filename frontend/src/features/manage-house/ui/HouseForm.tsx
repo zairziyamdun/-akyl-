@@ -3,17 +3,16 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
 import {
-  HousesApiError,
   createHouse,
   deleteHouse,
   fetchHouse,
+  HousesApiError,
   updateHouse,
 } from "@/entities/house";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { PageHeader } from "@/widgets/dashboard-shell";
 
 type HouseFormProps = {
   mode: "create" | "edit";
@@ -64,7 +63,11 @@ export function HouseForm({ mode, houseId }: HouseFormProps) {
         setBuildYear(house.build_year !== null ? String(house.build_year) : "");
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof HousesApiError ? err.message : "Не удалось загрузить ЖК");
+          setError(
+            err instanceof HousesApiError
+              ? err.message
+              : "Не удалось загрузить ЖК",
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -98,7 +101,9 @@ export function HouseForm({ mode, houseId }: HouseFormProps) {
         router.refresh();
       }
     } catch (err) {
-      setError(err instanceof HousesApiError ? err.message : "Не удалось сохранить");
+      setError(
+        err instanceof HousesApiError ? err.message : "Не удалось сохранить",
+      );
     } finally {
       setSaving(false);
     }
@@ -112,7 +117,9 @@ export function HouseForm({ mode, houseId }: HouseFormProps) {
       await deleteHouse(houseId);
       router.push("/admin/houses");
     } catch (err) {
-      setError(err instanceof HousesApiError ? err.message : "Не удалось удалить");
+      setError(
+        err instanceof HousesApiError ? err.message : "Не удалось удалить",
+      );
       setSaving(false);
     }
   };
@@ -148,12 +155,23 @@ export function HouseForm({ mode, houseId }: HouseFormProps) {
         className="max-w-xl space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Название *</label>
-          <Input value={name} onChange={(event) => setName(event.target.value)} required />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Название *
+          </label>
+          <Input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            required
+          />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Адрес</label>
-          <Input value={address} onChange={(event) => setAddress(event.target.value)} />
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Адрес
+          </label>
+          <Input
+            value={address}
+            onChange={(event) => setAddress(event.target.value)}
+          />
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-medium text-slate-700">
@@ -179,7 +197,9 @@ export function HouseForm({ mode, houseId }: HouseFormProps) {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Год постройки</label>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            Год постройки
+          </label>
           <Input
             type="number"
             min={1800}

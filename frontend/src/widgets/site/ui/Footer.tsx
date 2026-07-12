@@ -1,13 +1,12 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
-
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
 import { Input } from "@/shared/ui/Input";
 import { HOME_LOGO_URL } from "@/widgets/home-page";
-import Image from "next/image";
-import Link from "next/link";
 
 type LinkItem = { label: string; href: string };
 
@@ -75,14 +74,17 @@ export function Footer() {
             </form>
 
             <p className="mt-3 text-xs text-slate-500">
-              Нажимая «Подписаться», вы соглашаетесь с политикой обработки данных.
+              Нажимая «Подписаться», вы соглашаетесь с политикой обработки
+              данных.
             </p>
           </div>
 
           <div className="grid gap-10 sm:grid-cols-2">
             {columns.map((c) => (
               <div key={c.title}>
-                <h3 className="text-sm font-semibold text-slate-900">{c.title}</h3>
+                <h3 className="text-sm font-semibold text-slate-900">
+                  {c.title}
+                </h3>
                 <ul className="mt-4 space-y-2">
                   {c.links.map((l) => (
                     <li key={l.label}>
@@ -127,17 +129,26 @@ export function Footer() {
           <p>© {year} AKYL. Все права защищены.</p>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             <li>
-              <Link href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
+              <Link
+                href="/"
+                className="hover:text-slate-900 hover:underline underline-offset-4"
+              >
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
+              <Link
+                href="/"
+                className="hover:text-slate-900 hover:underline underline-offset-4"
+              >
                 Terms of Service
               </Link>
             </li>
             <li>
-              <Link href="/" className="hover:text-slate-900 hover:underline underline-offset-4">
+              <Link
+                href="/"
+                className="hover:text-slate-900 hover:underline underline-offset-4"
+              >
                 Cookies Settings
               </Link>
             </li>
@@ -147,4 +158,3 @@ export function Footer() {
     </footer>
   );
 }
-

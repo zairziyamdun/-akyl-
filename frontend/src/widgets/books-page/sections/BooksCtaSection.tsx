@@ -37,4 +37,3 @@ export function BooksCtaSection() {
     </section>
   );
 }
-

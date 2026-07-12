@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { BarChart3, Layers, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
@@ -49,7 +49,10 @@ export function ManagementReportHero() {
             </div>
           </div>
 
-          <aside aria-label="Преимущества инструмента" className="grid gap-3 sm:grid-cols-2">
+          <aside
+            aria-label="Преимущества инструмента"
+            className="grid gap-3 sm:grid-cols-2"
+          >
             {benefits.map(({ icon: Icon, title, line }) => (
               <div
                 key={title}
@@ -58,8 +61,12 @@ export function ManagementReportHero() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
                   <Icon className="size-5" aria-hidden />
                 </div>
-                <p className="mt-4 text-sm font-semibold text-slate-900">{title}</p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{line}</p>
+                <p className="mt-4 text-sm font-semibold text-slate-900">
+                  {title}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {line}
+                </p>
               </div>
             ))}
           </aside>
@@ -68,4 +75,3 @@ export function ManagementReportHero() {
     </header>
   );
 }
-

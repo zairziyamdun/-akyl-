@@ -1,4 +1,4 @@
 ﻿/**
  * @deprecated Import from `@/entities/journal-issue` instead.
  */
-export { PdfLoadError, type PdfFetchResult } from "@/entities/journal-issue";
+export { type PdfFetchResult, PdfLoadError } from "@/entities/journal-issue";

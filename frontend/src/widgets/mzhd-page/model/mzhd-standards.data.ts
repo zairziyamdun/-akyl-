@@ -1,6 +1,5 @@
 export const mzhdStandardsImages = {
-  hero:
-    "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=2400&q=85",
+  hero: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=2400&q=85",
 } as const;
 
 export const mzhdStandardsHero = {

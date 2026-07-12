@@ -1,8 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BarChart3, FileText, Gauge, PieChart } from "lucide-react";
+import {
+  ArrowUpRight,
+  BarChart3,
+  FileText,
+  Gauge,
+  PieChart,
+} from "lucide-react";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
 
@@ -30,7 +36,8 @@ const tools = [
   {
     title: "Управленческий отчет",
     href: "/tools/management-report",
-    description: "Структурированная отчетность для собственников и регуляторов.",
+    description:
+      "Структурированная отчетность для собственников и регуляторов.",
     icon: FileText,
   },
 ];

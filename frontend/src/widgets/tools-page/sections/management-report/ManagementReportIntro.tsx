@@ -16,9 +16,9 @@ export function ManagementReportIntro() {
             отклонений от плана.
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
-            Этот инструмент помогает собрать структурированную картину и
-            перейти к точечным решениям — от бюджета до качества процессов и
-            обратной связи с жителями.
+            Этот инструмент помогает собрать структурированную картину и перейти
+            к точечным решениям — от бюджета до качества процессов и обратной
+            связи с жителями.
           </p>
 
           <p className="mt-6 text-sm text-slate-500">
@@ -50,4 +50,3 @@ export function ManagementReportIntro() {
     </section>
   );
 }
-
