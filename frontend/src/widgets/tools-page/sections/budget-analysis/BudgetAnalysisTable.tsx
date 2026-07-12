@@ -1,7 +1,10 @@
 "use client";
 
 import type { BudgetRowComputed } from "@/features/analyze-budget/budgetAnalysis";
-import { formatCurrencyRub, formatPercent } from "@/features/analyze-budget/budgetAnalysis";
+import {
+  formatCurrencyRub,
+  formatPercent,
+} from "@/features/analyze-budget/budgetAnalysis";
 
 import { cn } from "@/shared/lib";
 
@@ -116,11 +119,16 @@ export function BudgetAnalysisTable({ rows }: Props) {
                       <div
                         className={cn(
                           "h-full rounded-full transition-all",
-                          r.status === "stable" && "bg-gradient-to-r from-emerald-500 to-teal-500",
-                          r.status === "attention" && "bg-gradient-to-r from-amber-400 to-orange-500",
-                          r.status === "risk" && "bg-gradient-to-r from-rose-500 to-red-600",
+                          r.status === "stable" &&
+                            "bg-gradient-to-r from-emerald-500 to-teal-500",
+                          r.status === "attention" &&
+                            "bg-gradient-to-r from-amber-400 to-orange-500",
+                          r.status === "risk" &&
+                            "bg-gradient-to-r from-rose-500 to-red-600",
                         )}
-                        style={{ width: `${Math.min(100, r.budgetKpi * 100)}%` }}
+                        style={{
+                          width: `${Math.min(100, r.budgetKpi * 100)}%`,
+                        }}
                       />
                     </div>
                   </div>

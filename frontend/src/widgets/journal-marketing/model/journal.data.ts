@@ -13,11 +13,13 @@ export const journalHeroBenefits = [
 export const journalEditorialDirections = [
   {
     title: "Аналитика",
-    description: "Данные, индексы, сравнительные обзоры и исследования рынка МЖД.",
+    description:
+      "Данные, индексы, сравнительные обзоры и исследования рынка МЖД.",
   },
   {
     title: "Методология",
-    description: "Модели AKYL, регламенты, архитектура системы и стандарты зрелости.",
+    description:
+      "Модели AKYL, регламенты, архитектура системы и стандарты зрелости.",
   },
   {
     title: "Практика",
@@ -46,7 +48,5 @@ export const journalCoverSpine: Record<string, string> = {
   "09": "bg-emerald-950",
   "10": "bg-indigo-950",
 };
-
-
 
 export const JOURNAL_ACCESS_HREF = "/consultation";

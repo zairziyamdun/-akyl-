@@ -1,13 +1,13 @@
+import { ConsultationForm } from "@/features/submit-consultation";
+import { ConsultationHero } from "./ConsultationHero";
 import {
   ConsultationFinalCta,
-  ConsultationForWhom,
   ConsultationFormats,
+  ConsultationForWhom,
   ConsultationProblems,
   ConsultationResults,
   ConsultationSteps,
 } from "./ConsultationSections";
-import { ConsultationForm } from "@/features/submit-consultation";
-import { ConsultationHero } from "./ConsultationHero";
 
 export function ConsultationPage() {
   return (

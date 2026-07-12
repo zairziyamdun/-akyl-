@@ -16,4 +16,4 @@ export function JournalHeroConnected() {
   }, [getPublishedIssues]);
 
   return <JournalHero slides={slides} isLoading={isLoading} />;
-};
+}

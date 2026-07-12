@@ -2,9 +2,9 @@ import {
   BookOpen,
   FileText,
   LayoutTemplate,
+  type LucideIcon,
   Scale,
   Sparkles,
-  type LucideIcon,
 } from "lucide-react";
 
 export type HomeKnowledgeTab = {

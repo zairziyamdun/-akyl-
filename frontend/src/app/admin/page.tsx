@@ -1,16 +1,15 @@
 import Link from "next/link";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { RoleBadge } from "@/widgets/dashboard-shell";
-import { StatCard } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
 import {
+  DataTable,
   mockAdminStats,
   mockConsultationRequests,
   mockSystemStatuses,
   mockUsers,
+  PageHeader,
+  RoleBadge,
+  StatCard,
+  StatusBadge,
 } from "@/widgets/dashboard-shell";
 
 export default function AdminDashboardPage() {
@@ -45,7 +44,11 @@ export default function AdminDashboardPage() {
             keyExtractor={(r) => r.id}
             columns={[
               { key: "name", header: "Имя", render: (r) => r.name },
-              { key: "org", header: "Организация", render: (r) => r.organization },
+              {
+                key: "org",
+                header: "Организация",
+                render: (r) => r.organization,
+              },
               {
                 key: "status",
                 header: "Статус",
@@ -101,7 +104,9 @@ export default function AdminDashboardPage() {
               key: "status",
               header: "Статус",
               render: (u) => (
-                <StatusBadge status={u.status === "active" ? "active" : "suspended"} />
+                <StatusBadge
+                  status={u.status === "active" ? "active" : "suspended"}
+                />
               ),
             },
           ]}

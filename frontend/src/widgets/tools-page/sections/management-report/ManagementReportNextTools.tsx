@@ -1,5 +1,10 @@
+import {
+  BarChart3,
+  FileSpreadsheet,
+  LayoutTemplate,
+  ListChecks,
+} from "lucide-react";
 import Link from "next/link";
-import { BarChart3, FileSpreadsheet, LayoutTemplate, ListChecks } from "lucide-react";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
@@ -8,25 +13,29 @@ const cards = [
   {
     href: "/tools/index-efficiency",
     title: "Индекс эффективности",
-    description: "Сводная метрика зрелости управления и сравнение с ориентирами.",
+    description:
+      "Сводная метрика зрелости управления и сравнение с ориентирами.",
     icon: FileSpreadsheet,
   },
   {
     href: "/tools/budget-analysis",
     title: "Анализ бюджета",
-    description: "План-факт, отклонения и KPI по статьям расходов в одном интерфейсе.",
+    description:
+      "План-факт, отклонения и KPI по статьям расходов в одном интерфейсе.",
     icon: BarChart3,
   },
   {
     href: "/tools/kpi-templates",
     title: "KPI шаблоны",
-    description: "Готовая структура показателей для операционного и стратегического контроля.",
+    description:
+      "Готовая структура показателей для операционного и стратегического контроля.",
     icon: LayoutTemplate,
   },
   {
     href: "/tools/checklists",
     title: "Чек-листы управления",
-    description: "Готовые чек-листы для аудита процессов, контроля качества и самопроверки.",
+    description:
+      "Готовые чек-листы для аудита процессов, контроля качества и самопроверки.",
     icon: ListChecks,
   },
 ] as const;
@@ -64,7 +73,9 @@ export function ManagementReportNextTools() {
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
                 <Icon className="size-6" aria-hidden />
               </div>
-              <h3 className="mt-5 text-lg font-semibold text-slate-950">{title}</h3>
+              <h3 className="mt-5 text-lg font-semibold text-slate-950">
+                {title}
+              </h3>
               <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">
                 {description}
               </p>
@@ -80,4 +91,3 @@ export function ManagementReportNextTools() {
     </section>
   );
 }
-

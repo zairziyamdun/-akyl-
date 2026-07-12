@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { EmptyState } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { DEFAULT_DASHBOARD_MOCK } from "@/widgets/house-dashboard";
-import { HousesApiError, fetchHouseDashboard } from "@/entities/house";
+import type { HouseDashboard } from "@/entities/house";
 import {
   buildDashboardViewModel,
   type DashboardTabId,
+  fetchHouseDashboard,
+  HousesApiError,
 } from "@/entities/house";
-import type { HouseDashboard } from "@/entities/house";
+import { Button } from "@/shared/ui/Button";
+import { EmptyState } from "@/widgets/dashboard-shell";
+import { DEFAULT_DASHBOARD_MOCK } from "@/widgets/house-dashboard";
 
 import { BudgetTab } from "../ui/BudgetTab";
 import { FinanceTab } from "../ui/FinanceTab";
@@ -55,7 +55,10 @@ function DashboardTabPanel({
   }
 }
 
-export function HouseDashboardView({ houseId, backHref }: HouseDashboardViewProps) {
+export function HouseDashboardView({
+  houseId,
+  backHref,
+}: HouseDashboardViewProps) {
   const [dashboard, setDashboard] = useState<HouseDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -63,31 +66,36 @@ export function HouseDashboardView({ houseId, backHref }: HouseDashboardViewProp
   const [forbidden, setForbidden] = useState(false);
   const [activeTab, setActiveTab] = useState<DashboardTabId>("overview");
 
-  const loadDashboard = useCallback(async (isRefresh = false) => {
-    if (isRefresh) {
-      setRefreshing(true);
-    } else {
-      setLoading(true);
-    }
-    setError("");
-    setForbidden(false);
-
-    try {
-      const data = await fetchHouseDashboard(houseId);
-      setDashboard(data);
-    } catch (err) {
-      if (err instanceof HousesApiError && err.status === 403) {
-        setForbidden(true);
-        return;
+  const loadDashboard = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
       }
-      setError(
-        err instanceof HousesApiError ? err.message : "Не удалось загрузить дашборд",
-      );
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [houseId]);
+      setError("");
+      setForbidden(false);
+
+      try {
+        const data = await fetchHouseDashboard(houseId);
+        setDashboard(data);
+      } catch (err) {
+        if (err instanceof HousesApiError && err.status === 403) {
+          setForbidden(true);
+          return;
+        }
+        setError(
+          err instanceof HousesApiError
+            ? err.message
+            : "Не удалось загрузить дашборд",
+        );
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [houseId],
+  );
 
   useEffect(() => {
     void loadDashboard();

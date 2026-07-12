@@ -25,13 +25,19 @@ export function DashboardMetricCard({
       )}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
-        {Icon ? <Icon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden /> : null}
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          {label}
+        </p>
+        {Icon ? (
+          <Icon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden />
+        ) : null}
       </div>
       <p className="mt-2 truncate text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
         {value}
       </p>
-      {hint ? <p className="mt-1 truncate text-xs text-slate-500">{hint}</p> : null}
+      {hint ? (
+        <p className="mt-1 truncate text-xs text-slate-500">{hint}</p>
+      ) : null}
     </div>
   );
 }

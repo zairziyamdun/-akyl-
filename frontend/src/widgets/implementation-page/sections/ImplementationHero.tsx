@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, CircleDot } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
-import { Button } from "@/shared/ui/Button";
+import Link from "next/link";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 
 import { implementationSectionMotion } from "../model/implementationMotion";
 
@@ -23,14 +22,17 @@ const kpiRows = [
   { label: "KPI", value: 58 },
 ];
 
-const chartBars = [40, 55, 48, 70, 62, 78, 85, 80, 88, 92];
+const chartBars = [40, 55, 48, 70, 62, 78, 85, 80, 88, 92].map((height, i) => ({
+  id: `implementation-bar-${i}`,
+  height,
+}));
 
 const badges = ["Диагностика", "Аудит", "KPI", "BI", "Контроль"];
 
 export function ImplementationHero() {
   return (
     <section
-      className="relative isolate overflow-hidden border-b border-stone-200/80"
+      className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-stone-200/60"
       style={{
         background:
           "linear-gradient(165deg, #f7f3ea 0%, #f8f5ef 45%, #f3efe6 100%)",
@@ -40,7 +42,7 @@ export function ImplementationHero() {
       <div className="pointer-events-none absolute -right-24 top-24 h-72 w-72 rounded-full bg-stone-200/50 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-64 w-96 -translate-x-1/2 rounded-full bg-white/60 blur-3xl" />
 
-      <Container className="relative py-16 sm:py-20 lg:py-24">
+      <Container className="relative w-full py-20 sm:py-24 lg:py-28">
         <motion.div
           className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12"
           {...implementationSectionMotion}
@@ -53,8 +55,9 @@ export function ImplementationHero() {
               Практика внедрения системы профессионального управления МЖД
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-              Пошаговая модель перехода от хаотичного управления домом к прозрачной
-              системе процессов, KPI, финансового контроля и цифровой аналитики.
+              Пошаговая модель перехода от хаотичного управления домом к
+              прозрачной системе процессов, KPI, финансового контроля и цифровой
+              аналитики.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button asChild>
@@ -145,11 +148,11 @@ export function ImplementationHero() {
                 </p>
               </div>
               <div className="flex h-12 items-end gap-1">
-                {chartBars.map((h, i) => (
+                {chartBars.map((bar) => (
                   <div
-                    key={i}
+                    key={bar.id}
                     className="w-1.5 rounded-t bg-gradient-to-t from-stone-300 to-stone-800"
-                    style={{ height: `${h}%` }}
+                    style={{ height: `${bar.height}%` }}
                   />
                 ))}
               </div>

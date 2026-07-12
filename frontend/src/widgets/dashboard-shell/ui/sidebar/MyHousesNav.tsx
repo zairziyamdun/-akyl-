@@ -1,30 +1,28 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Building2, ChevronDown, Settings2 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-
+import type { House } from "@/entities/house";
+import type { AkylRole } from "@/entities/session";
+import { getHouseNavHref } from "@/shared/hooks/useUserHouses";
+import { cn } from "@/shared/lib";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/shared/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import type { AkylRole } from "@/entities/session";
-import { getHouseNavHref } from "@/shared/hooks/useUserHouses";
-import type { House } from "@/entities/house";
-import { cn } from "@/shared/lib";
-
-import { SidebarItem } from "./SidebarItem";
+import { SIDEBAR_MOTION_TRANSITION } from "../../model/sidebarNavUtils";
 import {
   SIDEBAR_SUB_NAV_INDENT,
   sidebarSubLinkClass,
   sidebarSubLinkDotClass,
 } from "../../model/sidebarStyles";
-import { SIDEBAR_MOTION_TRANSITION } from "../../model/sidebarNavUtils";
 import { dashColors, sidebarActiveGradient } from "../../model/sidebarTheme";
+import { SidebarItem } from "./SidebarItem";
 
 type HousesTreeProps = {
   houses: House[];
@@ -34,12 +32,23 @@ type HousesTreeProps = {
   compact?: boolean;
 };
 
-function HousesTree({ houses, loading, role, onNavigate, compact = false }: HousesTreeProps) {
+function HousesTree({
+  houses,
+  loading,
+  role,
+  onNavigate,
+  compact = false,
+}: HousesTreeProps) {
   const pathname = usePathname();
 
   if (loading) {
     return (
-      <div className={cn("space-y-1 py-1", compact ? "px-2" : SIDEBAR_SUB_NAV_INDENT)}>
+      <div
+        className={cn(
+          "space-y-1 py-1",
+          compact ? "px-2" : SIDEBAR_SUB_NAV_INDENT,
+        )}
+      >
         {[1, 2, 3].map((i) => (
           <div key={i} className="h-4 animate-pulse rounded bg-[#E2E8F0]" />
         ))}
@@ -49,14 +58,24 @@ function HousesTree({ houses, loading, role, onNavigate, compact = false }: Hous
 
   if (houses.length === 0) {
     return (
-      <p className={cn("py-2 text-xs leading-5 text-[#94A3B8]", compact ? "px-3" : SIDEBAR_SUB_NAV_INDENT)}>
+      <p
+        className={cn(
+          "py-2 text-xs leading-5 text-[#94A3B8]",
+          compact ? "px-3" : SIDEBAR_SUB_NAV_INDENT,
+        )}
+      >
         Нет доступных ЖК
       </p>
     );
   }
 
   return (
-    <div className={cn("flex flex-col gap-0.5 py-1", compact ? "px-2" : SIDEBAR_SUB_NAV_INDENT)}>
+    <div
+      className={cn(
+        "flex flex-col gap-0.5 py-1",
+        compact ? "px-2" : SIDEBAR_SUB_NAV_INDENT,
+      )}
+    >
       {houses.map((house) => {
         const href = getHouseNavHref(role, house.id);
         const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -228,7 +247,12 @@ export function MyHousesNav({
             animate={{ opacity: open ? 1 : 0 }}
             transition={SIDEBAR_MOTION_TRANSITION}
           >
-            <HousesTree houses={houses} loading={loading} role={role} onNavigate={onNavigate} />
+            <HousesTree
+              houses={houses}
+              loading={loading}
+              role={role}
+              onNavigate={onNavigate}
+            />
             <Link
               href={listHref}
               onClick={onNavigate}

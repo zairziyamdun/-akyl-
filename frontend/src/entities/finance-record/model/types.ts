@@ -72,7 +72,10 @@ export const EMPTY_FINANCE_FORM: CreateFinanceRecordPayload = {
   debt_total: 0,
 };
 
-export const FINANCE_FIELD_LABELS: Record<keyof CreateFinanceRecordPayload, string> = {
+export const FINANCE_FIELD_LABELS: Record<
+  keyof CreateFinanceRecordPayload,
+  string
+> = {
   period_month: "Период (месяц)",
   opening_balance: "Входящий остаток",
   accrued: "Начислено",

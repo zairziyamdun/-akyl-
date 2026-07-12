@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import {
   type FormEvent,
@@ -7,19 +8,20 @@ import {
   type TextareaHTMLAttributes,
   useState,
 } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-
-import { Container } from "@/shared/ui/Container";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-import { Section } from "@/shared/ui/Section";
-import { SectionHeading } from "@/shared/ui/SectionHeading";
 import {
   ConsultationApiError,
   submitConsultationRequest,
 } from "@/entities/consultation-request";
 import { cn } from "@/shared/lib";
-import { consultationFormImage, roleOptions } from "../model/consultation-form.data";
+import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
+import { Input } from "@/shared/ui/Input";
+import { Section } from "@/shared/ui/Section";
+import { SectionHeading } from "@/shared/ui/SectionHeading";
+import {
+  consultationFormImage,
+  roleOptions,
+} from "../model/consultation-form.data";
 
 import { consultationSectionMotion } from "./consultationMotion";
 
@@ -237,15 +239,15 @@ export function ConsultationForm() {
                     </div>
 
                     <div>
-                      <FieldLabel htmlFor="organization">Организация</FieldLabel>
+                      <FieldLabel htmlFor="organization">
+                        Организация
+                      </FieldLabel>
                       <Input
                         id="organization"
                         name="organization"
                         required
                         value={form.organization}
-                        onChange={(e) =>
-                          update("organization", e.target.value)
-                        }
+                        onChange={(e) => update("organization", e.target.value)}
                         placeholder="Название УК, ОСИ, компании"
                       />
                     </div>

@@ -275,9 +275,8 @@ export const REPORT_SECTIONS: ReadonlyArray<ReportSection> = [
   },
 ] as const;
 
-export const ALL_METRICS_IDS: ReadonlyArray<ReportMetricId> = REPORT_SECTIONS.flatMap(
-  (s) => s.metrics.map((m) => m.id),
-);
+export const ALL_METRICS_IDS: ReadonlyArray<ReportMetricId> =
+  REPORT_SECTIONS.flatMap((s) => s.metrics.map((m) => m.id));
 
 export function formatMetricValueRu(metric: ReportMetric): string {
   const { kind, value } = metric;
@@ -301,17 +300,13 @@ export function formatMetricValueRu(metric: ReportMetric): string {
       const decimals = value % 1 === 0 ? 0 : 1;
       return `${value.toFixed(decimals)} / ${max}`;
     }
-    case "count":
     default: {
       return `${Math.round(value)}`;
     }
   }
 }
 
-type ReportStatusKey =
-  | "stable"
-  | "needsControl"
-  | "needsSystemCorrection";
+type ReportStatusKey = "stable" | "needsControl" | "needsSystemCorrection";
 
 export function statusKeyFromAvgKpi(avg: number): ReportStatusKey {
   if (avg >= 75) return "stable";
@@ -340,4 +335,3 @@ export function statusNarrativeRu(status: ReportStatusKey): string {
       return "Требуется выстроить регулярные контуры контроля: план-факт, SLA, качество исполнения и прозрачность отчетности должны работать системно.";
   }
 }
-

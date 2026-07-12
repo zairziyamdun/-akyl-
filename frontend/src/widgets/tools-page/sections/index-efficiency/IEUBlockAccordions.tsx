@@ -1,16 +1,8 @@
 import { Container } from "@/shared/ui/Container";
-import { IEU_BLOCK_CRITERIA } from "@/widgets/tools-page";
 import type { IEUBlockKey } from "@/types/ieu";
+import { IEU_BLOCK_CRITERIA } from "@/widgets/tools-page";
 
-const order: IEUBlockKey[] = [
-  "K1",
-  "K2",
-  "K3",
-  "K4",
-  "K5",
-  "K6",
-  "K7",
-];
+const order: IEUBlockKey[] = ["K1", "K2", "K3", "K4", "K5", "K6", "K7"];
 
 export function IEUBlockAccordions() {
   return (

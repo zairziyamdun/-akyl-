@@ -1,15 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import Link from "next/link";
-
-import { AuthCard } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-import { AuthApiError, useAuth } from "../api/AuthProvider";
 import { getRoleDashboardPath } from "@/entities/session";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { AuthCard } from "@/widgets/dashboard-shell";
+import { AuthApiError, useAuth } from "../api/AuthProvider";
 
 type FormState = "idle" | "loading" | "success" | "error";
 
@@ -29,7 +28,10 @@ export function LoginForm() {
       footer={
         <p className="text-center text-sm text-slate-500">
           Нет аккаунта?{" "}
-          <Link href="/register" className="font-medium text-sky-700 hover:underline">
+          <Link
+            href="/register"
+            className="font-medium text-sky-700 hover:underline"
+          >
             Зарегистрироваться
           </Link>
         </p>
@@ -57,8 +59,14 @@ export function LoginForm() {
         }}
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
+          <label
+            htmlFor="login-email"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Email
+          </label>
           <Input
+            id="login-email"
             type="email"
             placeholder="you@example.kz"
             required
@@ -69,12 +77,21 @@ export function LoginForm() {
         </div>
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <label className="text-sm font-medium text-slate-700">Пароль</label>
-            <Link href="/forgot-password" className="text-xs text-sky-700 hover:underline">
+            <label
+              htmlFor="login-password"
+              className="text-sm font-medium text-slate-700"
+            >
+              Пароль
+            </label>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-sky-700 hover:underline"
+            >
               Забыли пароль?
             </Link>
           </div>
           <Input
+            id="login-password"
             type="password"
             placeholder="••••••••"
             required
@@ -85,7 +102,9 @@ export function LoginForm() {
         </div>
 
         {state === "error" && error ? (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
         ) : null}
 
         <Button type="submit" className="w-full" disabled={state === "loading"}>
@@ -114,7 +133,10 @@ export function RegisterForm() {
       footer={
         <p className="text-center text-sm text-slate-500">
           Уже есть аккаунт?{" "}
-          <Link href="/login" className="font-medium text-sky-700 hover:underline">
+          <Link
+            href="/login"
+            className="font-medium text-sky-700 hover:underline"
+          >
             Войти
           </Link>
         </p>
@@ -147,8 +169,14 @@ export function RegisterForm() {
         }}
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Имя</label>
+          <label
+            htmlFor="register-full-name"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Имя
+          </label>
           <Input
+            id="register-full-name"
             placeholder="Иван Иванов"
             required
             disabled={state === "loading"}
@@ -157,8 +185,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
+          <label
+            htmlFor="register-email"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Email
+          </label>
           <Input
+            id="register-email"
             type="email"
             placeholder="you@example.kz"
             required
@@ -168,8 +202,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Организация</label>
+          <label
+            htmlFor="register-organization"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Организация
+          </label>
           <Input
+            id="register-organization"
             placeholder="ОСИ / УК / Акимат"
             required
             disabled={state === "loading"}
@@ -178,8 +218,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Телефон</label>
+          <label
+            htmlFor="register-phone"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Телефон
+          </label>
           <Input
+            id="register-phone"
             type="tel"
             placeholder="+7 777 000 0000"
             required
@@ -189,8 +235,14 @@ export function RegisterForm() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Пароль</label>
+          <label
+            htmlFor="register-password"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Пароль
+          </label>
           <Input
+            id="register-password"
             type="password"
             placeholder="мин. 8 символов"
             required
@@ -202,7 +254,9 @@ export function RegisterForm() {
         </div>
 
         {state === "error" && error ? (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
         ) : null}
 
         {state === "success" ? (
@@ -211,7 +265,11 @@ export function RegisterForm() {
           </p>
         ) : null}
 
-        <Button type="submit" className="w-full" disabled={state === "loading" || state === "success"}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={state === "loading" || state === "success"}
+        >
           {state === "loading" ? "Создание…" : "Создать аккаунт"}
         </Button>
       </form>
@@ -229,7 +287,10 @@ export function ForgotPasswordForm() {
       description="Мы отправим ссылку для сброса пароля на ваш email"
       footer={
         <p className="text-center text-sm text-slate-500">
-          <Link href="/login" className="font-medium text-sky-700 hover:underline">
+          <Link
+            href="/login"
+            className="font-medium text-sky-700 hover:underline"
+          >
             ← Вернуться ко входу
           </Link>
         </p>
@@ -244,8 +305,19 @@ export function ForgotPasswordForm() {
         }}
       >
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-          <Input type="email" placeholder="you@example.kz" required disabled={state === "loading"} />
+          <label
+            htmlFor="forgot-email"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Email
+          </label>
+          <Input
+            id="forgot-email"
+            type="email"
+            placeholder="you@example.kz"
+            required
+            disabled={state === "loading"}
+          />
         </div>
 
         {state === "success" ? (
@@ -273,7 +345,8 @@ export function AuthLayoutShell({ children }: { children: React.ReactNode }) {
             Управление многоквартирными домами — профессионально
           </h2>
           <p className="mt-4 max-w-sm text-sm text-slate-400">
-            Единая экосистема для акимата, управляющих компаний, ОСИ и экспертов.
+            Единая экосистема для акимата, управляющих компаний, ОСИ и
+            экспертов.
           </p>
         </div>
         <ul className="space-y-3 text-sm text-slate-400">

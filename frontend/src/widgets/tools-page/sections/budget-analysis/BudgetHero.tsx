@@ -2,16 +2,19 @@ import { BarChart3, TrendingUp } from "lucide-react";
 
 import { Container } from "@/shared/ui/Container";
 
-const previewBars = [42, 68, 55, 82, 71, 90, 63, 78];
+const previewBars = [42, 68, 55, 82, 71, 90, 63, 78].map((height, i) => ({
+  id: `budget-preview-bar-${i}`,
+  height,
+}));
 
 export function BudgetHero() {
   return (
-    <section className="relative overflow-hidden border-b border-slate-200/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
+    <section className="relative flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-white/10 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
       <div className="pointer-events-none absolute -left-32 top-0 h-96 w-96 rounded-full bg-cyan-500/15 blur-3xl" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
-      <Container className="relative py-14 md:py-20 lg:py-24">
+      <Container className="relative w-full py-20 md:py-24 lg:py-28">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
           {/* LEFT */}
           <div className="max-w-2xl">
@@ -62,17 +65,17 @@ export function BudgetHero() {
                   </div>
                 </div>
 
-                <div className="mt-6 flex h-44 items-end justify-between gap-3 md:h-52">
-                  {previewBars.map((h, i) => (
+                <div className="mt-6 flex h-52 items-end justify-between gap-3 md:h-60">
+                  {previewBars.map((bar) => (
                     <div
-                      key={i}
+                      key={bar.id}
                       className="flex h-full flex-1 items-end justify-center"
                     >
                       <div className="relative flex h-full w-full max-w-[30px] items-end">
                         <div className="absolute inset-0 rounded-t-lg bg-white/5" />
                         <div
                           className="relative z-10 w-full rounded-t-lg bg-gradient-to-t from-cyan-500/40 via-cyan-400/70 to-cyan-300/90 shadow-[0_0_20px_rgba(34,211,238,0.25)]"
-                          style={{ height: `${h}%` }}
+                          style={{ height: `${bar.height}%` }}
                         />
                       </div>
                     </div>

@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-
-import { Container } from "@/shared/ui/Container";
+import Link from "next/link";
 import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 
 import { implementationSectionMotion } from "../model/implementationMotion";
 

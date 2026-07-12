@@ -1,14 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { Lock } from "lucide-react";
-
-import { AccessTypeBadge } from ".";
-import { IssueCoverThumb } from ".";
-import { Button } from "@/shared/ui/Button";
-import { JOURNAL_ACCESS_HREF } from "../model/journal-public.const";
+import Link from "next/link";
 import type { JournalIssueRecord } from "@/entities/journal-issue";
 import { getJournalIssuePath } from "@/entities/journal-issue";
+import { Button } from "@/shared/ui/Button";
+import { JOURNAL_ACCESS_HREF } from "../model/journal-public.const";
+import { AccessTypeBadge, IssueCoverThumb } from ".";
 
 export function IssueAccessGate({ issue }: { issue: JournalIssueRecord }) {
   const issueHref = getJournalIssuePath(issue.id);
@@ -47,7 +45,9 @@ export function IssueAccessGate({ issue }: { issue: JournalIssueRecord }) {
     <div className="space-y-3">
       <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 text-center">
         <Lock className="mx-auto h-5 w-5 text-slate-500" />
-        <p className="mt-2 text-sm font-medium text-slate-800">Доступ ограничен</p>
+        <p className="mt-2 text-sm font-medium text-slate-800">
+          Доступ ограничен
+        </p>
         <p className="mt-1 text-xs text-slate-500">
           Этот выпуск доступен только по специальному приглашению
         </p>
@@ -80,7 +80,9 @@ export function PublicIssueCard({ issue }: { issue: JournalIssueRecord }) {
         <div className="mb-2">
           <AccessTypeBadge accessType={issue.accessType} variant="public" />
         </div>
-        <p className="text-xs font-medium text-sky-700">Выпуск {issue.issueNumber}</p>
+        <p className="text-xs font-medium text-sky-700">
+          Выпуск {issue.issueNumber}
+        </p>
         <Link href={issueHref}>
           <h3 className="mt-1 font-[family-name:var(--font-sora)] text-sm font-semibold text-slate-900 hover:text-sky-800 sm:text-base">
             {issue.title}

@@ -2,30 +2,25 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { EmptyState } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
 import {
-  FinanceApiError,
+  type CreateFinanceRecordPayload,
   createFinanceRecord,
   deleteFinanceRecord,
-  fetchFinanceRecords,
-  updateFinanceRecord,
-} from "@/entities/finance-record";
-import {
   EMPTY_FINANCE_FORM,
   FINANCE_FIELD_LABELS,
+  FinanceApiError,
+  type FinanceRecord,
+  fetchFinanceRecords,
   formatMoney,
   formatPeriodMonth,
   periodMonthToInput,
-  type CreateFinanceRecordPayload,
-  type FinanceRecord,
+  updateFinanceRecord,
 } from "@/entities/finance-record";
-import { HousesApiError, fetchHouse } from "@/entities/house";
 import type { House } from "@/entities/house";
+import { fetchHouse, HousesApiError } from "@/entities/house";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { DataTable, EmptyState, PageHeader } from "@/widgets/dashboard-shell";
 
 type HouseFinanceManagerProps = {
   houseId: string;
@@ -61,7 +56,8 @@ function recordToForm(record: FinanceRecord): CreateFinanceRecordPayload {
 export function HouseFinanceManager({ houseId }: HouseFinanceManagerProps) {
   const [house, setHouse] = useState<House | null>(null);
   const [records, setRecords] = useState<FinanceRecord[]>([]);
-  const [form, setForm] = useState<CreateFinanceRecordPayload>(EMPTY_FINANCE_FORM);
+  const [form, setForm] =
+    useState<CreateFinanceRecordPayload>(EMPTY_FINANCE_FORM);
   const [formMode, setFormMode] = useState<FormMode>("create");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -230,11 +226,7 @@ export function HouseFinanceManager({ houseId }: HouseFinanceManagerProps) {
     <>
       <PageHeader
         title={house ? `Финансы — ${house.name}` : "Финансы ЖК"}
-        description={
-          house
-            ? house.address ?? undefined
-            : undefined
-        }
+        description={house ? (house.address ?? undefined) : undefined}
         actions={
           <Button asChild variant="ghost" size="sm">
             <Link href={`/admin/houses/${houseId}`}>← К ЖК</Link>
@@ -258,10 +250,14 @@ export function HouseFinanceManager({ houseId }: HouseFinanceManagerProps) {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="finance-period-month"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               {FINANCE_FIELD_LABELS.period_month}
             </label>
             <Input
+              id="finance-period-month"
               type="month"
               value={form.period_month}
               onChange={(event) =>
@@ -276,10 +272,14 @@ export function HouseFinanceManager({ houseId }: HouseFinanceManagerProps) {
 
           {NUMERIC_FIELDS.map((field) => (
             <div key={field}>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label
+                htmlFor={`finance-${field}`}
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
                 {FINANCE_FIELD_LABELS[field]}
               </label>
               <Input
+                id={`finance-${field}`}
                 type="number"
                 step="0.01"
                 value={form[field]}

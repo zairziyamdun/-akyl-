@@ -1,43 +1,44 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { RoleBadge } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import {
-  AdminUsersApiError,
-  getAdminUsers,
-} from "@/entities/user";
-import type { AdminUser } from "@/entities/user";
-import type { AkylRole } from "@/entities/session";
-import {
-  HouseUsersApiError,
-  assignHouseUser,
-  fetchHouseUsers,
-  removeHouseUser,
-} from "@/entities/house-member";
 import {
   HOUSE_USER_ROLE_LABELS,
   HOUSE_USER_ROLES,
-  houseUserDisplayName,
   type HouseUserRole,
   type HouseUserWithProfile,
+  houseUserDisplayName,
 } from "@/entities/house";
+import {
+  assignHouseUser,
+  fetchHouseUsers,
+  HouseUsersApiError,
+  removeHouseUser,
+} from "@/entities/house-member";
+import type { AkylRole } from "@/entities/session";
+import type { AdminUser } from "@/entities/user";
+import { AdminUsersApiError, getAdminUsers } from "@/entities/user";
+import { Button } from "@/shared/ui/Button";
+import { DataTable, RoleBadge } from "@/widgets/dashboard-shell";
 
 type HouseUsersManagerProps = {
   houseId: string;
 };
 
 function isAkylRole(value: string): value is AkylRole {
-  return value === "admin" || value === "manager" || value === "journalist" || value === "user";
+  return (
+    value === "admin" ||
+    value === "manager" ||
+    value === "journalist" ||
+    value === "user"
+  );
 }
 
 export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
   const [houseUsers, setHouseUsers] = useState<HouseUserWithProfile[]>([]);
   const [allUsers, setAllUsers] = useState<AdminUser[]>([]);
   const [selectedUserId, setSelectedUserId] = useState("");
-  const [selectedHouseRole, setSelectedHouseRole] = useState<HouseUserRole>("manager");
+  const [selectedHouseRole, setSelectedHouseRole] =
+    useState<HouseUserRole>("manager");
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
   const [error, setError] = useState("");
@@ -126,7 +127,9 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
   return (
     <section className="mt-8 space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Пользователи ЖК</h2>
+        <h2 className="text-lg font-semibold text-slate-900">
+          Пользователи ЖК
+        </h2>
         <p className="mt-1 text-sm text-slate-500">
           Назначение manager и других ролей для доступа к дому
         </p>
@@ -142,13 +145,19 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
         onSubmit={(event) => void handleAssign(event)}
         className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
       >
-        <h3 className="text-sm font-semibold text-slate-900">Назначить пользователя</h3>
+        <h3 className="text-sm font-semibold text-slate-900">
+          Назначить пользователя
+        </h3>
         <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_220px_auto]">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="house-user-select"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Пользователь
             </label>
             <select
+              id="house-user-select"
               value={selectedUserId}
               onChange={(event) => setSelectedUserId(event.target.value)}
               className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
@@ -170,10 +179,14 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="house-user-role"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Роль в ЖК
             </label>
             <select
+              id="house-user-role"
               value={selectedHouseRole}
               onChange={(event) =>
                 setSelectedHouseRole(event.target.value as HouseUserRole)
@@ -190,7 +203,10 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
           </div>
 
           <div className="flex items-end">
-            <Button type="submit" disabled={assigning || loading || !selectedUserId}>
+            <Button
+              type="submit"
+              disabled={assigning || loading || !selectedUserId}
+            >
               {assigning ? "Назначение…" : "Назначить"}
             </Button>
           </div>

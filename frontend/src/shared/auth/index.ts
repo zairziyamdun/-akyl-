@@ -1,6 +1,6 @@
 export {
+  AUTH_COOKIE_KEY,
+  clearAccessToken,
   getAccessToken,
   setAccessToken,
-  clearAccessToken,
-  AUTH_COOKIE_KEY,
 } from "./token";

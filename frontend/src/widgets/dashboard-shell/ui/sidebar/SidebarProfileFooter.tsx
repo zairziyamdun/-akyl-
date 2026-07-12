@@ -1,16 +1,14 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { User } from "lucide-react";
-
-import { Separator } from "@/shared/ui/separator";
+import { usePathname } from "next/navigation";
 import type { NavItem } from "@/features/auth";
 import { useAuth } from "@/features/auth";
 import { cn } from "@/shared/lib";
-
-import { SidebarItem } from "./SidebarItem";
+import { Separator } from "@/shared/ui/separator";
 import { isNavItemActive } from "../../model/sidebarNavUtils";
 import { dashColors } from "../../model/sidebarTheme";
+import { SidebarItem } from "./SidebarItem";
 
 type SidebarProfileFooterProps = {
   profileItem: NavItem | null;
@@ -36,7 +34,10 @@ export function SidebarProfileFooter({
       className={cn("mt-auto shrink-0 p-3 pt-2")}
       style={{ backgroundColor: dashColors.surfaceMuted }}
     >
-      <Separator className="mb-2" style={{ backgroundColor: dashColors.borderSubtle }} />
+      <Separator
+        className="mb-2"
+        style={{ backgroundColor: dashColors.borderSubtle }}
+      />
       <div className={cn(collapsed && "flex justify-center")}>
         <SidebarItem
           href={profileItem.href}
@@ -47,7 +48,9 @@ export function SidebarProfileFooter({
           tooltip={profileItem.label}
           iconContent={
             user?.initials ? (
-              <span className="text-xs font-semibold leading-none">{user.initials}</span>
+              <span className="text-xs font-semibold leading-none">
+                {user.initials}
+              </span>
             ) : (
               <User className="h-5 w-5 shrink-0" />
             )

@@ -1,8 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-
-import { AUTH_COOKIE_KEY } from "@/shared/auth";
 import type { AkylRole } from "@/entities/session";
+import { AUTH_COOKIE_KEY } from "@/shared/auth";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ??
@@ -78,5 +77,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/studio/:path*", "/admin/:path*", "/manager/:path*"],
+  matcher: [
+    "/app/:path*",
+    "/studio/:path*",
+    "/admin/:path*",
+    "/manager/:path*",
+  ],
 };

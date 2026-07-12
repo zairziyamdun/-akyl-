@@ -18,8 +18,8 @@ export function KpiTemplatesCta() {
             Начните внедрять KPI уже сейчас
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-slate-600">
-            Используйте готовые шаблоны, чтобы перейти от интуитивного управления
-            к системе, основанной на данных, контроле и результатах.
+            Используйте готовые шаблоны, чтобы перейти от интуитивного
+            управления к системе, основанной на данных, контроле и результатах.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild>

@@ -4,7 +4,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 import { cn } from "@/shared/lib";
 
-export function Sheet({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+export function Sheet({
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root {...props} />;
 }
 

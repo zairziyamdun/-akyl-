@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ClipboardCheck } from "lucide-react";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
 import { akimatCta } from "@/widgets/akimat-page";

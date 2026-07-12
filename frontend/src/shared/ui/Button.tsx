@@ -1,7 +1,7 @@
 import {
+  type ButtonHTMLAttributes,
   cloneElement,
   isValidElement,
-  type ButtonHTMLAttributes,
   type ReactElement,
   type ReactNode,
 } from "react";
@@ -31,12 +31,10 @@ export function Button({
   const mergedClassName = cn(
     "inline-flex items-center justify-center gap-2 rounded-xl font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-slate-400 disabled:opacity-50 disabled:pointer-events-none",
     size === "md" ? "h-11 px-5 text-sm" : "h-9 px-4 text-sm",
-    variant === "primary" &&
-      "bg-slate-900 text-white hover:bg-slate-800",
+    variant === "primary" && "bg-slate-900 text-white hover:bg-slate-800",
     variant === "secondary" &&
       "bg-white text-slate-900 ring-1 ring-black/10 hover:bg-slate-50",
-    variant === "ghost" &&
-      "bg-transparent text-slate-900 hover:bg-slate-100",
+    variant === "ghost" && "bg-transparent text-slate-900 hover:bg-slate-100",
     variant === "link" &&
       "h-auto px-0 text-slate-900 underline-offset-4 hover:underline",
     className,
@@ -44,7 +42,9 @@ export function Button({
 
   if (asChild) {
     if (!isValidElement(children)) {
-      throw new Error("Button with asChild expects a single React element child.");
+      throw new Error(
+        "Button with asChild expects a single React element child.",
+      );
     }
     const child = children as ReactElement<{ className?: string }>;
     return cloneElement(child, {
@@ -60,4 +60,3 @@ export function Button({
     </button>
   );
 }
-

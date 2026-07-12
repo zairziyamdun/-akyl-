@@ -10,13 +10,21 @@ export function MzhdKpiCategoriesSection() {
         <div className="grid gap-8 md:grid-cols-2">
           <article className="rounded-2xl bg-white p-8 shadow-sm">
             <TrendingUp className="text-emerald-700" size={28} />
-            <h2 className="mt-4 text-2xl font-semibold">{mzhdKpiCategories.financial.title}</h2>
-            <p className="mt-3 text-slate-600">{mzhdKpiCategories.financial.description}</p>
+            <h2 className="mt-4 text-2xl font-semibold">
+              {mzhdKpiCategories.financial.title}
+            </h2>
+            <p className="mt-3 text-slate-600">
+              {mzhdKpiCategories.financial.description}
+            </p>
           </article>
           <article className="rounded-2xl bg-white p-8 shadow-sm">
             <HeartHandshake className="text-sky-700" size={28} />
-            <h2 className="mt-4 text-2xl font-semibold">{mzhdKpiCategories.service.title}</h2>
-            <p className="mt-3 text-slate-600">{mzhdKpiCategories.service.description}</p>
+            <h2 className="mt-4 text-2xl font-semibold">
+              {mzhdKpiCategories.service.title}
+            </h2>
+            <p className="mt-3 text-slate-600">
+              {mzhdKpiCategories.service.description}
+            </p>
           </article>
         </div>
       </Container>

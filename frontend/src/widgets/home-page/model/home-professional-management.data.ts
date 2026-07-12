@@ -3,9 +3,9 @@ import {
   Building2,
   Coins,
   Gauge,
+  type LucideIcon,
   Network,
   UsersRound,
-  type LucideIcon,
 } from "lucide-react";
 
 export type HomeProfessionalPillar = {

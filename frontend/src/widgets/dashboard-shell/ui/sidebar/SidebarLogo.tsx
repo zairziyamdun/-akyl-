@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 import { SIDEBAR_MOTION_TRANSITION } from "../../model/sidebarNavUtils";
 import { dashColors } from "../../model/sidebarTheme";
@@ -18,25 +18,20 @@ export function SidebarLogo({ collapsed }: SidebarLogoProps) {
         style={{
           background: `linear-gradient(135deg, ${dashColors.brandMid} 0%, ${dashColors.brand} 100%)`,
         }}
-        aria-label="AKYL"
       >
         <Image
           src="/home/logo-akyl.svg"
-          alt=""
+          alt="AKYL"
           width={22}
           height={22}
           className="h-[22px] w-[22px] brightness-0 invert"
-          aria-hidden
         />
       </div>
     );
   }
 
   return (
-    <div
-      className="flex min-w-0 cursor-default select-none items-center gap-3 overflow-hidden"
-      aria-label="AKYL"
-    >
+    <div className="flex min-w-0 cursor-default select-none items-center gap-3 overflow-hidden">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F1F5F9] p-1">
         <Image
           src="/home/logo-akyl.svg"

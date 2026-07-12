@@ -2,23 +2,27 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-import { JournalToast } from ".";
+import type { JournalIssueRecord } from "@/entities/journal-issue";
+import { JournalApiError } from "@/entities/journal-issue";
 import { Button } from "@/shared/ui/Button";
 import { useJournalIssues } from "../JournalIssuesProvider";
-import { JournalApiError } from "@/entities/journal-issue";
-import type { JournalIssueRecord } from "@/entities/journal-issue";
+import { JournalToast } from ".";
 
 export function IssueReviewPanel({ issue }: { issue: JournalIssueRecord }) {
   const router = useRouter();
   const { publishIssue, requestRevision } = useJournalIssues();
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(
-    null,
-  );
+  const [toast, setToast] = useState<{
+    message: string;
+    variant: "success" | "error";
+  } | null>(null);
 
-  const run = async (action: () => Promise<void>, successMessage: string, redirect?: string) => {
+  const run = async (
+    action: () => Promise<void>,
+    successMessage: string,
+    redirect?: string,
+  ) => {
     setLoading(true);
     try {
       await action();
@@ -27,7 +31,10 @@ export function IssueReviewPanel({ issue }: { issue: JournalIssueRecord }) {
       else router.refresh();
     } catch (err) {
       setToast({
-        message: err instanceof JournalApiError ? err.message : "Операция не выполнена",
+        message:
+          err instanceof JournalApiError
+            ? err.message
+            : "Операция не выполнена",
         variant: "error",
       });
     } finally {
@@ -42,14 +49,19 @@ export function IssueReviewPanel({ issue }: { issue: JournalIssueRecord }) {
           Модерация выпуска
         </h3>
         <p className="mt-1 text-sm text-slate-600">
-          Выпуск ожидает проверки. Опубликуйте для сайта или верните автору на доработку.
+          Выпуск ожидает проверки. Опубликуйте для сайта или верните автору на
+          доработку.
         </p>
 
         <div className="mt-4">
-          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="issue-review-note"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
             Комментарий (опционально)
           </label>
           <textarea
+            id="issue-review-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className="min-h-[80px] w-full rounded-xl bg-white px-4 py-3 text-sm ring-1 ring-black/10 outline-none"

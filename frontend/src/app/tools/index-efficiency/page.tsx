@@ -1,4 +1,14 @@
-import { IEUBlockAccordions, IEUCalculatorWizard, IEUCta, IEUFormula, IEUHero, IEUNotJustNumber, IEUWhatIs, IEUWhatShows, IEUWhyMatters } from "@/widgets/tools-page";
+import {
+  IEUBlockAccordions,
+  IEUCalculatorWizard,
+  IEUCta,
+  IEUFormula,
+  IEUHero,
+  IEUNotJustNumber,
+  IEUWhatIs,
+  IEUWhatShows,
+  IEUWhyMatters,
+} from "@/widgets/tools-page";
 
 export default function IndexEfficiencyPage() {
   return (

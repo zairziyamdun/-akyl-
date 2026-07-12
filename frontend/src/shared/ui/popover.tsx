@@ -4,7 +4,9 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "@/shared/lib";
 
-export function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+export function Popover({
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root {...props} />;
 }
 

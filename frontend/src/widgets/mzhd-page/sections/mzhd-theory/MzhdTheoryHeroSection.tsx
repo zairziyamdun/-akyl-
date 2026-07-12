@@ -26,12 +26,20 @@ export function MzhdTheoryHeroSection() {
         <h1 className="max-w-4xl font-[family-name:var(--font-sora)] text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
           {mzhdTheoryHero.title}
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-white/75">{mzhdTheoryHero.description}</p>
+        <p className="mt-6 max-w-2xl text-lg text-white/75">
+          {mzhdTheoryHero.description}
+        </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link href="/consultation" className="rounded-full bg-white px-6 py-3 font-semibold text-slate-950">
+          <Link
+            href="/consultation"
+            className="rounded-full bg-white px-6 py-3 font-semibold text-slate-950"
+          >
             Получить консультацию
           </Link>
-          <Link href="/mzhd" className="rounded-full border border-white/30 px-6 py-3 font-semibold text-white">
+          <Link
+            href="/mzhd"
+            className="rounded-full border border-white/30 px-6 py-3 font-semibold text-white"
+          >
             Вернуться к методологии
           </Link>
         </div>

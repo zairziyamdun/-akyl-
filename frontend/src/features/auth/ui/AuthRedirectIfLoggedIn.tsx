@@ -2,9 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-
-import { useAuth } from "../api/AuthProvider";
 import { getRoleDashboardPath } from "@/entities/session";
+import { useAuth } from "../api/AuthProvider";
 
 export function AuthRedirectIfLoggedIn() {
   const router = useRouter();
@@ -13,8 +12,7 @@ export function AuthRedirectIfLoggedIn() {
 
   useEffect(() => {
     if (isLoading || !isAuthenticated || !role) return;
-    const returnUrl =
-      searchParams.get("returnUrl") ?? searchParams.get("next");
+    const returnUrl = searchParams.get("returnUrl") ?? searchParams.get("next");
     router.replace(returnUrl ?? getRoleDashboardPath(role));
   }, [isAuthenticated, isLoading, role, router, searchParams]);
 

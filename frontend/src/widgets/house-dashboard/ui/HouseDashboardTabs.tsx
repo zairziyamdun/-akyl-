@@ -1,15 +1,18 @@
 "use client";
 
-import { cn } from "@/shared/lib";
 import type { DashboardTabId } from "@/entities/house";
 import { DASHBOARD_TABS } from "@/entities/house";
+import { cn } from "@/shared/lib";
 
 type HouseDashboardTabsProps = {
   activeTab: DashboardTabId;
   onChange: (tab: DashboardTabId) => void;
 };
 
-export function HouseDashboardTabs({ activeTab, onChange }: HouseDashboardTabsProps) {
+export function HouseDashboardTabs({
+  activeTab,
+  onChange,
+}: HouseDashboardTabsProps) {
   return (
     <nav
       className="border-b border-slate-200/80 bg-white"

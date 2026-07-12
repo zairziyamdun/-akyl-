@@ -1,23 +1,22 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Activity, ClipboardList } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/shared/ui/Button";
-import {
-  consultationImages,
-  heroKpiRows,
-} from "@/widgets/consultation-page";
+import { Container } from "@/shared/ui/Container";
+import { consultationImages, heroKpiRows } from "@/widgets/consultation-page";
 
 import {
   consultationFloatPanel,
   consultationHeroTransition,
 } from "../model/consultationMotion";
 
-const chartBars = [38, 52, 48, 64, 58, 72, 68, 78, 82, 88];
+const chartBars = [38, 52, 48, 64, 58, 72, 68, 78, 82, 88].map((height, i) => ({
+  id: `consultation-bar-${i}`,
+  height,
+}));
 
 function AnimatedKpiBar({
   value,
@@ -45,7 +44,7 @@ export function ConsultationHero() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative isolate min-h-[520px] overflow-hidden border-b border-slate-200/80">
+    <section className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-white/10">
       <Image
         src={consultationImages.hero}
         alt=""
@@ -69,7 +68,7 @@ export function ConsultationHero() {
       <div className="pointer-events-none absolute -left-20 top-1/4 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-10 bottom-0 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" />
 
-      <Container className="relative py-16 sm:py-20 lg:py-28">
+      <Container className="relative w-full py-20 sm:py-24 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
           <motion.div
             initial={reduced ? false : { opacity: 0, x: -36 }}
@@ -197,12 +196,12 @@ export function ConsultationHero() {
                     <span className="text-xs text-slate-500">live</span>
                   </div>
                   <div className="mt-3 flex h-16 items-end justify-between gap-1">
-                    {chartBars.map((h, i) => (
+                    {chartBars.map((bar, i) => (
                       <motion.div
-                        key={i}
+                        key={bar.id}
                         className="flex-1 rounded-t bg-gradient-to-t from-sky-200 to-sky-600"
-                        initial={{ height: reduced ? `${h}%` : "0%" }}
-                        whileInView={{ height: `${h}%` }}
+                        initial={{ height: reduced ? `${bar.height}%` : "0%" }}
+                        whileInView={{ height: `${bar.height}%` }}
                         viewport={{ once: true }}
                         transition={{
                           duration: 0.6,

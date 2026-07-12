@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import { useRef } from "react";
 
 import { Container } from "@/shared/ui/Container";
@@ -32,7 +32,10 @@ export function HomePhotoSplitSection({
   const y = useTransform(scrollYProgress, [0, 1], [24, -24]);
 
   return (
-    <section ref={ref} className="relative overflow-hidden border-b border-slate-200/80 bg-slate-100/50">
+    <section
+      ref={ref}
+      className="relative overflow-hidden border-b border-slate-200/80 bg-slate-100/50"
+    >
       <Container className="py-16 lg:py-24">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <motion.div
@@ -63,7 +66,9 @@ export function HomePhotoSplitSection({
             <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-[40px] lg:leading-[1.12]">
               {title}
             </h2>
-            <p className="mt-6 text-base leading-relaxed text-slate-600 sm:text-lg">{body}</p>
+            <p className="mt-6 text-base leading-relaxed text-slate-600 sm:text-lg">
+              {body}
+            </p>
           </motion.div>
         </div>
       </Container>

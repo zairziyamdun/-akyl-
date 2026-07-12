@@ -32,7 +32,9 @@ export function ProblemsSolutions() {
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.35, delay: index * 0.05 }}
             >
-              <div className="text-sm font-medium leading-relaxed text-slate-700">{item}</div>
+              <div className="text-sm font-medium leading-relaxed text-slate-700">
+                {item}
+              </div>
             </motion.article>
           ))}
         </div>

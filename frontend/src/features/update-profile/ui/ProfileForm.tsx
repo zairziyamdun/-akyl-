@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { RoleBadge } from "@/widgets/dashboard-shell";
+import type { AkylRole } from "@/entities/session";
+import { AuthApiError, useAuth } from "@/features/auth";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
-import { AuthApiError, useAuth } from "@/features/auth";
-import type { AkylRole } from "@/entities/session";
+import { PageHeader, RoleBadge } from "@/widgets/dashboard-shell";
 
 type ProfileFormProps = {
   title?: string;
@@ -72,8 +70,14 @@ export function ProfileForm({
           }}
         >
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Имя</label>
+            <label
+              htmlFor="profile-full-name"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
+              Имя
+            </label>
             <Input
+              id="profile-full-name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -81,14 +85,29 @@ export function ProfileForm({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Email</label>
-            <Input value={user.email} type="email" readOnly disabled />
+            <label
+              htmlFor="profile-email"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
+              Email
+            </label>
+            <Input
+              id="profile-email"
+              value={user.email}
+              type="email"
+              readOnly
+              disabled
+            />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="profile-organization"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
               Организация
             </label>
             <Input
+              id="profile-organization"
               value={organization}
               onChange={(e) => setOrganization(e.target.value)}
               required
@@ -96,8 +115,14 @@ export function ProfileForm({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-slate-700">Телефон</label>
+            <label
+              htmlFor="profile-phone"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
+              Телефон
+            </label>
             <Input
+              id="profile-phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
@@ -106,7 +131,9 @@ export function ProfileForm({
           </div>
 
           {error ? (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </p>
           ) : null}
           {success ? (
             <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">

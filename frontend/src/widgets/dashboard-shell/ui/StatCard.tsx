@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 import { cn } from "@/shared/lib";
 
 export function StatCard({

@@ -33,7 +33,9 @@ export function AuthCard({
         ) : null}
       </div>
       {children}
-      {footer ? <div className="mt-6 border-t border-slate-100 pt-6">{footer}</div> : null}
+      {footer ? (
+        <div className="mt-6 border-t border-slate-100 pt-6">{footer}</div>
+      ) : null}
     </div>
   );
 }

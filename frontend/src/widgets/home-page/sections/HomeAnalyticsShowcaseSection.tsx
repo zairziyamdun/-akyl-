@@ -1,21 +1,29 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { Activity, BarChart2, LineChart, Shield } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Activity, BarChart2, LineChart, Shield } from "lucide-react";
 
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import { homeAnalyticsSlides } from "../model/home-analytics.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const slides = homeAnalyticsSlides;
+
+const kpiBars = [40, 55, 48, 62, 58, 71, 68, 74, 78].map((height, i) => ({
+  id: `home-kpi-bar-${i}`,
+  height,
+}));
 
 export function HomeAnalyticsShowcaseSection() {
   const [i, setI] = useState(0);
 
   useEffect(() => {
-    const t = window.setInterval(() => setI((x) => (x + 1) % slides.length), 5200);
+    const t = window.setInterval(
+      () => setI((x) => (x + 1) % slides.length),
+      5200,
+    );
     return () => window.clearInterval(t);
   }, []);
 
@@ -36,8 +44,8 @@ export function HomeAnalyticsShowcaseSection() {
               Индекс эффективности и данные для решений
             </h2>
             <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-              Платформа опирается на измеримость: индексы, отчёты и KPI — не декорация, а рабочий
-              контур управления.
+              Платформа опирается на измеримость: индексы, отчёты и KPI — не
+              декорация, а рабочий контур управления.
             </p>
             <Link
               href="/tools/index-efficiency"
@@ -58,17 +66,24 @@ export function HomeAnalyticsShowcaseSection() {
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
                     Сейчас в фокусе
                   </p>
-                  <p className="mt-2 text-lg font-semibold text-slate-900">{slides[i].title}</p>
-                  <p className="mt-2 text-sm text-slate-600">{slides[i].text}</p>
-                  <Link href={slides[i].href} className="mt-4 inline-block text-sm font-medium text-slate-900">
+                  <p className="mt-2 text-lg font-semibold text-slate-900">
+                    {slides[i].title}
+                  </p>
+                  <p className="mt-2 text-sm text-slate-600">
+                    {slides[i].text}
+                  </p>
+                  <Link
+                    href={slides[i].href}
+                    className="mt-4 inline-block text-sm font-medium text-slate-900"
+                  >
                     Подробнее →
                   </Link>
                 </motion.div>
               </AnimatePresence>
               <div className="mt-4 flex gap-1.5">
-                {slides.map((_, j) => (
+                {slides.map((slide, j) => (
                   <button
-                    key={j}
+                    key={slide.href}
                     type="button"
                     aria-label={`Слайд ${j + 1}`}
                     onClick={() => setI(j)}
@@ -96,7 +111,9 @@ export function HomeAnalyticsShowcaseSection() {
               <div className="rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
                 <div className="flex items-center gap-2 text-slate-400">
                   <BarChart2 className="h-4 w-4" />
-                  <span className="text-[11px] uppercase tracking-wide">IEU</span>
+                  <span className="text-[11px] uppercase tracking-wide">
+                    IEU
+                  </span>
                 </div>
                 <p className="mt-3 text-3xl font-semibold tabular-nums">78</p>
                 <p className="text-xs text-slate-500">баллов · пилот</p>
@@ -104,7 +121,9 @@ export function HomeAnalyticsShowcaseSection() {
               <div className="rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
                 <div className="flex items-center gap-2 text-slate-400">
                   <Shield className="h-4 w-4" />
-                  <span className="text-[11px] uppercase tracking-wide">Контроль</span>
+                  <span className="text-[11px] uppercase tracking-wide">
+                    Контроль
+                  </span>
                 </div>
                 <p className="mt-3 text-3xl font-semibold tabular-nums">12</p>
                 <p className="text-xs text-slate-500">зон внимания</p>
@@ -119,11 +138,11 @@ export function HomeAnalyticsShowcaseSection() {
                 <span>квартал</span>
               </div>
               <div className="mt-4 flex h-24 items-end gap-1">
-                {[40, 55, 48, 62, 58, 71, 68, 74, 78].map((h, k) => (
+                {kpiBars.map((bar) => (
                   <div
-                    key={k}
+                    key={bar.id}
                     className="flex-1 rounded-t bg-gradient-to-t from-slate-700 to-emerald-500/80"
-                    style={{ height: `${h}%` }}
+                    style={{ height: `${bar.height}%` }}
                   />
                 ))}
               </div>

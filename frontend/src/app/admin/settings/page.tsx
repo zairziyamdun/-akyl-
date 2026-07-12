@@ -1,8 +1,8 @@
 "use client";
 
-import { PageHeader } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
+import { PageHeader } from "@/widgets/dashboard-shell";
 
 export default function AdminSettingsPage() {
   return (
@@ -19,16 +19,26 @@ export default function AdminSettingsPage() {
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label
+                htmlFor="settings-platform-name"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
                 Название платформы
               </label>
-              <Input defaultValue="AKYL" />
+              <Input id="settings-platform-name" defaultValue="AKYL" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label
+                htmlFor="settings-support-email"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
                 Email поддержки
               </label>
-              <Input defaultValue="support@akyl.kz" type="email" />
+              <Input
+                id="settings-support-email"
+                defaultValue="support@akyl.kz"
+                type="email"
+              />
             </div>
           </div>
         </section>
@@ -39,16 +49,30 @@ export default function AdminSettingsPage() {
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label
+                htmlFor="settings-supabase-url"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
                 Supabase URL
               </label>
-              <Input defaultValue="https://xxx.supabase.co" disabled />
+              <Input
+                id="settings-supabase-url"
+                defaultValue="https://xxx.supabase.co"
+                disabled
+              />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              <label
+                htmlFor="settings-telegram-chat-id"
+                className="mb-1.5 block text-sm font-medium text-slate-700"
+              >
                 Telegram Chat ID
               </label>
-              <Input defaultValue="••••••••" disabled />
+              <Input
+                id="settings-telegram-chat-id"
+                defaultValue="••••••••"
+                disabled
+              />
             </div>
           </div>
         </section>

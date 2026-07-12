@@ -1,4 +1,4 @@
-import { apiFetch, ApiError } from "@/shared/api";
+import { ApiError, apiFetch } from "@/shared/api";
 
 import type {
   CreateHousePayload,
@@ -14,7 +14,10 @@ export class HousesApiError extends ApiError {
   }
 }
 
-async function housesFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function housesFetch<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> {
   try {
     return await apiFetch<T>(path, { ...options, errorName: "HousesApiError" });
   } catch (err) {
@@ -44,7 +47,10 @@ export async function createHouse(payload: CreateHousePayload): Promise<House> {
   });
 }
 
-export async function updateHouse(id: string, payload: UpdateHousePayload): Promise<House> {
+export async function updateHouse(
+  id: string,
+  payload: UpdateHousePayload,
+): Promise<House> {
   return housesFetch<House>(`/api/houses/${id}`, {
     method: "PATCH",
     body: JSON.stringify(payload),

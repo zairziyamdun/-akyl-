@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
-
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import { homeClosingCtaContent } from "../model/home-system-view.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 export function HomeClosingCtaSection() {
   return (

@@ -2,18 +2,22 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-
-import { AccessTypeBadge, IssueStatusBadge } from ".";
-import { IssueCoverThumb } from ".";
-import { JournalTableSkeleton } from ".";
-import { EmptyState } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { useAuth } from "@/features/auth";
-import { useJournalIssues } from "../JournalIssuesProvider";
-import type { JournalIssueFilter, JournalIssueRecord } from "@/entities/journal-issue";
+import type {
+  JournalIssueFilter,
+  JournalIssueRecord,
+} from "@/entities/journal-issue";
 import { formatDate, issueStatusLabels } from "@/entities/journal-issue";
+import { useAuth } from "@/features/auth";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
+import { EmptyState, PageHeader } from "@/widgets/dashboard-shell";
+import { useJournalIssues } from "../JournalIssuesProvider";
+import {
+  AccessTypeBadge,
+  IssueCoverThumb,
+  IssueStatusBadge,
+  JournalTableSkeleton,
+} from ".";
 
 const filters: { value: JournalIssueFilter; label: string }[] = [
   { value: "ALL", label: "Все" },
@@ -31,7 +35,8 @@ export function StudioJournalList() {
 
   const journalistIssues = useMemo(() => {
     const mine = issues.filter(
-      (i) => i.authorId === user?.id || (user?.name && i.authorName === user.name),
+      (i) =>
+        i.authorId === user?.id || (user?.name && i.authorName === user.name),
     );
     if (activeFilter === "ALL") return mine;
     return mine.filter((i) => i.status === activeFilter);
@@ -76,7 +81,9 @@ export function StudioJournalList() {
       />
 
       {error ? (
-        <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
       ) : null}
 
       <div className="mb-6 flex flex-wrap gap-2">

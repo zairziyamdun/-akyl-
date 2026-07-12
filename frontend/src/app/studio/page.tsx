@@ -1,11 +1,13 @@
 import Link from "next/link";
-
-import { DataTable } from "@/widgets/dashboard-shell";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatCard } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
-import { mockArticles, mockStudioStats } from "@/widgets/dashboard-shell";
+import {
+  DataTable,
+  mockArticles,
+  mockStudioStats,
+  PageHeader,
+  StatCard,
+  StatusBadge,
+} from "@/widgets/dashboard-shell";
 
 export default function StudioDashboardPage() {
   const recent = mockArticles.slice(0, 4);

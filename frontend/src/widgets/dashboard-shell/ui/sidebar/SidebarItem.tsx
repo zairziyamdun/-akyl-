@@ -1,15 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
-
+import Link from "next/link";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/shared/ui/tooltip";
+  type ComponentPropsWithoutRef,
+  forwardRef,
+  type ReactNode,
+} from "react";
 import { cn } from "@/shared/lib";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/ui/tooltip";
 
 import {
   SIDEBAR_ICON_SIZE,
@@ -41,12 +40,26 @@ function SidebarItemContent({
     <>
       <span className={sidebarIconWrapperClass(active)}>
         {iconContent ??
-          (Icon ? <Icon className={SIDEBAR_ICON_SIZE} strokeWidth={active ? 2.25 : 2} /> : null)}
+          (Icon ? (
+            <Icon
+              className={SIDEBAR_ICON_SIZE}
+              strokeWidth={active ? 2.25 : 2}
+            />
+          ) : null)}
       </span>
       {!collapsed ? (
         <>
-          <span className={cn(SIDEBAR_LABEL, active ? "text-white" : "text-inherit")}>{label}</span>
-          {trailing ? <span className="flex shrink-0 items-center">{trailing}</span> : null}
+          <span
+            className={cn(
+              SIDEBAR_LABEL,
+              active ? "text-white" : "text-inherit",
+            )}
+          >
+            {label}
+          </span>
+          {trailing ? (
+            <span className="flex shrink-0 items-center">{trailing}</span>
+          ) : null}
         </>
       ) : null}
     </>
@@ -71,88 +84,92 @@ export type SidebarItemButtonProps = SidebarItemCommonProps & {
 
 export type SidebarItemProps = SidebarItemLinkProps | SidebarItemButtonProps;
 
-export const SidebarItem = forwardRef<HTMLAnchorElement | HTMLButtonElement, SidebarItemProps>(
-  function SidebarItem(props, ref) {
-    const {
-      active,
-      collapsed,
-      label,
-      icon,
-      iconContent,
-      trailing,
-      tooltip,
-      suppressTooltip = false,
-      className,
-      ...rest
-    } = props;
+export const SidebarItem = forwardRef<
+  HTMLAnchorElement | HTMLButtonElement,
+  SidebarItemProps
+>(function SidebarItem(props, ref) {
+  const {
+    active,
+    collapsed,
+    label,
+    icon,
+    iconContent,
+    trailing,
+    tooltip,
+    suppressTooltip = false,
+    className,
+    ...rest
+  } = props;
 
-    const itemClass = cn(sidebarItemClass(active, collapsed), className);
-    const itemStyle = sidebarItemStyle(active);
-    const ariaLabel = collapsed ? (tooltip ?? label) : undefined;
+  const itemClass = cn(sidebarItemClass(active, collapsed), className);
+  const itemStyle = sidebarItemStyle(active);
+  const ariaLabel = collapsed ? (tooltip ?? label) : undefined;
 
-    const content = (
-      <SidebarItemContent
-        active={active}
-        collapsed={collapsed}
-        label={label}
-        icon={icon}
-        iconContent={iconContent}
-        trailing={trailing}
-      />
+  const content = (
+    <SidebarItemContent
+      active={active}
+      collapsed={collapsed}
+      label={label}
+      icon={icon}
+      iconContent={iconContent}
+      trailing={trailing}
+    />
+  );
+
+  let node: ReactNode;
+
+  if (props.as === "button") {
+    const buttonProps = rest as Omit<
+      SidebarItemButtonProps,
+      keyof SidebarItemCommonProps | "as"
+    >;
+    node = (
+      <button
+        ref={ref as React.Ref<HTMLButtonElement>}
+        type={buttonProps.type ?? "button"}
+        aria-label={ariaLabel}
+        className={itemClass}
+        style={itemStyle}
+        {...buttonProps}
+      >
+        {content}
+      </button>
     );
+  } else {
+    const { href, onNavigate, ...linkRest } = rest as SidebarItemLinkProps;
+    node = (
+      <Link
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        href={href}
+        onClick={onNavigate}
+        aria-label={ariaLabel}
+        aria-current={active ? "page" : undefined}
+        className={itemClass}
+        style={itemStyle}
+        {...linkRest}
+      >
+        {content}
+      </Link>
+    );
+  }
 
-    let node: ReactNode;
-
-    if (props.as === "button") {
-      const buttonProps = rest as Omit<SidebarItemButtonProps, keyof SidebarItemCommonProps | "as">;
-      node = (
-        <button
-          ref={ref as React.Ref<HTMLButtonElement>}
-          type={buttonProps.type ?? "button"}
-          aria-label={ariaLabel}
-          className={itemClass}
-          style={itemStyle}
-          {...buttonProps}
+  if (collapsed && !suppressTooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{node}</TooltipTrigger>
+        <TooltipContent
+          side="right"
+          sideOffset={12}
+          className="border-0 px-3 py-1.5 text-xs font-medium text-white shadow-lg"
+          style={{ backgroundColor: dashColors.tooltipBg }}
         >
-          {content}
-        </button>
-      );
-    } else {
-      const { href, onNavigate, ...linkRest } = rest as SidebarItemLinkProps;
-      node = (
-        <Link
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          href={href}
-          onClick={onNavigate}
-          aria-label={ariaLabel}
-          aria-current={active ? "page" : undefined}
-          className={itemClass}
-          style={itemStyle}
-          {...linkRest}
-        >
-          {content}
-        </Link>
-      );
-    }
+          {tooltip ?? label}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
 
-    if (collapsed && !suppressTooltip) {
-      return (
-        <Tooltip>
-          <TooltipTrigger asChild>{node}</TooltipTrigger>
-          <TooltipContent
-            side="right"
-            sideOffset={12}
-            className="border-0 px-3 py-1.5 text-xs font-medium text-white shadow-lg"
-            style={{ backgroundColor: dashColors.tooltipBg }}
-          >
-            {tooltip ?? label}
-          </TooltipContent>
-        </Tooltip>
-      );
-    }
-
-    return node;
-  },
-);
+  return node;
+});
 
 SidebarItem.displayName = "SidebarItem";

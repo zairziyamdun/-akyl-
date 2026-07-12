@@ -1,3 +1,5 @@
+export * from "./model/dashboardUtils";
+export * from "./model/house-dashboard-mock.data";
 export * from "./sections/HouseDashboardView";
 export * from "./ui/BudgetTab";
 export * from "./ui/DashboardMetricCard";
@@ -10,5 +12,3 @@ export * from "./ui/KpiTab";
 export * from "./ui/OverviewTab";
 export * from "./ui/RequestsTab";
 export * from "./ui/TechnicalTab";
-export * from "./model/dashboardUtils";
-export * from "./model/house-dashboard-mock.data";

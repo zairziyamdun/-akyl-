@@ -1,8 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 import {
   homeHeroDiagramItems,
@@ -18,8 +18,7 @@ const panelMotion = {
   transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const },
 };
 
-const panelInnerPad =
-  "px-3 py-4 sm:px-5 sm:py-5 md:px-6 md:py-6";
+const panelInnerPad = "px-3 py-4 sm:px-5 sm:py-5 md:px-6 md:py-6";
 
 function SystemDiagramPanel() {
   const items = homeHeroDiagramItems;
@@ -43,7 +42,9 @@ function SystemDiagramPanel() {
           y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
         }}
       >
-        <span className="text-sm font-semibold text-white sm:text-base">МЖД</span>
+        <span className="text-sm font-semibold text-white sm:text-base">
+          МЖД
+        </span>
       </motion.div>
 
       {items.map((item, index) => (
@@ -86,7 +87,9 @@ function IndexDashboardPanel() {
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-          >{homeHeroIeuValue}</motion.span>
+          >
+            {homeHeroIeuValue}
+          </motion.span>
         </div>
 
         <div className="mt-1 text-xs text-white/60 sm:mt-1.5 sm:text-sm md:mt-2">
@@ -99,7 +102,9 @@ function IndexDashboardPanel() {
           <div key={row.label} className="min-w-0">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-white/70 sm:mb-1.5 sm:text-sm">
               <span className="truncate">{row.label}</span>
-              <span className="shrink-0 tabular-nums text-white/50">{row.value}%</span>
+              <span className="shrink-0 tabular-nums text-white/50">
+                {row.value}%
+              </span>
             </div>
 
             <div className="h-2 overflow-hidden rounded-full border border-white/10 bg-black/10 sm:h-2.5">
@@ -119,7 +124,7 @@ function IndexDashboardPanel() {
 
 function HeroVisualPanel({ activeIndex }: { activeIndex: number }) {
   return (
-    <div className="relative h-[260px] w-full shrink-0 overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.08] shadow-[0_24px_80px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:h-[300px] sm:rounded-[24px] md:h-[320px] md:rounded-[26px] lg:h-[340px] lg:rounded-[30px]">
+    <div className="relative h-[280px] w-full shrink-0 overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.08] shadow-[0_24px_80px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:h-[320px] sm:rounded-[24px] md:h-[360px] md:rounded-[26px] lg:h-[400px] lg:rounded-[30px]">
       <div className="relative h-full w-full overflow-hidden">
         <AnimatePresence mode="wait">
           {activeIndex === 0 ? (
@@ -149,7 +154,12 @@ function HeroVisualPanel({ activeIndex }: { activeIndex: number }) {
 
 function ChevronLeftIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
       <path
         d="M14.5 6.5L9 12l5.5 5.5"
         stroke="currentColor"
@@ -163,7 +173,12 @@ function ChevronLeftIcon({ className }: { className?: string }) {
 
 function ChevronRightIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
       <path
         d="M9.5 6.5L15 12l-5.5 5.5"
         stroke="currentColor"
@@ -202,7 +217,10 @@ export function HeroSection() {
 
   const prev = () => {
     stopAutoplay();
-    setActiveIndex((prevIndex) => (prevIndex - 1 + homeHeroSlides.length) % homeHeroSlides.length);
+    setActiveIndex(
+      (prevIndex) =>
+        (prevIndex - 1 + homeHeroSlides.length) % homeHeroSlides.length,
+    );
   };
 
   const next = () => {
@@ -211,7 +229,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative isolate overflow-hidden bg-background">
+    <section className="relative isolate overflow-hidden bg-slate-950">
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -234,7 +252,7 @@ export function HeroSection() {
         </AnimatePresence>
       </div>
 
-      <div className="relative mx-auto flex min-h-[min(76svh,700px)] w-full max-w-7xl items-center px-4 py-12 sm:min-h-[min(80svh,760px)] sm:px-6 sm:py-14 md:py-16 lg:min-h-[86svh] lg:px-8 lg:py-16 xl:py-20">
+      <div className="relative mx-auto flex min-h-[calc(100svh-4.25rem)] w-full max-w-7xl items-center px-4 py-14 sm:min-h-[calc(100svh-4.5rem)] sm:px-6 sm:py-16 md:py-20 lg:min-h-[calc(100svh-6.5rem)] lg:px-8 lg:py-20 xl:py-24">
         <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-8 sm:gap-9 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(260px,1fr)] lg:gap-9 xl:grid-cols-[minmax(0,1fr)_minmax(300px,430px)] xl:gap-12">
           <div className="min-w-0 max-w-full lg:max-w-3xl">
             <AnimatePresence mode="wait">
@@ -327,7 +345,8 @@ export function HeroSection() {
             </div>
 
             <div className="mt-1.5 text-center text-[10px] leading-snug text-white/55 sm:mt-2 sm:text-[11px]">
-              {isAutoplay ? "Автопрокрутка" : "Ручной режим"} · 0{activeIndex + 1} / 0{homeHeroSlides.length}
+              {isAutoplay ? "Автопрокрутка" : "Ручной режим"} · 0
+              {activeIndex + 1} / 0{homeHeroSlides.length}
             </div>
           </div>
         </div>

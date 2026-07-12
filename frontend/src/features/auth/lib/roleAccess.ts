@@ -2,8 +2,8 @@
  * @deprecated Import from `@/entities/session` instead.
  */
 export {
-  getAllowedRolesForPath,
   canAccessPath,
+  getAllowedRolesForPath,
   getRequiredRoleForPath,
   getRoleDashboardPath,
 } from "@/entities/session";

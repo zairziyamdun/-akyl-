@@ -13,8 +13,7 @@ export function BookCoverPlaceholder({
   className?: string;
 }) {
   const aspect = size === "sm" ? "aspect-[3/4]" : "aspect-[3/4]";
-  const w =
-    size === "sm" ? "w-full max-w-[260px]" : "w-full max-w-[320px]";
+  const w = size === "sm" ? "w-full max-w-[260px]" : "w-full max-w-[320px]";
 
   return (
     <div
@@ -40,5 +39,3 @@ export function BookCoverPlaceholder({
     </div>
   );
 }
-
-

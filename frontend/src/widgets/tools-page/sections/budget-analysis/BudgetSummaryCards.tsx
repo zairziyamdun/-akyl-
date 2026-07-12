@@ -10,7 +10,10 @@ import {
 } from "lucide-react";
 
 import type { BudgetTotals } from "@/features/analyze-budget/budgetAnalysis";
-import { formatCurrencyRub, overallHealthFromKpi } from "@/features/analyze-budget/budgetAnalysis";
+import {
+  formatCurrencyRub,
+  overallHealthFromKpi,
+} from "@/features/analyze-budget/budgetAnalysis";
 
 import { cn } from "@/shared/lib";
 
@@ -19,8 +22,10 @@ type Props = {
 };
 
 function kpiAccent(kpi: number): string {
-  if (kpi >= 0.85) return "from-emerald-500/15 to-teal-500/10 border-emerald-200/80";
-  if (kpi >= 0.65) return "from-amber-500/15 to-orange-500/10 border-amber-200/80";
+  if (kpi >= 0.85)
+    return "from-emerald-500/15 to-teal-500/10 border-emerald-200/80";
+  if (kpi >= 0.65)
+    return "from-amber-500/15 to-orange-500/10 border-amber-200/80";
   return "from-rose-500/15 to-red-500/10 border-rose-200/80";
 }
 

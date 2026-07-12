@@ -11,10 +11,13 @@ import {
 } from "recharts";
 
 import type { DashboardViewModel } from "@/entities/house";
-
+import {
+  ChartContainer,
+  ProgressTrack,
+  TrafficDot,
+} from "../model/dashboardUtils";
 import { DashboardMetricCard } from "./DashboardMetricCard";
 import { DashboardSectionCard } from "./DashboardSectionCard";
-import { ChartContainer, ProgressTrack, TrafficDot } from "../model/dashboardUtils";
 
 type TechnicalTabProps = {
   model: DashboardViewModel;
@@ -33,7 +36,10 @@ export function TechnicalTab({ model }: TechnicalTabProps) {
           hint="Интегральная оценка систем"
         />
 
-        <DashboardSectionCard className="col-span-12 sm:col-span-8" title="Состояние систем">
+        <DashboardSectionCard
+          className="col-span-12 sm:col-span-8"
+          title="Состояние систем"
+        >
           <div className="space-y-3">
             {technical.systems.map((system) => (
               <ProgressTrack
@@ -48,7 +54,10 @@ export function TechnicalTab({ model }: TechnicalTabProps) {
       </div>
 
       <div className="grid grid-cols-12 gap-4">
-        <DashboardSectionCard className="col-span-12 lg:col-span-5" title="Проблемные зоны">
+        <DashboardSectionCard
+          className="col-span-12 lg:col-span-5"
+          title="Проблемные зоны"
+        >
           <ul className="space-y-2">
             {technical.problemZones.map((zone) => (
               <li

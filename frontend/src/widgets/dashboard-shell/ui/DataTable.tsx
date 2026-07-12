@@ -51,7 +51,10 @@ export function DataTable<T>({
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={cn("px-4 py-3 text-sm text-slate-700", col.className)}
+                    className={cn(
+                      "px-4 py-3 text-sm text-slate-700",
+                      col.className,
+                    )}
                   >
                     {col.render(row)}
                   </td>
@@ -65,15 +68,30 @@ export function DataTable<T>({
   );
 }
 
-export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+export function TableSkeleton({
+  rows = 5,
+  cols = 4,
+}: {
+  rows?: number;
+  cols?: number;
+}) {
+  const rowIds = Array.from({ length: rows }, (_, i) => `table-skel-row-${i}`);
+  const colIds = Array.from({ length: cols }, (_, i) => `table-skel-col-${i}`);
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
       <div className="animate-pulse space-y-0">
         <div className="h-10 bg-slate-100" />
-        {Array.from({ length: rows }).map((_, i) => (
-          <div key={i} className="flex gap-4 border-t border-slate-100 px-4 py-4">
-            {Array.from({ length: cols }).map((__, j) => (
-              <div key={j} className="h-4 flex-1 rounded bg-slate-100" />
+        {rowIds.map((rowId) => (
+          <div
+            key={rowId}
+            className="flex gap-4 border-t border-slate-100 px-4 py-4"
+          >
+            {colIds.map((colId) => (
+              <div
+                key={`${rowId}-${colId}`}
+                className="h-4 flex-1 rounded bg-slate-100"
+              />
             ))}
           </div>
         ))}

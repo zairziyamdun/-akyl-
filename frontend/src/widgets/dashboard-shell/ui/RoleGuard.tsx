@@ -1,12 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
-
-import { AccessDenied } from "./AccessDenied";
-import { useAuth } from "@/features/auth";
-import { canAccessPath } from "@/entities/session";
+import { type ReactNode, useEffect } from "react";
 import type { AkylRole } from "@/entities/session";
+import { canAccessPath } from "@/entities/session";
+import { useAuth } from "@/features/auth";
+import { AccessDenied } from "./AccessDenied";
 
 export function RoleGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();

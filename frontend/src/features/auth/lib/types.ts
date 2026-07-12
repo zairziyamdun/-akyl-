@@ -3,12 +3,12 @@
  */
 export type {
   AkylRole,
-  ProfileStatus,
   AuthProfile,
   AuthUser,
+  LoginPayload,
   LoginResponse,
   MeResponse,
+  ProfileStatus,
   RegisterPayload,
   UpdateProfilePayload,
-  LoginPayload,
 } from "@/entities/session";

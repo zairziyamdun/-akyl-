@@ -19,11 +19,11 @@ import { JournalApiError } from "../model/journalApiError";
 import {
   JOURNAL_PDF_BUCKET,
   JournalUploadError,
-  logJournalUploadError,
   type JournalUploadErrorDetails,
+  logJournalUploadError,
   VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
 } from "../model/journalUploadError";
-import { PdfLoadError, type PdfFetchResult } from "../model/pdfLoadError";
+import { type PdfFetchResult, PdfLoadError } from "../model/pdfLoadError";
 import { PDF_MAX_BYTES } from "../model/utils";
 
 type ApiSuccess<T> = { success: true; message?: string; data?: T };
@@ -59,7 +59,9 @@ async function journalFetch<T>(
     response = await fetch(`${API_URL}${path}`, {
       ...options,
       headers: {
-        ...authHeaders(Boolean(options.body && !(options.body instanceof FormData))),
+        ...authHeaders(
+          Boolean(options.body && !(options.body instanceof FormData)),
+        ),
         ...(options.headers as Record<string, string>),
       },
     });
@@ -129,25 +131,33 @@ export async function deleteJournalIssueApi(id: string): Promise<void> {
   await journalFetch<void>(`/api/journal/issues/${id}`, { method: "DELETE" });
 }
 
-export async function submitJournalIssueApi(id: string): Promise<ApiJournalIssue> {
+export async function submitJournalIssueApi(
+  id: string,
+): Promise<ApiJournalIssue> {
   return journalFetch<ApiJournalIssue>(`/api/journal/issues/${id}/submit`, {
     method: "POST",
   });
 }
 
-export async function publishJournalIssueApi(id: string): Promise<ApiJournalIssue> {
+export async function publishJournalIssueApi(
+  id: string,
+): Promise<ApiJournalIssue> {
   return journalFetch<ApiJournalIssue>(`/api/journal/issues/${id}/publish`, {
     method: "POST",
   });
 }
 
-export async function archiveJournalIssueApi(id: string): Promise<ApiJournalIssue> {
+export async function archiveJournalIssueApi(
+  id: string,
+): Promise<ApiJournalIssue> {
   return journalFetch<ApiJournalIssue>(`/api/journal/issues/${id}/archive`, {
     method: "POST",
   });
 }
 
-export async function revisionJournalIssueApi(id: string): Promise<ApiJournalIssue> {
+export async function revisionJournalIssueApi(
+  id: string,
+): Promise<ApiJournalIssue> {
   return journalFetch<ApiJournalIssue>(`/api/journal/issues/${id}/revision`, {
     method: "POST",
   });
@@ -284,35 +294,43 @@ export async function uploadPdfApi(file: File): Promise<UploadPdfResponse> {
   try {
     init = JSON.parse(initBodyParsed.text) as InitPdfUploadResponse;
   } catch {
-    throwUploadError("Backend вернул некорректный JSON при инициализации загрузки", initResponse.status, {
-      phase: "init",
-      endpoint: initEndpoint,
-      httpStatus: initResponse.status,
-      backendMessage: initBodyParsed.text.slice(0, 300),
-      fileName: file.name,
-      fileSize: file.size,
-      limitBytes: PDF_MAX_BYTES,
-      serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
-      bucket: JOURNAL_PDF_BUCKET,
-      contentType: initBodyParsed.contentType,
-      responsePreview: initBodyParsed.text.slice(0, 200),
-    });
+    throwUploadError(
+      "Backend вернул некорректный JSON при инициализации загрузки",
+      initResponse.status,
+      {
+        phase: "init",
+        endpoint: initEndpoint,
+        httpStatus: initResponse.status,
+        backendMessage: initBodyParsed.text.slice(0, 300),
+        fileName: file.name,
+        fileSize: file.size,
+        limitBytes: PDF_MAX_BYTES,
+        serverlessLimitBytes: VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+        bucket: JOURNAL_PDF_BUCKET,
+        contentType: initBodyParsed.contentType,
+        responsePreview: initBodyParsed.text.slice(0, 200),
+      },
+    );
   }
 
   if (!init.success || !init.signedUrl || !init.path) {
-    throwUploadError("Backend не вернул signed upload URL", initResponse.status, {
-      phase: "init",
-      endpoint: initEndpoint,
-      httpStatus: initResponse.status,
-      backendMessage: initBodyParsed.text.slice(0, 300),
-      fileName: file.name,
-      fileSize: file.size,
-      limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
-      serverlessLimitBytes:
-        init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
-      bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
-      contentType: initBodyParsed.contentType,
-    });
+    throwUploadError(
+      "Backend не вернул signed upload URL",
+      initResponse.status,
+      {
+        phase: "init",
+        endpoint: initEndpoint,
+        httpStatus: initResponse.status,
+        backendMessage: initBodyParsed.text.slice(0, 300),
+        fileName: file.name,
+        fileSize: file.size,
+        limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
+        serverlessLimitBytes:
+          init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+        bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
+        contentType: initBodyParsed.contentType,
+      },
+    );
   }
 
   let storageResponse: Response;
@@ -345,20 +363,24 @@ export async function uploadPdfApi(file: File): Promise<UploadPdfResponse> {
       storageParsed.json?.message ??
       (storageParsed.text.slice(0, 300) || `HTTP ${storageResponse.status}`);
 
-    throwUploadError("Supabase Storage отклонил загрузку PDF", storageResponse.status, {
-      phase: "storage",
-      endpoint: init.signedUrl.split("?")[0] ?? init.signedUrl,
-      httpStatus: storageResponse.status,
-      backendMessage,
-      fileName: file.name,
-      fileSize: file.size,
-      limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
-      serverlessLimitBytes:
-        init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
-      bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
-      contentType: storageParsed.contentType,
-      responsePreview: storageParsed.text.slice(0, 200),
-    });
+    throwUploadError(
+      "Supabase Storage отклонил загрузку PDF",
+      storageResponse.status,
+      {
+        phase: "storage",
+        endpoint: init.signedUrl.split("?")[0] ?? init.signedUrl,
+        httpStatus: storageResponse.status,
+        backendMessage,
+        fileName: file.name,
+        fileSize: file.size,
+        limitBytes: init.maxBytes ?? PDF_MAX_BYTES,
+        serverlessLimitBytes:
+          init.serverlessLimitBytes ?? VERCEL_SERVERLESS_BODY_LIMIT_BYTES,
+        bucket: init.bucket ?? JOURNAL_PDF_BUCKET,
+        contentType: storageParsed.contentType,
+        responsePreview: storageParsed.text.slice(0, 200),
+      },
+    );
   }
 
   return {
@@ -376,7 +398,9 @@ export async function fetchIssuePdfUrl(id: string): Promise<string> {
 
   let response: Response;
   try {
-    response = await fetch(`${API_URL}/api/journal/issues/${id}/pdf`, { headers });
+    response = await fetch(`${API_URL}/api/journal/issues/${id}/pdf`, {
+      headers,
+    });
   } catch {
     throw new JournalApiError("Не удалось открыть PDF", 0);
   }
@@ -399,7 +423,9 @@ function pdfFileHeaders(): Record<string, string> {
 }
 
 /** PDF bytes via backend proxy — avoids CORS and mobile download quirks. */
-export async function fetchIssuePdfArrayBuffer(id: string): Promise<PdfFetchResult> {
+export async function fetchIssuePdfArrayBuffer(
+  id: string,
+): Promise<PdfFetchResult> {
   const requestUrl = `${API_URL}/api/journal/issues/${id}/pdf/file`;
   const started = performance.now();
 
@@ -499,7 +525,10 @@ export async function fetchIssuePdfArrayBuffer(id: string): Promise<PdfFetchResu
 }
 
 /** Explicit user-initiated download (attachment). */
-export async function downloadIssuePdf(id: string, fileName: string): Promise<void> {
+export async function downloadIssuePdf(
+  id: string,
+  fileName: string,
+): Promise<void> {
   let response: Response;
   try {
     response = await fetch(

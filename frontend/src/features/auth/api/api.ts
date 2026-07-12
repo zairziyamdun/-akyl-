@@ -1,9 +1,3 @@
-import { API_URL } from "@/shared/config";
-import {
-  clearAccessToken,
-  getAccessToken,
-  setAccessToken,
-} from "@/shared/auth";
 import type {
   LoginPayload,
   LoginResponse,
@@ -11,6 +5,12 @@ import type {
   RegisterPayload,
   UpdateProfilePayload,
 } from "@/entities/session";
+import {
+  clearAccessToken,
+  getAccessToken,
+  setAccessToken,
+} from "@/shared/auth";
+import { API_URL } from "@/shared/config";
 
 export { API_URL };
 
@@ -35,7 +35,9 @@ class AuthApiError extends Error {
   }
 }
 
-async function parseJsonResponse(response: Response): Promise<ApiSuccess<unknown> | ApiError> {
+async function parseJsonResponse(
+  response: Response,
+): Promise<ApiSuccess<unknown> | ApiError> {
   try {
     return (await response.json()) as ApiSuccess<unknown> | ApiError;
   } catch {
@@ -111,7 +113,9 @@ export async function registerRequest(payload: RegisterPayload): Promise<void> {
   }
 }
 
-export async function loginRequest(payload: LoginPayload): Promise<LoginResponse> {
+export async function loginRequest(
+  payload: LoginPayload,
+): Promise<LoginResponse> {
   const data = await authFetch<LoginResponse>("/api/auth/login", {
     method: "POST",
     body: JSON.stringify(payload),

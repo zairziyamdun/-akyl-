@@ -21,7 +21,11 @@ export type JournalUploadErrorDetails = {
 export class JournalUploadError extends JournalApiError {
   details: JournalUploadErrorDetails;
 
-  constructor(message: string, status: number, details: JournalUploadErrorDetails) {
+  constructor(
+    message: string,
+    status: number,
+    details: JournalUploadErrorDetails,
+  ) {
     super(message, status);
     this.name = "JournalUploadError";
     this.details = details;

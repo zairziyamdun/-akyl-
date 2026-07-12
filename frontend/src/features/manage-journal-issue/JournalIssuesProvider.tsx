@@ -2,35 +2,34 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
-
-import { useAuth } from "@/features/auth";
 import {
-  fromApiIssue,
-  toApiCreatePayload,
-  toApiUpdatePayload,
   archiveJournalIssueApi,
+  type CreateJournalIssuePayload,
   createJournalIssueApi,
   deleteJournalIssueApi,
   fetchIssuePdfUrl,
   fetchJournalIssue,
   fetchJournalIssues,
+  fromApiIssue,
+  type JournalIssueFilter,
+  type JournalIssueRecord,
   publishJournalIssueApi,
   revisionJournalIssueApi,
   submitJournalIssueApi,
+  toApiCreatePayload,
+  toApiUpdatePayload,
   updateJournalIssueApi,
   uploadCoverApi,
   uploadPdfApi,
-  type CreateJournalIssuePayload,
-  type JournalIssueFilter,
-  type JournalIssueRecord,
 } from "@/entities/journal-issue";
+import { useAuth } from "@/features/auth";
 
 type JournalIssuesContextValue = {
   issues: JournalIssueRecord[];
@@ -41,8 +40,14 @@ type JournalIssuesContextValue = {
   fetchIssue: (id: string) => Promise<JournalIssueRecord | null>;
   getPublishedIssues: () => JournalIssueRecord[];
   filterIssues: (filter: JournalIssueFilter) => JournalIssueRecord[];
-  createIssue: (payload: CreateJournalIssuePayload, asDraft?: boolean) => Promise<string>;
-  updateIssue: (id: string, payload: Partial<JournalIssueRecord>) => Promise<void>;
+  createIssue: (
+    payload: CreateJournalIssuePayload,
+    asDraft?: boolean,
+  ) => Promise<string>;
+  updateIssue: (
+    id: string,
+    payload: Partial<JournalIssueRecord>,
+  ) => Promise<void>;
   submitForReview: (id: string) => Promise<void>;
   approveIssue: (id: string) => Promise<void>;
   requestRevision: (id: string) => Promise<void>;
@@ -50,11 +55,15 @@ type JournalIssuesContextValue = {
   publishIssue: (id: string) => Promise<void>;
   deleteIssue: (id: string) => Promise<void>;
   uploadCover: (file: File) => Promise<{ url: string; path: string }>;
-  uploadPdf: (file: File) => Promise<{ path: string; fileName: string; size: number }>;
+  uploadPdf: (
+    file: File,
+  ) => Promise<{ path: string; fileName: string; size: number }>;
   openIssuePdf: (id: string) => Promise<void>;
 };
 
-const JournalIssuesContext = createContext<JournalIssuesContextValue | null>(null);
+const JournalIssuesContext = createContext<JournalIssuesContextValue | null>(
+  null,
+);
 
 function upsertIssue(
   list: JournalIssueRecord[],
@@ -68,7 +77,7 @@ function upsertIssue(
 }
 
 export function JournalIssuesProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   const [issues, setIssues] = useState<JournalIssueRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +89,9 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
       const data = await fetchJournalIssues();
       setIssues(data.map(fromApiIssue));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Не удалось загрузить выпуски");
+      setError(
+        err instanceof Error ? err.message : "Не удалось загрузить выпуски",
+      );
       setIssues([]);
     } finally {
       setIsLoading(false);
@@ -90,26 +101,23 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (authLoading) return;
     void refresh();
-  }, [authLoading, isAuthenticated, refresh]);
+  }, [authLoading, refresh]);
 
   const getIssue = useCallback(
     (id: string) => issues.find((i) => i.id === id),
     [issues],
   );
 
-  const fetchIssue = useCallback(
-    async (id: string) => {
-      try {
-        const data = await fetchJournalIssue(id);
-        const record = fromApiIssue(data);
-        setIssues((prev) => upsertIssue(prev, record));
-        return record;
-      } catch {
-        return null;
-      }
-    },
-    [],
-  );
+  const fetchIssue = useCallback(async (id: string) => {
+    try {
+      const data = await fetchJournalIssue(id);
+      const record = fromApiIssue(data);
+      setIssues((prev) => upsertIssue(prev, record));
+      return record;
+    } catch {
+      return null;
+    }
+  }, []);
 
   const getPublishedIssues = useCallback(
     () =>
@@ -160,7 +168,10 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
 
   const updateIssue = useCallback(
     async (id: string, payload: Partial<JournalIssueRecord>) => {
-      const updated = await updateJournalIssueApi(id, toApiUpdatePayload(payload));
+      const updated = await updateJournalIssueApi(
+        id,
+        toApiUpdatePayload(payload),
+      );
       let record = fromApiIssue(updated);
       if (payload.pdfFileName) {
         record = {
@@ -281,7 +292,9 @@ export function JournalIssuesProvider({ children }: { children: ReactNode }) {
 export function useJournalIssues() {
   const ctx = useContext(JournalIssuesContext);
   if (!ctx) {
-    throw new Error("useJournalIssues must be used within JournalIssuesProvider");
+    throw new Error(
+      "useJournalIssues must be used within JournalIssuesProvider",
+    );
   }
   return ctx;
 }

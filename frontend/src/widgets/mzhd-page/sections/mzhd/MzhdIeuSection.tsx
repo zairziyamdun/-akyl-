@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { Activity, Network } from "lucide-react";
 import { motion } from "framer-motion";
-
-import { Container } from "@/shared/ui/Container";
+import { Activity, Network } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 import { ieuRows, ieuSummary } from "@/widgets/mzhd-page";
 
 import { sectionMotion } from "../../model/mzhdMotion";
@@ -20,8 +19,9 @@ export function MzhdIeuSection() {
               Эффективность должна быть измеримой
             </h2>
             <p className="mt-4 max-w-2xl text-slate-600">
-              IEU отражает целостность управления домом: от финансовой устойчивости
-              до качества сервисных процессов и прозрачности исполнения.
+              IEU отражает целостность управления домом: от финансовой
+              устойчивости до качества сервисных процессов и прозрачности
+              исполнения.
             </p>
             <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm">
               <Activity size={16} className="text-emerald-600" />
@@ -31,7 +31,9 @@ export function MzhdIeuSection() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_56px_rgba(15,23,42,0.1)]">
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-sm text-slate-500">{ieuSummary.scoreLabel}</p>
+                <p className="text-sm text-slate-500">
+                  {ieuSummary.scoreLabel}
+                </p>
                 <p className="text-4xl font-semibold tracking-tight">
                   {ieuSummary.score}
                 </p>
@@ -43,7 +45,9 @@ export function MzhdIeuSection() {
                 <div key={row.label}>
                   <div className="mb-1.5 flex justify-between text-sm">
                     <span className="text-slate-600">{row.label}</span>
-                    <span className="font-medium text-slate-800">{row.value}%</span>
+                    <span className="font-medium text-slate-800">
+                      {row.value}%
+                    </span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-slate-100">
                     <div

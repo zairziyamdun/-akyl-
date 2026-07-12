@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import { homeImplementationPhases } from "../model/home-implementation.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const phases = homeImplementationPhases;
 
@@ -29,7 +29,8 @@ export function HomeImplementationPracticeSection() {
               Внедрение как процесс
             </h2>
             <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-              AKYL — не только методология: это дорожка от текущего состояния к управляемой модели.
+              AKYL — не только методология: это дорожка от текущего состояния к
+              управляемой модели.
             </p>
           </motion.div>
           <Link
@@ -52,9 +53,15 @@ export function HomeImplementationPracticeSection() {
                 transition={{ ...homeTransition, delay: i * 0.06 }}
                 className="flex w-[min(280px,85vw)] shrink-0 flex-col rounded-2xl border border-slate-200 bg-slate-50 p-5 md:w-auto"
               >
-                <span className="font-mono text-xs font-medium text-slate-400">{p.step}</span>
-                <h3 className="mt-3 text-base font-semibold text-slate-900">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{p.text}</p>
+                <span className="font-mono text-xs font-medium text-slate-400">
+                  {p.step}
+                </span>
+                <h3 className="mt-3 text-base font-semibold text-slate-900">
+                  {p.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  {p.text}
+                </p>
               </motion.div>
             ))}
           </div>

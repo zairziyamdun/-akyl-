@@ -1,7 +1,9 @@
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatusBadge } from "@/widgets/dashboard-shell";
 import { Button } from "@/shared/ui/Button";
-import { mockSubscriptions } from "@/widgets/dashboard-shell";
+import {
+  mockSubscriptions,
+  PageHeader,
+  StatusBadge,
+} from "@/widgets/dashboard-shell";
 
 export default function UserSubscriptionPage() {
   return (

@@ -1,22 +1,23 @@
 "use client";
 
 import Link from "next/link";
-
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { StatCard } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
 import { useAuth } from "@/features/auth";
+import { Button } from "@/shared/ui/Button";
 import {
   mockAccessibleMaterials,
   mockSubscriptions,
   mockUserMaterials,
+  PageHeader,
+  StatCard,
 } from "@/widgets/dashboard-shell";
 
 export default function UserAppDashboardPage() {
   const { user } = useAuth();
   const firstName = user?.name.split(" ")[0] ?? "пользователь";
   const savedCount = mockUserMaterials.filter((m) => m.saved).length;
-  const activeSubs = mockSubscriptions.filter((s) => s.status === "active").length;
+  const activeSubs = mockSubscriptions.filter(
+    (s) => s.status === "active",
+  ).length;
 
   return (
     <>
@@ -26,8 +27,16 @@ export default function UserAppDashboardPage() {
       />
 
       <div className="mb-8 grid gap-4 sm:grid-cols-3">
-        <StatCard label="Сохранённые материалы" value={String(savedCount)} hint="в библиотеке" />
-        <StatCard label="Активные подписки" value={String(activeSubs)} hint="из 2 доступных" />
+        <StatCard
+          label="Сохранённые материалы"
+          value={String(savedCount)}
+          hint="в библиотеке"
+        />
+        <StatCard
+          label="Активные подписки"
+          value={String(activeSubs)}
+          hint="из 2 доступных"
+        />
         <StatCard
           label="Доступно материалов"
           value={String(mockAccessibleMaterials.length)}
@@ -52,7 +61,9 @@ export default function UserAppDashboardPage() {
                 className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
               >
                 <div>
-                  <p className="text-sm font-medium text-slate-900">{m.title}</p>
+                  <p className="text-sm font-medium text-slate-900">
+                    {m.title}
+                  </p>
                   <p className="text-xs text-slate-500">{m.type}</p>
                 </div>
                 {m.saved ? (

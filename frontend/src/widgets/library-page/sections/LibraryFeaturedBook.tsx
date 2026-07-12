@@ -1,14 +1,13 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Download, Library } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 
-const SECTION_BG_SRC =
-  "/background/library-book-background.jpg";
+const SECTION_BG_SRC = "/background/library-book-background.jpg";
 
 type Book = {
   id: number;
@@ -65,7 +64,6 @@ export function LibraryFeaturedBook() {
           sizes="100vw"
           quality={88}
           priority={false}
-          
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/40" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/35" />
@@ -85,8 +83,7 @@ export function LibraryFeaturedBook() {
             </div>
 
             <h2 className="mt-6 max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-5xl">
-              Не просто книги, а интеллектуальный фонд системного управления
-              МЖД
+              Не просто книги, а интеллектуальный фонд системного управления МЖД
             </h2>
 
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300 md:text-lg">
@@ -116,16 +113,15 @@ export function LibraryFeaturedBook() {
                   <div className="text-xl font-semibold text-white">
                     {item.value}
                   </div>
-                  <div className="mt-1 text-sm text-slate-300">{item.label}</div>
+                  <div className="mt-1 text-sm text-slate-300">
+                    {item.label}
+                  </div>
                 </div>
               ))}
             </div>
 
             <div className="mt-10 flex flex-wrap gap-4">
-              <Button
-                asChild
-                className="group gap-2 rounded-full px-6"
-              >
+              <Button asChild className="group gap-2 rounded-full px-6">
                 <Link href="/library/books">
                   Открыть книги
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -149,7 +145,11 @@ export function LibraryFeaturedBook() {
             initial={reduceMotion ? false : { opacity: 0, y: 24 }}
             whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.6,
+              delay: 0.06,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="relative"
           >
             <div className="relative mx-auto min-h-[640px] max-w-[640px]">
@@ -179,7 +179,9 @@ export function LibraryFeaturedBook() {
 
               <motion.div
                 whileHover={
-                  reduceMotion ? undefined : { y: -4, rotate: -0.5, scale: 1.012 }
+                  reduceMotion
+                    ? undefined
+                    : { y: -4, rotate: -0.5, scale: 1.012 }
                 }
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 className="absolute left-1/2 top-1/2 z-20 w-[300px] -translate-x-1/2 -translate-y-1/2"

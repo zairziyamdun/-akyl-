@@ -1,18 +1,16 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
-
 import Link from "next/link";
-
-import { Button } from "@/shared/ui/Button";
-import { Container } from "@/shared/ui/Container";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
+  calculateIEU,
   getBlockDetailedRecommendations,
   getIEUBand,
-  calculateIEU,
 } from "@/features/calculate-ieu/calculateIEU";
-import { IEU_INITIAL_INPUT, IEU_STEPS } from "@/widgets/tools-page";
+import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 import type { IEUInput } from "@/types/ieu";
+import { IEU_INITIAL_INPUT, IEU_STEPS } from "@/widgets/tools-page";
 
 function progressBarClass(totalPercent: number): string {
   if (totalPercent >= 81) return "bg-emerald-600";
@@ -23,10 +21,13 @@ function progressBarClass(totalPercent: number): string {
 }
 
 function levelBadgeClass(totalPercent: number): string {
-  if (totalPercent >= 81) return "border-emerald-500/30 bg-emerald-500/10 text-emerald-100";
+  if (totalPercent >= 81)
+    return "border-emerald-500/30 bg-emerald-500/10 text-emerald-100";
   if (totalPercent >= 61) return "border-sky-500/30 bg-sky-500/10 text-sky-100";
-  if (totalPercent >= 41) return "border-amber-500/30 bg-amber-500/10 text-amber-100";
-  if (totalPercent >= 21) return "border-orange-500/30 bg-orange-500/10 text-orange-100";
+  if (totalPercent >= 41)
+    return "border-amber-500/30 bg-amber-500/10 text-amber-100";
+  if (totalPercent >= 21)
+    return "border-orange-500/30 bg-orange-500/10 text-orange-100";
   return "border-rose-500/30 bg-rose-500/10 text-rose-100";
 }
 
@@ -63,7 +64,10 @@ export function IEUCalculatorWizard() {
       setFinished(true);
       markVisited(currentStep);
       setTimeout(() => {
-        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        resultRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }, 100);
       return;
     }
@@ -132,7 +136,10 @@ export function IEUCalculatorWizard() {
                   key={field.key}
                   className="rounded-xl border border-black/10 bg-slate-50/50 p-4 transition hover:border-slate-300"
                 >
-                  <label className="text-sm font-semibold text-slate-900">
+                  <label
+                    htmlFor={`ieu-${field.key}`}
+                    className="text-sm font-semibold text-slate-900"
+                  >
                     {field.label}
                   </label>
                   <p className="mt-1 text-xs leading-relaxed text-slate-500">
@@ -140,6 +147,7 @@ export function IEUCalculatorWizard() {
                   </p>
                   <div className="mt-3 flex items-center gap-3">
                     <input
+                      id={`ieu-${field.key}`}
                       type="range"
                       min={field.min}
                       max={field.max}

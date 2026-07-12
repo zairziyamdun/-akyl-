@@ -170,9 +170,9 @@ export function BudgetCharts({ rows }: Props) {
                     return `${shortName(name, 12)} ${(pct * 100).toFixed(0)}%`;
                   }}
                 >
-                  {pieData.map((_, i) => (
+                  {pieData.map((entry, i) => (
                     <Cell
-                      key={i}
+                      key={entry.name}
                       fill={PIE_COLORS[i % PIE_COLORS.length]}
                       stroke="white"
                       strokeWidth={2}
@@ -180,9 +180,7 @@ export function BudgetCharts({ rows }: Props) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value) =>
-                    formatCurrencyRub(Number(value ?? 0))
-                  }
+                  formatter={(value) => formatCurrencyRub(Number(value ?? 0))}
                   contentStyle={{
                     borderRadius: 12,
                     border: "1px solid #e2e8f0",

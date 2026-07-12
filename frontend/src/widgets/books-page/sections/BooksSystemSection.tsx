@@ -11,8 +11,7 @@ export function BooksSystemSection() {
           <p className="mt-4 text-sm leading-7 text-muted-foreground md:text-base md:leading-8">
             Теория задаёт архитектуру управления, практика закрепляет её в
             процессах и эксплуатации, а обучение готовит специалистов и
-            поддерживает внедрение — поэтому модель работает как единая
-            система.
+            поддерживает внедрение — поэтому модель работает как единая система.
           </p>
         </div>
 
@@ -40,8 +39,7 @@ export function BooksSystemSection() {
               3 · Внедрение и обучение
             </div>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              Подготовка команд, стандарты компетенций, сопровождение
-              внедрения.
+              Подготовка команд, стандарты компетенций, сопровождение внедрения.
             </p>
           </div>
         </div>
@@ -49,4 +47,3 @@ export function BooksSystemSection() {
     </section>
   );
 }
-

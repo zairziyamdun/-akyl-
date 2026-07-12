@@ -12,7 +12,8 @@ export function useSidebarCollapsed() {
   useEffect(() => {
     try {
       const stored =
-        localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
+        localStorage.getItem(STORAGE_KEY) ??
+        localStorage.getItem(LEGACY_STORAGE_KEY);
       if (stored === "true") {
         setCollapsedState(true);
       }

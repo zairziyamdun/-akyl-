@@ -3,9 +3,8 @@
 import { Plus, Trash2 } from "lucide-react";
 
 import type { BudgetRowInput } from "@/features/analyze-budget/budgetAnalysis";
-
-import { Button } from "@/shared/ui/Button";
 import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
 
 type Props = {
   rows: BudgetRowInput[];
@@ -22,9 +21,7 @@ export function BudgetInputForm({ rows, onChange }: Props) {
     id: string,
     patch: Partial<Pick<BudgetRowInput, "name" | "plan" | "fact">>,
   ) => {
-    onChange(
-      rows.map((r) => (r.id === id ? { ...r, ...patch } : r)),
-    );
+    onChange(rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   };
 
   const addRow = () => {
@@ -59,7 +56,12 @@ export function BudgetInputForm({ rows, onChange }: Props) {
             учётом выбранного периода (базовые значения — за месяц).
           </p>
         </div>
-        <Button type="button" variant="secondary" className="gap-2" onClick={addRow}>
+        <Button
+          type="button"
+          variant="secondary"
+          className="gap-2"
+          onClick={addRow}
+        >
           <Plus className="size-4" aria-hidden />
           Добавить статью
         </Button>

@@ -1,25 +1,24 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Check, ChevronDown, FileText, Settings } from "lucide-react";
-
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { cn } from "@/shared/lib";
+import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 import {
   ALL_METRICS_IDS,
+  formatMetricValueRu,
   REPORT_PERIODS,
   REPORT_SECTIONS,
   type ReportMetric,
   type ReportMetricId,
   type ReportPeriodId,
   type ReportSectionId,
-  formatMetricValueRu,
   statusKeyFromAvgKpi,
   statusLabelRu,
   statusNarrativeRu,
 } from "@/widgets/tools-page";
-import { cn } from "@/shared/lib";
-import { Button } from "@/shared/ui/Button";
-import { Container } from "@/shared/ui/Container";
 
 function ToggleRow({
   checked,
@@ -35,21 +34,23 @@ function ToggleRow({
   description?: string;
 }) {
   return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      disabled={disabled}
-      onClick={onChange}
+    <label
       className={cn(
-        "w-full rounded-2xl border px-4 py-3 text-left transition",
+        "block w-full rounded-2xl border px-4 py-3 text-left transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-slate-400",
         disabled
           ? "cursor-not-allowed border-slate-200 bg-slate-50 opacity-70"
           : checked
-            ? "border-slate-900 bg-white shadow-sm"
-            : "border-black/10 bg-white/90 hover:border-slate-300 hover:bg-white",
+            ? "cursor-pointer border-slate-900 bg-white shadow-sm"
+            : "cursor-pointer border-black/10 bg-white/90 hover:border-slate-300 hover:bg-white",
       )}
     >
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        disabled={disabled}
+        onChange={onChange}
+      />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-slate-950">{label}</p>
@@ -71,7 +72,7 @@ function ToggleRow({
           <Check className="size-4" />
         </span>
       </div>
-    </button>
+    </label>
   );
 }
 
@@ -85,23 +86,27 @@ function MetricToggle({
   onChange: () => void;
 }) {
   return (
-    <button
-      type="button"
-      role="checkbox"
-      aria-checked={checked}
-      onClick={onChange}
+    <label
       className={cn(
-        "flex min-h-[56px] items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition",
+        "flex min-h-[56px] cursor-pointer items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-slate-400",
         checked
           ? "border-slate-900 bg-white shadow-sm"
           : "border-black/10 bg-white/80 hover:border-slate-300 hover:bg-white",
       )}
     >
+      <input
+        type="checkbox"
+        className="sr-only"
+        checked={checked}
+        onChange={onChange}
+      />
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-slate-950">
           {metric.label}
         </p>
-        <p className="mt-1 text-xs text-slate-500">{formatMetricValueRu(metric)}</p>
+        <p className="mt-1 text-xs text-slate-500">
+          {formatMetricValueRu(metric)}
+        </p>
       </div>
       <span
         aria-hidden
@@ -112,9 +117,11 @@ function MetricToggle({
             : "border-black/10 bg-white text-slate-400",
         )}
       >
-        <Check className={cn("size-4", checked ? "opacity-100" : "opacity-0")} />
+        <Check
+          className={cn("size-4", checked ? "opacity-100" : "opacity-0")}
+        />
       </span>
-    </button>
+    </label>
   );
 }
 
@@ -134,10 +141,13 @@ export function ManagementReportConstructor() {
   const [enabledMetrics, setEnabledMetrics] = useState<
     Record<ReportMetricId, boolean>
   >(() =>
-    ALL_METRICS_IDS.reduce((acc, id) => {
-      acc[id] = true;
-      return acc;
-    }, {} as Record<ReportMetricId, boolean>),
+    ALL_METRICS_IDS.reduce(
+      (acc, id) => {
+        acc[id] = true;
+        return acc;
+      },
+      {} as Record<ReportMetricId, boolean>,
+    ),
   );
 
   const [activeSectionId, setActiveSectionId] =
@@ -156,17 +166,21 @@ export function ManagementReportConstructor() {
   }, [activeSections, enabledMetrics]);
 
   const kpiSection = useMemo(
-    () => REPORT_SECTIONS.find((s) => s.id === "kpi")!,
+    () => REPORT_SECTIONS.find((s) => s.id === "kpi") ?? REPORT_SECTIONS[0],
     [],
   );
 
   const kpiValuesForStatus = useMemo(() => {
-    const allPercentMetrics = kpiSection.metrics.filter((m) => m.kind === "percent");
+    const allPercentMetrics = kpiSection.metrics.filter(
+      (m) => m.kind === "percent",
+    );
     const enabledKpiPercent = allPercentMetrics.filter(
       (m) => enabledMetrics[m.id],
     );
-    const used = enabledKpiPercent.length > 0 ? enabledKpiPercent : allPercentMetrics;
-    const avg = used.reduce((sum, m) => sum + m.value, 0) / Math.max(1, used.length);
+    const used =
+      enabledKpiPercent.length > 0 ? enabledKpiPercent : allPercentMetrics;
+    const avg =
+      used.reduce((sum, m) => sum + m.value, 0) / Math.max(1, used.length);
     const statusKey = statusKeyFromAvgKpi(avg);
     return { avg, statusKey };
   }, [enabledMetrics, kpiSection.metrics]);
@@ -191,7 +205,8 @@ export function ManagementReportConstructor() {
         if (m.value <= 6) strong.push(`${m.label}: ${formatMetricValueRu(m)}`);
         if (m.value >= 7) risk.push(`${m.label}: ${formatMetricValueRu(m)}`);
       } else if (m.kind === "score") {
-        if (m.value >= 4.1) strong.push(`${m.label}: ${formatMetricValueRu(m)}`);
+        if (m.value >= 4.1)
+          strong.push(`${m.label}: ${formatMetricValueRu(m)}`);
         if (m.value <= 3.7) risk.push(`${m.label}: ${formatMetricValueRu(m)}`);
       }
     }
@@ -204,7 +219,7 @@ export function ManagementReportConstructor() {
       if (!recs.includes(r)) recs.push(r);
     };
 
-    const budgetDeviation = enabledMetrics["financePlanVsFact"]
+    const budgetDeviation = enabledMetrics.financePlanVsFact
       ? enabledActiveMetrics.find((m) => m.id === "financePlanVsFact")
       : undefined;
 
@@ -216,42 +231,50 @@ export function ManagementReportConstructor() {
       addRec("Усилить контроль отклонений бюджета (план/факт).");
     }
 
-    const overdueTasks = enabledMetrics["operationsOverdue"]
+    const overdueTasks = enabledMetrics.operationsOverdue
       ? enabledActiveMetrics.find((m) => m.id === "operationsOverdue")
       : undefined;
     if (overdueTasks?.kind === "count" && overdueTasks.value >= 5) {
       addRec("Сократить просроченные задачи в эксплуатации.");
     }
 
-    const avgResponse = enabledMetrics["residentsAvgResponseTime"]
+    const avgResponse = enabledMetrics.residentsAvgResponseTime
       ? enabledActiveMetrics.find((m) => m.id === "residentsAvgResponseTime")
       : undefined;
-    const satisfaction = enabledMetrics["residentsSatisfaction"]
+    const satisfaction = enabledMetrics.residentsSatisfaction
       ? enabledActiveMetrics.find((m) => m.id === "residentsSatisfaction")
       : undefined;
     if (avgResponse?.kind === "hours" && avgResponse.value > 6) {
       addRec("Улучшить качество обратной связи с жителями и скорость реакции.");
     } else if (satisfaction?.kind === "percent" && satisfaction.value < 75) {
-      addRec("Повысить удовлетворенность жителей за счёт регулярного контроля SLA.");
+      addRec(
+        "Повысить удовлетворенность жителей за счёт регулярного контроля SLA.",
+      );
     }
 
-    const transparency = enabledMetrics["kpiTransparency"]
+    const transparency = enabledMetrics.kpiTransparency
       ? enabledActiveMetrics.find((m) => m.id === "kpiTransparency")
       : undefined;
     if (transparency?.kind === "percent" && transparency.value < 70) {
-      addRec("Повысить прозрачность управленческой отчетности и регулярность публикаций.");
+      addRec(
+        "Повысить прозрачность управленческой отчетности и регулярность публикаций.",
+      );
     }
 
-    const violations = enabledMetrics["contractorsViolations"]
+    const violations = enabledMetrics.contractorsViolations
       ? enabledActiveMetrics.find((m) => m.id === "contractorsViolations")
       : undefined;
     if (violations?.kind === "count" && violations.value >= 2) {
-      addRec("Ужесточить контроль подрядчиков: сроки, качество, фиксация нарушений.");
+      addRec(
+        "Ужесточить контроль подрядчиков: сроки, качество, фиксация нарушений.",
+      );
     }
 
     // Если включены только KPI и статус не стабильный — дадим общий шаг.
     if (kpiValuesForStatus.statusKey !== "stable" && recs.length === 0) {
-      addRec("Сфокусироваться на слабых KPI и закрыть ключевые контуры контроля.");
+      addRec(
+        "Сфокусироваться на слабых KPI и закрыть ключевые контуры контроля.",
+      );
     }
 
     return {
@@ -262,7 +285,9 @@ export function ManagementReportConstructor() {
   }, [activeSections, enabledMetrics, kpiValuesForStatus.statusKey]);
 
   const activeSection = useMemo(
-    () => REPORT_SECTIONS.find((s) => s.id === activeSectionId)!,
+    () =>
+      REPORT_SECTIONS.find((s) => s.id === activeSectionId) ??
+      REPORT_SECTIONS[0],
     [activeSectionId],
   );
 
@@ -277,7 +302,8 @@ export function ManagementReportConstructor() {
 
       // Если выключаем раздел — выключаем и его метрики.
       if (!nextEnabled) {
-        const section = REPORT_SECTIONS.find((s) => s.id === sectionId)!;
+        const section = REPORT_SECTIONS.find((s) => s.id === sectionId);
+        if (!section) return next;
         setEnabledMetrics((prevMetrics) => {
           const metricsNext = { ...prevMetrics };
           for (const metric of section.metrics) {
@@ -287,7 +313,8 @@ export function ManagementReportConstructor() {
         });
       } else {
         // Если включаем — включаем его метрики.
-        const section = REPORT_SECTIONS.find((s) => s.id === sectionId)!;
+        const section = REPORT_SECTIONS.find((s) => s.id === sectionId);
+        if (!section) return next;
         setEnabledMetrics((prevMetrics) => {
           const metricsNext = { ...prevMetrics };
           for (const metric of section.metrics) {
@@ -409,7 +436,8 @@ export function ManagementReportConstructor() {
                 <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
                   <FileText className="size-4 text-slate-600" aria-hidden />
                   {enabledSections[activeSection.id]
-                    ? activeSection.metrics.filter((m) => enabledMetrics[m.id]).length
+                    ? activeSection.metrics.filter((m) => enabledMetrics[m.id])
+                        .length
                     : 0}
                   / {activeSection.metrics.length}
                 </div>
@@ -475,44 +503,49 @@ export function ManagementReportConstructor() {
               </div>
 
               <div className="mt-6 space-y-4">
-                {activeMetricsBySection.map(({ sectionId, sectionTitle, metrics }) => (
-                  <div
-                    key={sectionId}
-                    className="rounded-2xl border border-black/10 bg-white p-4"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-bold text-slate-950">
-                          {sectionTitle}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          {metrics.length === 0
-                            ? "Показатели выключены"
-                            : "Включенные показатели"}
-                        </p>
+                {activeMetricsBySection.map(
+                  ({ sectionId, sectionTitle, metrics }) => (
+                    <div
+                      key={sectionId}
+                      className="rounded-2xl border border-black/10 bg-white p-4"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-sm font-bold text-slate-950">
+                            {sectionTitle}
+                          </p>
+                          <p className="mt-1 text-xs text-slate-500">
+                            {metrics.length === 0
+                              ? "Показатели выключены"
+                              : "Включенные показатели"}
+                          </p>
+                        </div>
+                        <ChevronDown
+                          className="size-4 text-slate-400"
+                          aria-hidden
+                        />
                       </div>
-                      <ChevronDown className="size-4 text-slate-400" aria-hidden />
-                    </div>
 
-                    {metrics.length > 0 ? (
-                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                        {metrics.map((m) => (
-                          <div
-                            key={m.id}
-                            className="rounded-xl bg-slate-50 px-3 py-2"
-                          >
-                            <p className="text-xs font-medium text-slate-600">
-                              {m.label}
-                            </p>
-                            <p className="mt-1 text-sm font-bold tabular-nums text-slate-950">
-                              {formatMetricValueRu(m)}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
+                      {metrics.length > 0 ? (
+                        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                          {metrics.map((m) => (
+                            <div
+                              key={m.id}
+                              className="rounded-xl bg-slate-50 px-3 py-2"
+                            >
+                              <p className="text-xs font-medium text-slate-600">
+                                {m.label}
+                              </p>
+                              <p className="mt-1 text-sm font-bold tabular-nums text-slate-950">
+                                {formatMetricValueRu(m)}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ),
+                )}
               </div>
 
               <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
@@ -536,7 +569,9 @@ export function ManagementReportConstructor() {
                     <p className="mt-1 text-3xl font-bold tabular-nums text-slate-950">
                       {Math.round(kpiValuesForStatus.avg)}%
                     </p>
-                    <p className="mt-1 text-xs text-slate-500">по включенным KPI</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      по включенным KPI
+                    </p>
                   </div>
                 </div>
               </div>
@@ -557,25 +592,33 @@ export function ManagementReportConstructor() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
                     Статус
                   </p>
-                  <p className="mt-1 text-xl font-bold">{statusLabelRu(kpiValuesForStatus.statusKey)}</p>
+                  <p className="mt-1 text-xl font-bold">
+                    {statusLabelRu(kpiValuesForStatus.statusKey)}
+                  </p>
                 </div>
               </div>
 
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-black/10 bg-white p-4">
-                  <p className="text-sm font-bold text-slate-950">Сильные зоны</p>
+                  <p className="text-sm font-bold text-slate-950">
+                    Сильные зоны
+                  </p>
                   {analytics.strongZones.length > 0 ? (
                     <ul className="mt-3 space-y-2 text-sm text-slate-700">
                       {analytics.strongZones.map((z) => (
                         <li key={z} className="flex items-start gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600" aria-hidden />
+                          <span
+                            className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600"
+                            aria-hidden
+                          />
                           <span>{z}</span>
                         </li>
                       ))}
                     </ul>
                   ) : (
                     <p className="mt-3 text-sm text-slate-500">
-                      Пока что сильные сигналы не выделены (включите больше показателей).
+                      Пока что сильные сигналы не выделены (включите больше
+                      показателей).
                     </p>
                   )}
                 </div>
@@ -585,7 +628,10 @@ export function ManagementReportConstructor() {
                     <ul className="mt-3 space-y-2 text-sm text-slate-700">
                       {analytics.riskZones.map((z) => (
                         <li key={z} className="flex items-start gap-2">
-                          <span className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden />
+                          <span
+                            className="mt-1 h-1.5 w-1.5 rounded-full bg-amber-500"
+                            aria-hidden
+                          />
                           <span>{z}</span>
                         </li>
                       ))}
@@ -604,14 +650,18 @@ export function ManagementReportConstructor() {
                   <ul className="mt-3 space-y-2 text-sm text-slate-700">
                     {analytics.recommendations.map((r) => (
                       <li key={r} className="flex items-start gap-2">
-                        <span className="mt-1 size-2 rounded-full bg-slate-900" aria-hidden />
+                        <span
+                          className="mt-1 size-2 rounded-full bg-slate-900"
+                          aria-hidden
+                        />
                         <span>{r}</span>
                       </li>
                     ))}
                   </ul>
                 ) : (
                   <p className="mt-3 text-sm text-slate-500">
-                    Добавьте KPI к включенным показателям — тогда рекомендации станут более точными.
+                    Добавьте KPI к включенным показателям — тогда рекомендации
+                    станут более точными.
                   </p>
                 )}
               </div>
@@ -622,4 +672,3 @@ export function ManagementReportConstructor() {
     </section>
   );
 }
-

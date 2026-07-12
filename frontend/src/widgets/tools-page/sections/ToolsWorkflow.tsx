@@ -32,7 +32,9 @@ export function ToolsWorkflow() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.35, delay: index * 0.05 }}
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">{index + 1}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">
+                {index + 1}
+              </p>
               <p className="mt-2 text-sm font-medium text-slate-800">{step}</p>
             </motion.li>
           ))}

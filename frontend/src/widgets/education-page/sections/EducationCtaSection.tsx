@@ -11,7 +11,9 @@ export function EducationCtaSection() {
           <h2 className="max-w-2xl text-2xl font-semibold sm:text-3xl">
             {educationCta.title}
           </h2>
-          <p className="mt-3 max-w-xl text-slate-600">{educationCta.description}</p>
+          <p className="mt-3 max-w-xl text-slate-600">
+            {educationCta.description}
+          </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href="/consultation"

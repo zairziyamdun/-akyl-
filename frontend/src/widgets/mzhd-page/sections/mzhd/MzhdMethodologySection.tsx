@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
 import { methodologyCards } from "@/widgets/mzhd-page";
@@ -10,7 +10,11 @@ import { sectionMotion } from "../../model/mzhdMotion";
 
 export function MzhdMethodologySection() {
   return (
-    <motion.section id="methodology" className="py-16 sm:py-20" {...sectionMotion}>
+    <motion.section
+      id="methodology"
+      className="py-16 sm:py-20"
+      {...sectionMotion}
+    >
       <Container>
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Методология профессионального управления

@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Container } from "@/shared/ui/Container";
-import { homeTransition, homeViewport } from "../model/homePageMotion";
 import { homeAudiences } from "../model/home-audience.data";
+import { homeTransition, homeViewport } from "../model/homePageMotion";
 
 const audiences = homeAudiences;
 
@@ -26,7 +26,8 @@ export function HomeAudienceSection() {
             Для кого эта система
           </h2>
           <p className="mt-4 text-base text-slate-600 sm:text-lg">
-            Одна методология — разные точки приложения. Выберите контур, который ближе к вашей роли.
+            Одна методология — разные точки приложения. Выберите контур, который
+            ближе к вашей роли.
           </p>
         </motion.div>
 
@@ -48,8 +49,12 @@ export function HomeAudienceSection() {
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white transition group-hover:scale-105">
                     <Icon className="h-5 w-5" strokeWidth={1.5} />
                   </div>
-                  <h3 className="mt-5 text-lg font-semibold text-slate-900">{a.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{a.text}</p>
+                  <h3 className="mt-5 text-lg font-semibold text-slate-900">
+                    {a.title}
+                  </h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+                    {a.text}
+                  </p>
                   <span className="mt-6 text-sm font-semibold text-slate-900 opacity-0 transition group-hover:opacity-100">
                     Перейти →
                   </span>

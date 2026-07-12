@@ -5,14 +5,33 @@ export type ContentStatus = "draft" | "review" | "published" | "archived";
 export type SystemStatus = "ok" | "warning" | "error";
 
 export const mockAdminStats = [
-  { label: "Новые пользователи", value: "24", hint: "за 7 дней", trend: "+12%" },
+  {
+    label: "Новые пользователи",
+    value: "24",
+    hint: "за 7 дней",
+    trend: "+12%",
+  },
   { label: "Заявки консультаций", value: "8", hint: "новые", trend: "+3" },
-  { label: "Черновики журнала", value: "5", hint: "на модерации", trend: "2 review" },
-  { label: "Активные подписки", value: "142", hint: "пользователей", trend: "+8%" },
+  {
+    label: "Черновики журнала",
+    value: "5",
+    hint: "на модерации",
+    trend: "2 review",
+  },
+  {
+    label: "Активные подписки",
+    value: "142",
+    hint: "пользователей",
+    trend: "+8%",
+  },
 ];
 
 export const mockSystemStatuses = [
-  { name: "API", status: "ok" as SystemStatus, detail: "akyl-backend.vercel.app" },
+  {
+    name: "API",
+    status: "ok" as SystemStatus,
+    detail: "akyl-backend.vercel.app",
+  },
   { name: "Supabase", status: "ok" as SystemStatus, detail: "Connected" },
   { name: "Telegram", status: "warning" as SystemStatus, detail: "Mock mode" },
 ];
@@ -108,7 +127,14 @@ export const mockRoleCards = [
     role: "admin" as AkylRole,
     title: "Admin",
     description: "Полный доступ к платформе, пользователям и контенту",
-    permissions: ["users", "roles", "journal", "library", "requests", "settings"],
+    permissions: [
+      "users",
+      "roles",
+      "journal",
+      "library",
+      "requests",
+      "settings",
+    ],
   },
   {
     role: "journalist" as AkylRole,
@@ -129,23 +155,68 @@ export const mockPermissionMatrix = [
   { feature: "Роли", admin: true, journalist: false, user: false },
   { feature: "Журнал (CMS)", admin: true, journalist: true, user: false },
   { feature: "Библиотека (CMS)", admin: true, journalist: false, user: false },
-  { feature: "Заявки консультаций", admin: true, journalist: false, user: false },
+  {
+    feature: "Заявки консультаций",
+    admin: true,
+    journalist: false,
+    user: false,
+  },
   { feature: "Мои материалы", admin: false, journalist: false, user: true },
   { feature: "Подписка", admin: false, journalist: false, user: true },
 ];
 
 export const mockJournalIssues = [
-  { id: "01", title: "Индекс эффективности управления МЖД", status: "published" as ContentStatus, year: "2026" },
-  { id: "02", title: "Цифровизация управления домом", status: "published" as ContentStatus, year: "2026" },
-  { id: "03", title: "Финансовая устойчивость МЖД", status: "review" as ContentStatus, year: "2026" },
-  { id: "04", title: "Профессиональное управление и стандарты", status: "draft" as ContentStatus, year: "2026" },
-  { id: "05", title: "Энергоэффективная модернизация", status: "archived" as ContentStatus, year: "2025" },
+  {
+    id: "01",
+    title: "Индекс эффективности управления МЖД",
+    status: "published" as ContentStatus,
+    year: "2026",
+  },
+  {
+    id: "02",
+    title: "Цифровизация управления домом",
+    status: "published" as ContentStatus,
+    year: "2026",
+  },
+  {
+    id: "03",
+    title: "Финансовая устойчивость МЖД",
+    status: "review" as ContentStatus,
+    year: "2026",
+  },
+  {
+    id: "04",
+    title: "Профессиональное управление и стандарты",
+    status: "draft" as ContentStatus,
+    year: "2026",
+  },
+  {
+    id: "05",
+    title: "Энергоэффективная модернизация",
+    status: "archived" as ContentStatus,
+    year: "2025",
+  },
 ];
 
 export const mockLibraryItems = [
-  { id: "l1", title: "Введение в профессиональное управление", type: "article", topic: "Модель управления" },
-  { id: "l2", title: "Бенчмаркинг KPI в Центральной Азии", type: "research", topic: "KPI" },
-  { id: "l3", title: "Шаблон финансового отчёта", type: "template", topic: "Финансы" },
+  {
+    id: "l1",
+    title: "Введение в профессиональное управление",
+    type: "article",
+    topic: "Модель управления",
+  },
+  {
+    id: "l2",
+    title: "Бенчмаркинг KPI в Центральной Азии",
+    type: "research",
+    topic: "KPI",
+  },
+  {
+    id: "l3",
+    title: "Шаблон финансового отчёта",
+    type: "template",
+    topic: "Финансы",
+  },
   { id: "l4", title: "Методология AKYL", type: "book", topic: "Методология" },
 ];
 
@@ -157,10 +228,34 @@ export const mockStudioStats = [
 ];
 
 export const mockArticles = [
-  { id: "a1", title: "KPI управляющей компании: базовый набор", status: "draft" as ContentStatus, issue: "04", updated: "2026-06-05" },
-  { id: "a2", title: "Финансовая прозрачность для ОСИ", status: "review" as ContentStatus, issue: "03", updated: "2026-06-04" },
-  { id: "a3", title: "Цифровой контроль заявок жителей", status: "published" as ContentStatus, issue: "02", updated: "2026-05-28" },
-  { id: "a4", title: "Энергоаудит МКД: с чего начать", status: "draft" as ContentStatus, issue: "05", updated: "2026-06-03" },
+  {
+    id: "a1",
+    title: "KPI управляющей компании: базовый набор",
+    status: "draft" as ContentStatus,
+    issue: "04",
+    updated: "2026-06-05",
+  },
+  {
+    id: "a2",
+    title: "Финансовая прозрачность для ОСИ",
+    status: "review" as ContentStatus,
+    issue: "03",
+    updated: "2026-06-04",
+  },
+  {
+    id: "a3",
+    title: "Цифровой контроль заявок жителей",
+    status: "published" as ContentStatus,
+    issue: "02",
+    updated: "2026-05-28",
+  },
+  {
+    id: "a4",
+    title: "Энергоаудит МКД: с чего начать",
+    status: "draft" as ContentStatus,
+    issue: "05",
+    updated: "2026-06-03",
+  },
 ];
 
 export const mockMediaFiles = [
@@ -170,9 +265,24 @@ export const mockMediaFiles = [
 ];
 
 export const mockUserMaterials = [
-  { id: "um1", title: "Шаблон ежемесячного финансового отчёта", type: "template", saved: true },
-  { id: "um2", title: "Индекс эффективности управления МЖД", type: "article", saved: true },
-  { id: "um3", title: "Выпуск 03 — Финансовая устойчивость", type: "journal", saved: false },
+  {
+    id: "um1",
+    title: "Шаблон ежемесячного финансового отчёта",
+    type: "template",
+    saved: true,
+  },
+  {
+    id: "um2",
+    title: "Индекс эффективности управления МЖД",
+    type: "article",
+    saved: true,
+  },
+  {
+    id: "um3",
+    title: "Выпуск 03 — Финансовая устойчивость",
+    type: "journal",
+    saved: false,
+  },
 ];
 
 export const mockSubscriptions = [

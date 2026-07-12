@@ -1,6 +1,5 @@
 export const mzhdRolesImages = {
-  hero:
-    "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=2400&q=85",
+  hero: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=2400&q=85",
 } as const;
 
 export const mzhdRolesHero = {
@@ -45,5 +44,6 @@ export const mzhdRolesPartners = {
 
 export const mzhdRolesCta = {
   title: "Настройте матрицу ролей в вашем доме",
-  description: "Поможем формализовать зоны ответственности и регламенты взаимодействия.",
+  description:
+    "Поможем формализовать зоны ответственности и регламенты взаимодействия.",
 } as const;

@@ -18,10 +18,13 @@ export function MzhdTheorySocialSection() {
             />
           </div>
           <div>
-            <h2 className="text-3xl font-semibold sm:text-4xl">Дом как социально-техническая система</h2>
+            <h2 className="text-3xl font-semibold sm:text-4xl">
+              Дом как социально-техническая система
+            </h2>
             <p className="mt-4 text-slate-600">
-              В одном контуре сходятся инженерные системы, финансы, люди и институты. Теория AKYL описывает,
-              как согласовать интересы собственников, УК и города без хаоса и конфликтов.
+              В одном контуре сходятся инженерные системы, финансы, люди и
+              институты. Теория AKYL описывает, как согласовать интересы
+              собственников, УК и города без хаоса и конфликтов.
             </p>
             <ul className="mt-6 space-y-2 text-sm text-slate-700">
               {mzhdTheoryLayers.map(({ text, icon: Icon }) => (

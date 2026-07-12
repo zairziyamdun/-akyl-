@@ -13,7 +13,11 @@ type SidebarNavLabelProps = {
   className?: string;
 };
 
-export function SidebarNavLabel({ children, collapsed, className }: SidebarNavLabelProps) {
+export function SidebarNavLabel({
+  children,
+  collapsed,
+  className,
+}: SidebarNavLabelProps) {
   return (
     <motion.span
       className={cn(

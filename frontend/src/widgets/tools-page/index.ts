@@ -1,3 +1,6 @@
+export * from "./model/checklists.data";
+export * from "./model/ieu.data";
+export * from "./model/management-report.data";
 export * from "./sections/budget-analysis";
 export * from "./sections/checklists";
 export * from "./sections/FeaturedTool";
@@ -12,6 +15,3 @@ export * from "./sections/ToolsHero";
 export * from "./sections/ToolsLandingPage";
 export * from "./sections/ToolsResults";
 export * from "./sections/ToolsWorkflow";
-export * from "./model/checklists.data";
-export * from "./model/ieu.data";
-export * from "./model/management-report.data";

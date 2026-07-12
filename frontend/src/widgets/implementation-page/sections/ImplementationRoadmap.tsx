@@ -9,9 +9,8 @@ import {
   SearchCheck,
   TrendingUp,
 } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
 import { cn } from "@/shared/lib";
+import { Container } from "@/shared/ui/Container";
 
 import { implementationSectionMotion } from "../model/implementationMotion";
 
@@ -48,8 +47,7 @@ const steps: RoadmapStep[] = [
   {
     number: "03",
     title: "Проектирование системы",
-    description:
-      "настройка ролей, процессов, регламентов, отчетности и KPI.",
+    description: "настройка ролей, процессов, регламентов, отчетности и KPI.",
     result: "Модель управления и набор показателей",
     status: "active",
     icon: LayoutDashboard,
@@ -127,8 +125,8 @@ export function ImplementationRoadmap() {
             Дорожная карта внедрения
           </h2>
           <p className="mt-4 max-w-2xl text-stone-600">
-            Шесть этапов от диагностики до устойчивого контроля: каждый этап дает
-            измеримый результат и готовит площадку для следующего.
+            Шесть этапов от диагностики до устойчивого контроля: каждый этап
+            дает измеримый результат и готовит площадку для следующего.
           </p>
 
           {/* Mobile / tablet: cards */}

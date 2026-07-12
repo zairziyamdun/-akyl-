@@ -1,4 +1,4 @@
-import type { IEUInput, IEUResult, IEUBlockResult } from "@/types/ieu";
+import type { IEUBlockResult, IEUInput, IEUResult } from "@/types/ieu";
 
 const clamp = (value: number, min = 0, max = 100): number => {
   if (Number.isNaN(value)) return min;
@@ -9,7 +9,8 @@ const clamp = (value: number, min = 0, max = 100): number => {
 const normalizeDirectPercent = (value: number): number => clamp(value) / 100;
 
 // Обратный показатель: чем меньше, тем лучше
-const normalizeInversePercent = (value: number): number => 1 - clamp(value) / 100;
+const normalizeInversePercent = (value: number): number =>
+  1 - clamp(value) / 100;
 
 // Балльный показатель, например 4.2 из 5
 const normalizeScore = (value: number, maxScore: number): number => {
@@ -79,7 +80,9 @@ export function getIEUBand(totalPercent: number): {
   };
 }
 
-export function getBlockDetailedRecommendations(key: IEUBlockResult["key"]): string[] {
+export function getBlockDetailedRecommendations(
+  key: IEUBlockResult["key"],
+): string[] {
   switch (key) {
     case "K1":
       return [
@@ -193,7 +196,12 @@ export function calculateIEU(input: IEUInput): IEUResult {
   ]);
 
   const blockDefs = [
-    { key: "K1" as const, name: "Техническая эксплуатация", value: K1, weight: 0.2 },
+    {
+      key: "K1" as const,
+      name: "Техническая эксплуатация",
+      value: K1,
+      weight: 0.2,
+    },
     { key: "K2" as const, name: "Финансы", value: K2, weight: 0.15 },
     { key: "K3" as const, name: "Сервис", value: K3, weight: 0.15 },
     { key: "K4" as const, name: "Коммуникации", value: K4, weight: 0.15 },
@@ -212,7 +220,7 @@ export function calculateIEU(input: IEUInput): IEUResult {
 
   const totalRaw = blockDefs.reduce(
     (sum, block) => sum + block.value * block.weight,
-    0
+    0,
   );
 
   const total = round2(totalRaw);
@@ -232,23 +240,23 @@ export function calculateIEU(input: IEUInput): IEUResult {
 
   if (totalPercent >= 81) {
     recommendations.unshift(
-      "Система находится на высоком уровне. Основной фокус — удержание качества, точечное улучшение слабых блоков и развитие аналитики."
+      "Система находится на высоком уровне. Основной фокус — удержание качества, точечное улучшение слабых блоков и развитие аналитики.",
     );
   } else if (totalPercent >= 61) {
     recommendations.unshift(
-      "Управление устойчивое, но ещё не полностью зрелое. Главная задача — подтянуть слабые блоки, чтобы перейти к профессиональному уровню."
+      "Управление устойчивое, но ещё не полностью зрелое. Главная задача — подтянуть слабые блоки, чтобы перейти к профессиональному уровню.",
     );
   } else if (totalPercent >= 41) {
     recommendations.unshift(
-      "Управление слабое. Нужны системные меры: стандартизация процессов, контроль, финансовая дисциплина и регулярная отчетность."
+      "Управление слабое. Нужны системные меры: стандартизация процессов, контроль, финансовая дисциплина и регулярная отчетность.",
     );
   } else if (totalPercent >= 21) {
     recommendations.unshift(
-      "Система в кризисной зоне. Нужен управленческий аудит, переработка процессов, усиление безопасности и финансового контроля."
+      "Система в кризисной зоне. Нужен управленческий аудит, переработка процессов, усиление безопасности и финансового контроля.",
     );
   } else {
     recommendations.unshift(
-      "Критическое состояние управления: требуются срочные меры по безопасности, финансам и базовой управляемости дома."
+      "Критическое состояние управления: требуются срочные меры по безопасности, финансам и базовой управляемости дома.",
     );
   }
 

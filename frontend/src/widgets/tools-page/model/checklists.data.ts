@@ -121,8 +121,7 @@ export const CHECKLIST_CATEGORIES: readonly ChecklistCategory[] = [
   {
     id: "contractors",
     title: "Управление подрядчиками",
-    description:
-      "Критерии отбора, контроль сроков и качества, учёт нарушений.",
+    description: "Критерии отбора, контроль сроков и качества, учёт нарушений.",
     questions: [
       {
         id: "co-1",
@@ -225,7 +224,10 @@ export function overallNarrativeRu(band: BandKey): string {
   }
 }
 
-export function createInitialAnswers(): Record<string, (ChecklistAnswerValue | null)[]> {
+export function createInitialAnswers(): Record<
+  string,
+  (ChecklistAnswerValue | null)[]
+> {
   return Object.fromEntries(
     CHECKLIST_CATEGORIES.map((c) => [
       c.id,

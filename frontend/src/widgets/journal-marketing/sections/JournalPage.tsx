@@ -1,17 +1,23 @@
 "use client";
 
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Lock } from "lucide-react";
-
-import { Container } from "@/shared/ui/Container";
+import Link from "next/link";
+import { PublicJournalIssuesGrid } from "@/features/manage-journal-issue";
 import { Button } from "@/shared/ui/Button";
+import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
-import { JOURNAL_ACCESS_HREF, journalEditorialDirections } from "@/widgets/journal-marketing";
-import { PublicJournalIssuesGrid } from "@/features/manage-journal-issue";
+import {
+  JOURNAL_ACCESS_HREF,
+  journalEditorialDirections,
+} from "@/widgets/journal-marketing";
+import {
+  journalReveal,
+  journalStagger,
+  journalStaggerItem,
+} from "../model/journalMotion";
 import { JournalHeroConnected } from "./JournalHeroConnected";
-import { journalReveal, journalStagger, journalStaggerItem } from "../model/journalMotion";
 
 function JournalAllIssues() {
   return <PublicJournalIssuesGrid />;
@@ -19,7 +25,10 @@ function JournalAllIssues() {
 
 function JournalEditorial() {
   return (
-    <Section id="journal-editorial" className="scroll-mt-20 bg-slate-50/80 sm:scroll-mt-24">
+    <Section
+      id="journal-editorial"
+      className="scroll-mt-20 bg-slate-50/80 sm:scroll-mt-24"
+    >
       <Container className="px-4 sm:px-6">
         <motion.div {...journalReveal}>
           <SectionHeading
@@ -86,7 +95,10 @@ function JournalAccessCta() {
             whileHover={reduced ? undefined : { scale: 1.03 }}
             whileTap={reduced ? undefined : { scale: 0.98 }}
           >
-            <Button asChild className="bg-white text-slate-900 hover:bg-slate-100">
+            <Button
+              asChild
+              className="bg-white text-slate-900 hover:bg-slate-100"
+            >
               <Link href={JOURNAL_ACCESS_HREF}>Получить доступ</Link>
             </Button>
           </motion.div>

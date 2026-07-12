@@ -9,13 +9,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-import { StatusBadge } from "@/widgets/dashboard-shell";
 import type { DashboardViewModel } from "@/entities/house";
-
+import { StatusBadge } from "@/widgets/dashboard-shell";
+import {
+  ChartContainer,
+  IeuGauge,
+  statusToBadge,
+} from "../model/dashboardUtils";
 import { DashboardMetricCard } from "./DashboardMetricCard";
 import { DashboardSectionCard } from "./DashboardSectionCard";
-import { ChartContainer, IeuGauge, statusToBadge } from "../model/dashboardUtils";
 
 type KpiTabProps = {
   model: DashboardViewModel;
@@ -34,7 +36,10 @@ export function KpiTab({ model }: KpiTabProps) {
           />
         </DashboardSectionCard>
 
-        <DashboardSectionCard className="col-span-12 lg:col-span-8" title="Ключевые KPI">
+        <DashboardSectionCard
+          className="col-span-12 lg:col-span-8"
+          title="Ключевые KPI"
+        >
           <div className="grid gap-3 sm:grid-cols-2">
             {kpi.metrics.map((metric) => (
               <div
@@ -42,7 +47,9 @@ export function KpiTab({ model }: KpiTabProps) {
                 className="flex min-w-0 items-center justify-between gap-2 rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-3"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-slate-700">{metric.name}</p>
+                  <p className="truncate text-sm font-medium text-slate-700">
+                    {metric.name}
+                  </p>
                   <p className="mt-0.5 text-lg font-bold text-slate-900">
                     {metric.value}
                     {metric.unit === "%" ? "%" : ""}

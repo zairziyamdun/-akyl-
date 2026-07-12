@@ -10,7 +10,9 @@ const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
 const DASHBOARD_PREFIXES = ["/app", "/admin", "/studio", "/manager"];
 
 function isAuthRoute(pathname: string) {
-  return AUTH_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));
+  return AUTH_ROUTES.some(
+    (r) => pathname === r || pathname.startsWith(`${r}/`),
+  );
 }
 
 function isDashboardRoute(pathname: string) {

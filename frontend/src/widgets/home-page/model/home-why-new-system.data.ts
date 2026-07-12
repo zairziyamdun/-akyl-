@@ -2,10 +2,10 @@ import {
   BarChart3,
   GitBranch,
   HelpCircle,
+  type LucideIcon,
   ShieldOff,
   Wallet,
   Workflow,
-  type LucideIcon,
 } from "lucide-react";
 
 export type HomeWhyItem = {

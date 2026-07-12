@@ -1,10 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-
+import { useAuth } from "@/features/auth";
 import { AppShell } from "./AppShell";
 import { RoleGuard } from "./RoleGuard";
-import { useAuth } from "@/features/auth";
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   return (

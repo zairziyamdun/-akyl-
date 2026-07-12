@@ -1,5 +1,5 @@
+import { BarChart3, LayoutTemplate, LineChart } from "lucide-react";
 import Link from "next/link";
-import { BarChart3, LineChart, LayoutTemplate } from "lucide-react";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";

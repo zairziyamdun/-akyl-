@@ -3,16 +3,22 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-import { IssueCoverHero } from ".";
-import { AccessTypeBadge, IssueStatusBadge } from ".";
-import { JournalToast } from ".";
-import { PageHeader } from "@/widgets/dashboard-shell";
-import { Button } from "@/shared/ui/Button";
-import { useJournalIssues } from "../JournalIssuesProvider";
-import { JournalApiError } from "@/entities/journal-issue";
 import type { JournalIssueRecord } from "@/entities/journal-issue";
-import { formatDate, formatDateTime, formatFileSize } from "@/entities/journal-issue";
+import {
+  formatDate,
+  formatDateTime,
+  formatFileSize,
+  JournalApiError,
+} from "@/entities/journal-issue";
+import { Button } from "@/shared/ui/Button";
+import { PageHeader } from "@/widgets/dashboard-shell";
+import { useJournalIssues } from "../JournalIssuesProvider";
+import {
+  AccessTypeBadge,
+  IssueCoverHero,
+  IssueStatusBadge,
+  JournalToast,
+} from ".";
 
 type IssueDetailProps = {
   issue: JournalIssueRecord;
@@ -31,9 +37,10 @@ export function IssueDetailView({ issue, view }: IssueDetailProps) {
   } = useJournalIssues();
 
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState<{ message: string; variant: "success" | "error" } | null>(
-    null,
-  );
+  const [toast, setToast] = useState<{
+    message: string;
+    variant: "success" | "error";
+  } | null>(null);
 
   const isAdmin = view === "admin";
   const isJournalist = view === "studio";
@@ -55,7 +62,10 @@ export function IssueDetailView({ issue, view }: IssueDetailProps) {
       else router.refresh();
     } catch (err) {
       setToast({
-        message: err instanceof JournalApiError ? err.message : "Операция не выполнена",
+        message:
+          err instanceof JournalApiError
+            ? err.message
+            : "Операция не выполнена",
         variant: "error",
       });
     } finally {
@@ -161,7 +171,10 @@ export function IssueDetailView({ issue, view }: IssueDetailProps) {
               size="sm"
               disabled={loading}
               onClick={() =>
-                void runAction(() => archiveIssue(issue.id), "Выпуск архивирован")
+                void runAction(
+                  () => archiveIssue(issue.id),
+                  "Выпуск архивирован",
+                )
               }
             >
               В архив
@@ -259,7 +272,9 @@ export function IssueDetailView({ issue, view }: IssueDetailProps) {
 
           <div>
             <h2 className="text-sm font-semibold text-slate-500">Описание</h2>
-            <p className="mt-2 text-slate-700 leading-relaxed">{issue.description}</p>
+            <p className="mt-2 text-slate-700 leading-relaxed">
+              {issue.description}
+            </p>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -331,8 +346,8 @@ export function IssueDetailView({ issue, view }: IssueDetailProps) {
                 Модерация
               </h3>
               <p className="mt-1 text-sm text-slate-600">
-                Выпуск ожидает проверки. Используйте кнопки выше для публикации или возврата
-                автору.
+                Выпуск ожидает проверки. Используйте кнопки выше для публикации
+                или возврата автору.
               </p>
             </div>
           ) : null}

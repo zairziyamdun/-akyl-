@@ -1,4 +1,4 @@
-import { apiFetch, ApiError } from "@/shared/api";
+import { ApiError, apiFetch } from "@/shared/api";
 
 import type { AdminUser, AdminUserRole, AdminUserStatus } from "../model/types";
 
@@ -14,7 +14,10 @@ async function adminUsersFetch<T>(
   options: RequestInit = {},
 ): Promise<T> {
   try {
-    return await apiFetch<T>(path, { ...options, errorName: "AdminUsersApiError" });
+    return await apiFetch<T>(path, {
+      ...options,
+      errorName: "AdminUsersApiError",
+    });
   } catch (err) {
     if (err instanceof ApiError) {
       throw new AdminUsersApiError(err.message, err.status);
