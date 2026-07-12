@@ -40,3 +40,8 @@ desktop.ini
 
 # IDE (локальные настройки; при необходимости уберите строку)
 .idea/
+
+# Docs: ignore all markdown except README
+*.md
+!README.md
+!**/README.md

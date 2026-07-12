@@ -1,8 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { AUTH_COOKIE_KEY } from "@/lib/auth/token";
-import type { AkylRole } from "@/lib/auth/types";
+import { AUTH_COOKIE_KEY } from "@/shared/auth";
+import type { AkylRole } from "@/entities/session";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ??
