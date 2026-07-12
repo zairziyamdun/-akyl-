@@ -16,7 +16,7 @@ Node.js + Express API for the AKYL platform.
 1. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 2. Create environment file:
@@ -40,7 +40,7 @@ FRONTEND_URL=http://localhost:3000
 Start the dev server with hot reload:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The API runs at `http://localhost:4000` by default.
@@ -48,8 +48,8 @@ The API runs at `http://localhost:4000` by default.
 ## Production build
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
 ## API response format
