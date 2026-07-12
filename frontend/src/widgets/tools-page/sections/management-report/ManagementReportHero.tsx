@@ -24,8 +24,8 @@ const benefits = [
 
 export function ManagementReportHero() {
   return (
-    <header className="border-b border-black/5 bg-gradient-to-b from-slate-50 to-white">
-      <Container className="py-14 md:py-20 lg:py-24">
+    <header className="flex min-h-[min(72svh,780px)] items-center border-b border-black/5 bg-gradient-to-b from-slate-50 to-white">
+      <Container className="w-full py-20 md:py-24 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-[1fr_minmax(0,420px)] lg:gap-16">
           <div className="max-w-3xl">
             <p className="mb-4 inline-flex items-center rounded-full border border-black/10 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">

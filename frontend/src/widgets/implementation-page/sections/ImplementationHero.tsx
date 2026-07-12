@@ -32,7 +32,7 @@ const badges = ["Диагностика", "Аудит", "KPI", "BI", "Контр
 export function ImplementationHero() {
   return (
     <section
-      className="relative isolate overflow-hidden border-b border-stone-200/80"
+      className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-stone-200/60"
       style={{
         background:
           "linear-gradient(165deg, #f7f3ea 0%, #f8f5ef 45%, #f3efe6 100%)",
@@ -42,7 +42,7 @@ export function ImplementationHero() {
       <div className="pointer-events-none absolute -right-24 top-24 h-72 w-72 rounded-full bg-stone-200/50 blur-3xl" />
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-64 w-96 -translate-x-1/2 rounded-full bg-white/60 blur-3xl" />
 
-      <Container className="relative py-16 sm:py-20 lg:py-24">
+      <Container className="relative w-full py-20 sm:py-24 lg:py-28">
         <motion.div
           className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12"
           {...implementationSectionMotion}

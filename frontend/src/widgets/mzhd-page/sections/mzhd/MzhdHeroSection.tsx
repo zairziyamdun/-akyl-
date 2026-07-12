@@ -15,7 +15,7 @@ import { sectionMotion } from "../../model/mzhdMotion";
 
 export function MzhdHeroSection() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src={mzhdImages.hero}
@@ -28,7 +28,7 @@ export function MzhdHeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/65" />
       </div>
 
-      <Container className="relative py-18 sm:py-20 lg:py-24">
+      <Container className="relative w-full py-20 sm:py-24 lg:py-28">
         <motion.div
           className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-12"
           {...sectionMotion}

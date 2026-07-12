@@ -44,7 +44,7 @@ export function ConsultationHero() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative isolate min-h-[520px] overflow-hidden border-b border-slate-200/80">
+    <section className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-white/10">
       <Image
         src={consultationImages.hero}
         alt=""
@@ -68,7 +68,7 @@ export function ConsultationHero() {
       <div className="pointer-events-none absolute -left-20 top-1/4 h-80 w-80 rounded-full bg-sky-400/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-10 bottom-0 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" />
 
-      <Container className="relative py-16 sm:py-20 lg:py-28">
+      <Container className="relative w-full py-20 sm:py-24 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
           <motion.div
             initial={reduced ? false : { opacity: 0, x: -36 }}

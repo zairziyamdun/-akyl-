@@ -119,8 +119,8 @@ export function ToolsHero() {
   }, [activeTool.status]);
 
   return (
-    <section className="border-b border-slate-200/70 bg-gradient-to-b from-sky-50 via-white to-white">
-      <Container className="py-12 md:py-16 lg:py-20">
+    <section className="flex min-h-[min(72svh,780px)] items-center border-b border-slate-200/60 bg-gradient-to-b from-sky-50 via-white to-white">
+      <Container className="w-full py-20 md:py-24 lg:py-28">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <AnimatePresence mode="wait">
             <motion.div

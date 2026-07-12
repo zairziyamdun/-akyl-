@@ -124,7 +124,7 @@ function IndexDashboardPanel() {
 
 function HeroVisualPanel({ activeIndex }: { activeIndex: number }) {
   return (
-    <div className="relative h-[260px] w-full shrink-0 overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.08] shadow-[0_24px_80px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:h-[300px] sm:rounded-[24px] md:h-[320px] md:rounded-[26px] lg:h-[340px] lg:rounded-[30px]">
+    <div className="relative h-[280px] w-full shrink-0 overflow-hidden rounded-[20px] border border-white/12 bg-white/[0.08] shadow-[0_24px_80px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:h-[320px] sm:rounded-[24px] md:h-[360px] md:rounded-[26px] lg:h-[400px] lg:rounded-[30px]">
       <div className="relative h-full w-full overflow-hidden">
         <AnimatePresence mode="wait">
           {activeIndex === 0 ? (
@@ -229,7 +229,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative isolate overflow-hidden bg-background">
+    <section className="relative isolate overflow-hidden bg-slate-950">
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
@@ -252,7 +252,7 @@ export function HeroSection() {
         </AnimatePresence>
       </div>
 
-      <div className="relative mx-auto flex min-h-[min(76svh,700px)] w-full max-w-7xl items-center px-4 py-12 sm:min-h-[min(80svh,760px)] sm:px-6 sm:py-14 md:py-16 lg:min-h-[86svh] lg:px-8 lg:py-16 xl:py-20">
+      <div className="relative mx-auto flex min-h-[calc(100svh-4.25rem)] w-full max-w-7xl items-center px-4 py-14 sm:min-h-[calc(100svh-4.5rem)] sm:px-6 sm:py-16 md:py-20 lg:min-h-[calc(100svh-6.5rem)] lg:px-8 lg:py-20 xl:py-24">
         <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-8 sm:gap-9 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(260px,1fr)] lg:gap-9 xl:grid-cols-[minmax(0,1fr)_minmax(300px,430px)] xl:gap-12">
           <div className="min-w-0 max-w-full lg:max-w-3xl">
             <AnimatePresence mode="wait">
