@@ -3,7 +3,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Lock } from "lucide-react";
 import Link from "next/link";
-import { PublicJournalIssuesGrid } from "@/features/manage-journal-issue";
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
@@ -17,11 +16,8 @@ import {
   journalStagger,
   journalStaggerItem,
 } from "../model/journalMotion";
+import { JournalArchiveSection } from "./JournalArchiveSection";
 import { JournalHeroConnected } from "./JournalHeroConnected";
-
-function JournalAllIssues() {
-  return <PublicJournalIssuesGrid />;
-}
 
 function JournalEditorial() {
   return (
@@ -112,7 +108,7 @@ export function JournalPage() {
   return (
     <div className="bg-white [overflow-x:clip]">
       <JournalHeroConnected />
-      <JournalAllIssues />
+      <JournalArchiveSection />
       <JournalEditorial />
       <JournalAccessCta />
     </div>

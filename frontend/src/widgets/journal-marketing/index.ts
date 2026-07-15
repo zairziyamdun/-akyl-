@@ -1,5 +1,7 @@
 export * from "./model/journal.data";
 export * from "./model/journalMotion";
+export * from "./sections/JournalArchiveCard";
+export * from "./sections/JournalArchiveSection";
 export * from "./sections/JournalCover";
 export * from "./sections/JournalHero";
 export * from "./sections/JournalHeroConnected";

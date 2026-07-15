@@ -20,6 +20,7 @@ export function JournalCover({
 }: JournalCoverProps) {
   const spine = journalCoverSpine[issue.issueNumber] ?? "bg-slate-800";
   const isHero = size === "hero";
+  const hasCover = Boolean(issue.coverUrl);
 
   return (
     <div className={cn("mx-auto flex w-full flex-col items-center", className)}>
@@ -27,7 +28,7 @@ export function JournalCover({
         className={cn(
           "relative w-full",
           isHero
-            ? "max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[380px]"
+            ? "max-w-[260px] sm:max-w-[320px] md:max-w-[380px] lg:max-w-[420px]"
             : "max-w-[200px]",
         )}
         style={{ perspective: "1200px" }}
@@ -35,14 +36,14 @@ export function JournalCover({
         <motion.div
           className="relative"
           style={{
-            transform: "rotateY(-8deg) rotateX(2deg)",
+            transform: "rotateY(-6deg) rotateX(1deg)",
             transformStyle: "preserve-3d",
           }}
-          whileHover={{ rotateY: -4, scale: 1.02 }}
+          whileHover={{ rotateY: -2, scale: 1.02 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
           <div
-            className="absolute -bottom-4 left-1/2 h-8 w-[88%] -translate-x-1/2 rounded-[100%] bg-black/40 blur-2xl"
+            className="absolute -bottom-5 left-1/2 h-10 w-[90%] -translate-x-1/2 rounded-[100%] bg-black/35 blur-2xl"
             aria-hidden
           />
 
@@ -57,75 +58,66 @@ export function JournalCover({
 
           <div
             className={cn(
-              "relative overflow-hidden rounded-r-2xl rounded-l-sm border border-white/10 shadow-[0_32px_80px_rgba(0,0,0,0.45)]",
-              isHero ? "aspect-[3/4.1]" : "aspect-[3/4]",
+              "relative overflow-hidden rounded-r-2xl rounded-l-sm border border-white/15 bg-slate-900 shadow-[0_28px_70px_rgba(0,0,0,0.5)] ring-1 ring-white/10",
+              isHero ? "aspect-[3/4.05]" : "aspect-[3/4]",
             )}
           >
-            {issue.coverUrl ? (
+            {hasCover ? (
               <Image
                 src={issue.coverUrl}
-                alt={issue.title}
+                alt={`Обложка выпуска ${issue.issueNumber} — ${issue.title}`}
                 fill
-                className="object-cover"
+                className="object-cover object-center"
                 sizes={
                   isHero
-                    ? "(max-width: 1024px) 340px, 380px"
+                    ? "(max-width: 640px) 260px, (max-width: 1024px) 380px, 420px"
                     : "(max-width: 768px) 200px, 220px"
                 }
                 priority={isHero}
+                unoptimized={issue.coverUrl.includes("supabase.co")}
               />
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-950" />
+              <div className="absolute inset-0 flex flex-col justify-between bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-5 sm:p-6">
+                <p className="text-[10px] font-semibold tracking-[0.24em] text-white/50 uppercase">
+                  Выпуск
+                </p>
+                <div>
+                  <p
+                    className={cn(
+                      "font-[family-name:var(--font-sora)] font-bold tracking-tight text-white",
+                      isHero ? "text-3xl sm:text-4xl" : "text-2xl",
+                    )}
+                  >
+                    {issue.issueNumber}
+                  </p>
+                  <p
+                    className={cn(
+                      "mt-2 font-medium leading-snug text-white/90",
+                      isHero ? "text-base sm:text-lg" : "text-sm",
+                    )}
+                  >
+                    {issue.title}
+                  </p>
+                </div>
+              </div>
             )}
 
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-slate-900/20" />
-
-            <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-              <div>
-                <p className="text-[10px] font-semibold tracking-[0.28em] text-white/80 uppercase drop-shadow-sm">
-                  AKYL Journal
-                </p>
-                <p
-                  className={cn(
-                    "mt-4 font-[family-name:var(--font-sora)] font-bold tracking-tight text-white drop-shadow-md",
-                    isHero ? "text-3xl sm:text-4xl" : "text-2xl",
-                  )}
-                >
-                  {issue.issueNumber}
-                  <span className="text-white/60"> / </span>
-                  {issue.year}
-                </p>
-              </div>
-
-              <div>
-                <p
-                  className={cn(
-                    "font-semibold leading-snug text-white drop-shadow-md",
-                    isHero ? "text-lg sm:text-xl" : "text-sm",
-                  )}
-                >
-                  {issue.title}
-                </p>
-                {!isHero ? (
-                  <p className="mt-1 text-xs text-white/80">{issue.category}</p>
-                ) : null}
-              </div>
-            </div>
-
             {issue.isLocked ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm">
-                <Lock
-                  className="h-8 w-8 text-white/90 sm:h-10 sm:w-10"
-                  strokeWidth={1.5}
-                />
-                <p className="mt-3 text-sm font-semibold text-white">
-                  Закрытый выпуск
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/55 backdrop-blur-[2px]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20">
+                  <Lock
+                    className="h-5 w-5 text-white/90 sm:h-6 sm:w-6"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <p className="mt-3 text-xs font-medium text-white/80 sm:text-sm">
+                  {issue.category}
                 </p>
               </div>
             ) : null}
 
             {!issue.isLocked && isHero ? (
-              <span className="absolute right-3 top-3 rounded-md border border-white/20 bg-black/40 px-2 py-0.5 text-[10px] font-bold tracking-wider text-white backdrop-blur-sm">
+              <span className="absolute right-3 top-3 rounded-md border border-white/25 bg-black/50 px-2 py-0.5 text-[10px] font-bold tracking-wider text-white backdrop-blur-sm">
                 PDF
               </span>
             ) : null}

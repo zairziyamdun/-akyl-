@@ -55,7 +55,7 @@ type JournalHeroProps = {
 
 function slideBackground(slide: HeroSlide): string {
   if (slide.kind === "intro") return journalIntroBackground;
-  return slide.coverUrl || journalIntroBackground;
+  return journalIntroBackground;
 }
 
 function slideKey(slide: HeroSlide): string {
@@ -159,7 +159,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
               sizes="100vw"
               priority={activeIndex === 0}
               unoptimized={
-                activeSlide.kind === "issue" && bgSrc.includes("supabase.co")
+                activeSlide.kind === "intro" && bgSrc.includes("supabase.co")
               }
             />
           </motion.div>
