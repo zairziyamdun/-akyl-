@@ -53,14 +53,42 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
         title: "Система управления",
         icon: Layers,
         links: [
-          { title: "Обзор методологии", href: "/mzhd", icon: Building2 },
-          { title: "Теория", href: "/mzhd/theory", icon: BookOpen },
-          { title: "Архитектура", href: "/mzhd/architecture", icon: Layers },
-          { title: "Процессы", href: "/mzhd/processes", icon: Route },
-          { title: "Финансы", href: "/mzhd/finance", icon: Calculator },
-          { title: "KPI", href: "/mzhd/kpi", icon: BarChart3 },
-          { title: "Стандарты", href: "/mzhd/standards", icon: FileText },
-          { title: "Роли", href: "/mzhd/roles", icon: Users },
+          { title: "Обзор методологии МЖД", href: "/mzhd", icon: Building2 },
+          {
+            title: "Теория управления МЖД",
+            href: "/mzhd/theory",
+            icon: BookOpen,
+          },
+          {
+            title: "Архитектура управления",
+            href: "/mzhd/architecture",
+            icon: Layers,
+          },
+          {
+            title: "Бизнес-процессы дома",
+            href: "/mzhd/processes",
+            icon: Route,
+          },
+          {
+            title: "Финансы многоквартирного дома",
+            href: "/mzhd/finance",
+            icon: Calculator,
+          },
+          {
+            title: "KPI и система метрик",
+            href: "/mzhd/kpi",
+            icon: BarChart3,
+          },
+          {
+            title: "Стандарты управления",
+            href: "/mzhd/standards",
+            icon: FileText,
+          },
+          {
+            title: "Роли участников рынка",
+            href: "/mzhd/roles",
+            icon: Users,
+          },
         ],
       },
       {
@@ -68,13 +96,13 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
         icon: Settings2,
         links: [
           {
-            title: "Практика внедрения",
+            title: "Практика внедрения системы",
             href: "/implementation",
             icon: Route,
             hasArrow: true,
           },
           {
-            title: "Чек-листы аудита",
+            title: "Чек-листы аудита процессов",
             href: "/tools/checklists",
             icon: ClipboardCheck,
           },
@@ -90,22 +118,22 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             icon: BarChart3,
           },
           {
-            title: "Анализ бюджета",
+            title: "Анализ бюджета дома",
             href: "/tools/budget-analysis",
             icon: Calculator,
           },
           {
-            title: "Управленческий отчёт",
+            title: "Конструктор управленческого отчёта",
             href: "/tools/management-report",
             icon: FileText,
           },
           {
-            title: "Шаблоны KPI",
+            title: "Шаблоны KPI для МЖД",
             href: "/tools/kpi-templates",
             icon: ClipboardCheck,
           },
           {
-            title: "Все инструменты",
+            title: "Каталог цифровых инструментов",
             href: "/tools",
             icon: Wrench,
             hasArrow: true,
@@ -123,7 +151,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
         icon: Landmark,
         links: [
           {
-            title: "Акимат",
+            title: "Раздел для акимата",
             href: "/akimat",
             icon: Landmark,
             hasArrow: true,
@@ -140,7 +168,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             icon: Users,
           },
           {
-            title: "Кабинет менеджера",
+            title: "Кабинет менеджера домов",
             href: "/manager",
             icon: Settings2,
           },
@@ -156,7 +184,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             icon: BookOpen,
           },
           {
-            title: "Консультация",
+            title: "Персональная консультация",
             href: "/consultation",
             icon: FileText,
             hasArrow: true,
@@ -174,20 +202,32 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
         icon: Library,
         links: [
           {
-            title: "База знаний",
+            title: "Библиотека знаний AKYL",
             href: "/library",
             icon: Library,
             hasArrow: true,
           },
-          { title: "Книги", href: "/library/books", icon: BookOpen },
+          {
+            title: "Книги и издания",
+            href: "/library/books",
+            icon: BookOpen,
+          },
         ],
       },
       {
         title: "Обучение и медиа",
         icon: GraduationCap,
         links: [
-          { title: "Обучение", href: "/education", icon: GraduationCap },
-          { title: "Журнал AKYL", href: "/journal", icon: Newspaper },
+          {
+            title: "Образовательные программы",
+            href: "/education",
+            icon: GraduationCap,
+          },
+          {
+            title: "Журнал AKYL",
+            href: "/journal",
+            icon: Newspaper,
+          },
         ],
       },
       {
@@ -200,7 +240,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             icon: FileText,
           },
           {
-            title: "Предыдущий сайт",
+            title: "Предыдущая версия сайта",
             href: "https://akyl.kz/",
             icon: BookOpen,
             external: true,

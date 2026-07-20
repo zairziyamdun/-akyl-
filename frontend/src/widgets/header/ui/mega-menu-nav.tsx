@@ -162,7 +162,7 @@ export function MegaMenuNav() {
                                     if (link.external) {
                                       return (
                                         <a
-                                          key={link.title}
+                                          key={link.href}
                                           href={link.href}
                                           target="_blank"
                                           rel="noopener noreferrer"
@@ -178,7 +178,7 @@ export function MegaMenuNav() {
 
                                     return (
                                       <Link
-                                        key={link.title}
+                                        key={link.href}
                                         href={link.href}
                                         onClick={() => setActiveCategoryId(null)}
                                         className={linkClassName}
