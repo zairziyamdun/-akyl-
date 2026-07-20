@@ -1,6 +1,12 @@
 export { MzhdTheoryCtaSection } from "./MzhdTheoryCtaSection";
+export { MzhdTheoryCyberneticsSection } from "./MzhdTheoryCyberneticsSection";
 export { MzhdTheoryDataSection } from "./MzhdTheoryDataSection";
+export { MzhdTheoryFaqSection } from "./MzhdTheoryFaqSection";
 export { MzhdTheoryHeroSection } from "./MzhdTheoryHeroSection";
+export { MzhdTheoryIntroSection } from "./MzhdTheoryIntroSection";
 export { MzhdTheoryPage } from "./MzhdTheoryPage";
+export { MzhdTheoryPracticeSection } from "./MzhdTheoryPracticeSection";
+export { MzhdTheoryPrinciplesSection } from "./MzhdTheoryPrinciplesSection";
 export { MzhdTheorySocialSection } from "./MzhdTheorySocialSection";
+export { MzhdTheorySubnavSection } from "./MzhdTheorySubnavSection";
 export { MzhdTheorySystemSection } from "./MzhdTheorySystemSection";
