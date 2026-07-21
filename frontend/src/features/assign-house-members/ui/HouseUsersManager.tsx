@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   HOUSE_MEMBERSHIP_STATUS_LABELS,
+  HOUSE_MEMBERSHIP_STATUSES,
   HOUSE_USER_ROLE_LABELS,
   HOUSE_USER_ROLES,
+  type HouseMembershipStatus,
   type HouseUserRole,
   type HouseUserWithProfile,
   houseUserDisplayName,
@@ -14,6 +16,7 @@ import {
   fetchHouseUsers,
   HouseUsersApiError,
   removeHouseUser,
+  updateHouseUser,
 } from "@/entities/house-member";
 import type { PlatformRole } from "@/entities/session";
 import type { AdminUser } from "@/entities/user";
@@ -35,8 +38,11 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedHouseRole, setSelectedHouseRole] =
     useState<HouseUserRole>("manager");
+  const [selectedStatus, setSelectedStatus] =
+    useState<HouseMembershipStatus>("active");
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
+  const [updatingUserId, setUpdatingUserId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   const loadData = useCallback(async () => {
@@ -81,6 +87,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
       const assigned = await assignHouseUser(houseId, {
         userId: selectedUserId,
         houseRole: selectedHouseRole,
+        status: selectedStatus,
       });
       setHouseUsers((prev) => {
         const without = prev.filter((u) => u.user_id !== assigned.user_id);
@@ -88,6 +95,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
       });
       setSelectedUserId("");
       setSelectedHouseRole("manager");
+      setSelectedStatus("active");
     } catch (err) {
       setError(
         err instanceof HouseUsersApiError
@@ -96,6 +104,29 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
       );
     } finally {
       setAssigning(false);
+    }
+  };
+
+  const handleUpdateMembership = async (
+    userId: string,
+    patch: { houseRole?: HouseUserRole; status?: HouseMembershipStatus },
+  ) => {
+    setUpdatingUserId(userId);
+    setError("");
+
+    try {
+      const updated = await updateHouseUser(houseId, userId, patch);
+      setHouseUsers((prev) =>
+        prev.map((user) => (user.user_id === userId ? updated : user)),
+      );
+    } catch (err) {
+      setError(
+        err instanceof HouseUsersApiError
+          ? err.message
+          : "Не удалось обновить назначение",
+      );
+    } finally {
+      setUpdatingUserId(null);
     }
   };
 
@@ -118,6 +149,8 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
       setAssigning(false);
     }
   };
+
+  const busy = assigning || updatingUserId !== null;
 
   return (
     <section className="mt-8 space-y-4">
@@ -143,7 +176,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
         <h3 className="text-sm font-semibold text-slate-900">
           Назначить пользователя
         </h3>
-        <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_220px_auto]">
+        <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_180px_160px_auto]">
           <div>
             <label
               htmlFor="house-user-select"
@@ -157,7 +190,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
               onChange={(event) => setSelectedUserId(event.target.value)}
               className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
               required
-              disabled={assigning || loading || availableUsers.length === 0}
+              disabled={busy || loading || availableUsers.length === 0}
             >
               <option value="">
                 {availableUsers.length === 0
@@ -187,7 +220,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
                 setSelectedHouseRole(event.target.value as HouseUserRole)
               }
               className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
-              disabled={assigning}
+              disabled={busy}
             >
               {HOUSE_USER_ROLES.map((role) => (
                 <option key={role} value={role}>
@@ -197,10 +230,34 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
             </select>
           </div>
 
+          <div>
+            <label
+              htmlFor="house-user-status"
+              className="mb-1.5 block text-sm font-medium text-slate-700"
+            >
+              Статус
+            </label>
+            <select
+              id="house-user-status"
+              value={selectedStatus}
+              onChange={(event) =>
+                setSelectedStatus(event.target.value as HouseMembershipStatus)
+              }
+              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
+              disabled={busy}
+            >
+              {HOUSE_MEMBERSHIP_STATUSES.map((status) => (
+                <option key={status} value={status}>
+                  {HOUSE_MEMBERSHIP_STATUS_LABELS[status]}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex items-end">
             <Button
               type="submit"
-              disabled={assigning || loading || !selectedUserId}
+              disabled={busy || loading || !selectedUserId}
             >
               {assigning ? "Назначение…" : "Назначить"}
             </Button>
@@ -244,13 +301,53 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
             {
               key: "house_role",
               header: "Роль в ЖК",
-              render: (user) => HOUSE_USER_ROLE_LABELS[user.house_role],
+              render: (user) => (
+                <select
+                  aria-label={`Роль в ЖК: ${houseUserDisplayName(user)}`}
+                  value={user.house_role}
+                  disabled={busy}
+                  onChange={(event) => {
+                    const nextRole = event.target.value as HouseUserRole;
+                    if (nextRole === user.house_role) return;
+                    void handleUpdateMembership(user.user_id, {
+                      houseRole: nextRole,
+                    });
+                  }}
+                  className="w-full min-w-[140px] rounded-md border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-700 disabled:opacity-60"
+                >
+                  {HOUSE_USER_ROLES.map((role) => (
+                    <option key={role} value={role}>
+                      {HOUSE_USER_ROLE_LABELS[role]}
+                    </option>
+                  ))}
+                </select>
+              ),
             },
             {
               key: "status",
               header: "Статус",
-              render: (user) =>
-                HOUSE_MEMBERSHIP_STATUS_LABELS[user.status] ?? user.status,
+              render: (user) => (
+                <select
+                  aria-label={`Статус: ${houseUserDisplayName(user)}`}
+                  value={user.status}
+                  disabled={busy}
+                  onChange={(event) => {
+                    const nextStatus = event.target
+                      .value as HouseMembershipStatus;
+                    if (nextStatus === user.status) return;
+                    void handleUpdateMembership(user.user_id, {
+                      status: nextStatus,
+                    });
+                  }}
+                  className="w-full min-w-[120px] rounded-md border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-700 disabled:opacity-60"
+                >
+                  {HOUSE_MEMBERSHIP_STATUSES.map((status) => (
+                    <option key={status} value={status}>
+                      {HOUSE_MEMBERSHIP_STATUS_LABELS[status]}
+                    </option>
+                  ))}
+                </select>
+              ),
             },
             {
               key: "actions",
@@ -261,7 +358,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  disabled={assigning}
+                  disabled={busy}
                   onClick={() => void handleRemove(user.user_id)}
                 >
                   Удалить

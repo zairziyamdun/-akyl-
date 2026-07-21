@@ -21,4 +21,15 @@ export const assignHouseUserSchema = z.object({
   status: houseMembershipStatusSchema.optional().default("active"),
 });
 
+export const updateHouseUserSchema = z
+  .object({
+    houseRole: houseUserRoleSchema.optional(),
+    status: houseMembershipStatusSchema.optional(),
+  })
+  .refine(
+    (value) => value.houseRole !== undefined || value.status !== undefined,
+    { message: "Укажите роль или статус для обновления" },
+  );
+
 export type AssignHouseUserBody = z.infer<typeof assignHouseUserSchema>;
+export type UpdateHouseUserBody = z.infer<typeof updateHouseUserSchema>;

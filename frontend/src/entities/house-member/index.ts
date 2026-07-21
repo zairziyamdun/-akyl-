@@ -7,4 +7,5 @@ export {
   fetchHouseUsers,
   HouseUsersApiError,
   removeHouseUser,
+  updateHouseUser,
 } from "./api/house-member.service";

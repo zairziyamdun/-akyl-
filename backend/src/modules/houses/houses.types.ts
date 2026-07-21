@@ -66,6 +66,11 @@ export type AssignHouseUserInput = {
   status?: HouseMembershipStatus;
 };
 
+export type UpdateHouseUserInput = {
+  houseRole?: HouseRole;
+  status?: HouseMembershipStatus;
+};
+
 import type { FinanceSummary } from "../finance/finance.types.js";
 
 export type { FinanceSummary };

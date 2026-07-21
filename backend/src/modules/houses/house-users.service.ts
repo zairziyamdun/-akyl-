@@ -16,6 +16,7 @@ import type {
   HouseMembershipStatus,
   HouseRole,
   HouseUserWithProfile,
+  UpdateHouseUserInput,
 } from "./houses.types.js";
 
 async function buildAuthEmailMap(
@@ -269,6 +270,71 @@ export async function assignHouseUser(
     row,
     profile as Record<string, unknown>,
     emailMap.get(input.userId) ?? null,
+  );
+}
+
+export async function updateHouseUser(
+  houseId: string,
+  userId: string,
+  input: UpdateHouseUserInput,
+  actorUserId: string,
+  role: ProfileRole,
+): Promise<HouseUserWithProfile> {
+  await assertCanAccessHouse(actorUserId, role, houseId, "members.manage");
+
+  if (input.houseRole === undefined && input.status === undefined) {
+    throw new ValidationError("Укажите роль или статус для обновления");
+  }
+
+  const supabase = getSupabaseAdmin();
+  const patch: Record<string, unknown> = {};
+  if (input.houseRole !== undefined) {
+    patch.house_role = input.houseRole;
+  }
+  if (input.status !== undefined) {
+    patch.status = input.status;
+  }
+
+  const { data, error } = await supabase
+    .from("house_users")
+    .update(patch)
+    .eq("house_id", houseId)
+    .eq("user_id", userId)
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    throwHouseUserSupabaseError("update house user", error, {
+      houseId,
+      userId,
+      houseRole: input.houseRole,
+      status: input.status,
+    });
+  }
+
+  if (!data) {
+    throw new ValidationError("Пользователь не назначен в этот ЖК");
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (profileError) {
+    throwHouseUserSupabaseError("load updated house user profile", profileError, {
+      houseId,
+      userId,
+    });
+  }
+
+  const emailMap = await buildAuthEmailMap([userId]);
+
+  return mapHouseUserWithProfile(
+    data as Record<string, unknown>,
+    (profile as Record<string, unknown> | null) ?? null,
+    emailMap.get(userId) ?? null,
   );
 }
 

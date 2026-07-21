@@ -6,8 +6,12 @@ import {
   assignHouseUserHandler,
   listHouseUsersHandler,
   removeHouseUserHandler,
+  updateHouseUserHandler,
 } from "./house-users.controller.js";
-import { assignHouseUserSchema } from "./house-users.schema.js";
+import {
+  assignHouseUserSchema,
+  updateHouseUserSchema,
+} from "./house-users.schema.js";
 
 const router = Router({ mergeParams: true });
 
@@ -19,6 +23,13 @@ router.post(
   authMiddleware,
   validateBody(assignHouseUserSchema),
   assignHouseUserHandler,
+);
+
+router.patch(
+  "/:userId",
+  authMiddleware,
+  validateBody(updateHouseUserSchema),
+  updateHouseUserHandler,
 );
 
 router.delete("/:userId", authMiddleware, removeHouseUserHandler);

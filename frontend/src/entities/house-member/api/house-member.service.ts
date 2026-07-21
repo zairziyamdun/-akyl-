@@ -1,6 +1,7 @@
 import type {
   AssignHouseUserPayload,
   HouseUserWithProfile,
+  UpdateHouseUserPayload,
 } from "@/entities/house";
 import { ApiError, apiFetch } from "@/shared/api";
 
@@ -44,6 +45,20 @@ export async function assignHouseUser(
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function updateHouseUser(
+  houseId: string,
+  userId: string,
+  payload: UpdateHouseUserPayload,
+): Promise<HouseUserWithProfile> {
+  return houseUsersFetch<HouseUserWithProfile>(
+    `/api/houses/${houseId}/users/${userId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    },
+  );
 }
 
 export async function removeHouseUser(

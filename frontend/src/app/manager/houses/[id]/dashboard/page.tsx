@@ -1,4 +1,4 @@
-import { HouseDashboardView } from "@/widgets/house-dashboard";
+import { ManagerHouseDashboardClient } from "./ManagerHouseDashboardClient";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -6,5 +6,5 @@ type PageProps = {
 
 export default async function ManagerHouseDashboardPage({ params }: PageProps) {
   const { id } = await params;
-  return <HouseDashboardView houseId={id} backHref="/manager/houses" />;
+  return <ManagerHouseDashboardClient houseId={id} />;
 }

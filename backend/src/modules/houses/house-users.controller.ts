@@ -3,11 +3,15 @@ import type { Request, Response } from "express";
 import { asyncHandler } from "../../common/async-handler.js";
 import { UnauthorizedError } from "../../common/errors.js";
 import { sendSuccess } from "../../common/response.js";
-import type { AssignHouseUserBody } from "./house-users.schema.js";
+import type {
+  AssignHouseUserBody,
+  UpdateHouseUserBody,
+} from "./house-users.schema.js";
 import {
   assignHouseUser,
   listHouseUsers,
   removeHouseUser,
+  updateHouseUser,
 } from "./house-users.service.js";
 
 function requireAuthContext(req: Request): {
@@ -52,6 +56,24 @@ export const assignHouseUserHandler = asyncHandler(
       role,
     );
     sendSuccess(res, 201, { data: user, message: "User assigned to house" });
+  },
+);
+
+export const updateHouseUserHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userId, role } = requireAuthContext(req);
+    const body = req.body as UpdateHouseUserBody;
+    const user = await updateHouseUser(
+      getHouseId(req),
+      req.params.userId!,
+      {
+        houseRole: body.houseRole,
+        status: body.status,
+      },
+      userId,
+      role,
+    );
+    sendSuccess(res, 200, { data: user, message: "House user updated" });
   },
 );
 

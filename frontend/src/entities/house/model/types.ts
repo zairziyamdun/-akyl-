@@ -86,6 +86,12 @@ export type AssignHouseUserPayload = {
   status?: HouseMembershipStatus;
 };
 
+export type UpdateHouseUserPayload = {
+  houseRole?: HouseUserRole;
+  status?: HouseMembershipStatus;
+};
+
+/** @deprecated Prefer HOUSE_ROLE_LABELS / getHouseRoleLabel from entity public API */
 export const HOUSE_USER_ROLES: HouseRole[] = [
   "resident",
   "chairman",
@@ -94,24 +100,6 @@ export const HOUSE_USER_ROLES: HouseRole[] = [
   "engineer",
   "dispatcher",
 ];
-
-export const HOUSE_USER_ROLE_LABELS: Record<HouseRole, string> = {
-  resident: "Житель",
-  chairman: "Председатель",
-  manager: "Управляющий",
-  accountant: "Бухгалтер",
-  engineer: "Инженер",
-  dispatcher: "Диспетчер",
-};
-
-export const HOUSE_MEMBERSHIP_STATUS_LABELS: Record<
-  HouseMembershipStatus,
-  string
-> = {
-  pending: "Ожидает",
-  active: "Активен",
-  blocked: "Заблокирован",
-};
 
 export function houseUserDisplayName(user: HouseUserWithProfile): string {
   return user.full_name?.trim() || user.email || user.user_id;

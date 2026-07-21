@@ -3,7 +3,12 @@
 import { motion } from "framer-motion";
 import { type ReactNode, useEffect, useState } from "react";
 import type { PlatformRole } from "@/entities/session";
-import { getNavForRole, getShellTitle, useAuth } from "@/features/auth";
+import {
+  getNavForRole,
+  getShellTitle,
+  type NavSection,
+  useAuth,
+} from "@/features/auth";
 import { useSidebarCollapsed } from "@/shared/hooks/useSidebarCollapsed";
 import { Sheet, SheetContent } from "@/shared/ui/sheet";
 import { TooltipProvider } from "@/shared/ui/tooltip";
@@ -18,16 +23,20 @@ import { Topbar } from "./Topbar";
 export function AppShell({
   role,
   children,
+  sections: sectionsProp,
+  title: titleProp,
 }: {
   role: PlatformRole;
   children: ReactNode;
+  sections?: NavSection[];
+  title?: string;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { collapsed, toggleCollapsed, hydrated } = useSidebarCollapsed();
   const { canAccessManagerCabinet } = useAuth();
   const navOptions = { canAccessManagerCabinet };
-  const sections = getNavForRole(role, navOptions);
-  const title = getShellTitle(role, navOptions);
+  const sections = sectionsProp ?? getNavForRole(role, navOptions);
+  const title = titleProp ?? getShellTitle(role, navOptions);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
