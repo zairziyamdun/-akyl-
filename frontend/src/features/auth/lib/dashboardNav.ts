@@ -59,32 +59,31 @@ export const studioNav: NavSection[] = [
   },
 ];
 
+/** Platform user cabinet — no ЖК workspace panels. */
 export const userNav: NavSection[] = [
   {
-    items: [{ label: "Обзор", href: "/app", icon: "◫" }],
+    items: [{ label: "Главная", href: "/app", icon: "◫" }],
+  },
+  {
+    title: "Сервисы",
+    items: [
+      { label: "Подписки", href: "/app/subscriptions", icon: "★" },
+      { label: "Материалы", href: "/app/materials", icon: "▣" },
+      { label: "Мои ЖК", href: "/app/houses", icon: "⌂" },
+    ],
   },
   {
     title: "Аккаунт",
     items: [
       { label: "Профиль", href: "/app/profile", icon: "◎" },
-      { label: "Мои материалы", href: "/app/materials", icon: "▣" },
-      { label: "Подписка", href: "/app/subscription", icon: "★" },
-    ],
-  },
-];
-
-export const managerNav: NavSection[] = [
-  {
-    items: [
-      { label: "Мои ЖК", href: "/manager/houses", icon: "⌂" },
-      { label: "Профиль", href: "/app/profile", icon: "◎" },
+      { label: "Настройки", href: "/app/settings", icon: "⚙" },
     ],
   },
 ];
 
 export function getNavForRole(
   role: PlatformRole,
-  options?: { canAccessManagerCabinet?: boolean },
+  _options?: { canAccessManagerCabinet?: boolean },
 ): NavSection[] {
   switch (role) {
     case "admin":
@@ -92,16 +91,13 @@ export function getNavForRole(
     case "journalist":
       return studioNav;
     case "user":
-      if (options?.canAccessManagerCabinet) {
-        return managerNav;
-      }
       return userNav;
   }
 }
 
 export function getShellTitle(
   role: PlatformRole,
-  options?: { canAccessManagerCabinet?: boolean },
+  _options?: { canAccessManagerCabinet?: boolean },
 ): string {
   switch (role) {
     case "admin":
@@ -109,13 +105,13 @@ export function getShellTitle(
     case "journalist":
       return "Studio";
     case "user":
-      return options?.canAccessManagerCabinet ? "Мои ЖК" : "Кабинет";
+      return "Кабинет";
   }
 }
 
 export function getShellBasePath(
   role: PlatformRole,
-  options?: { canAccessManagerCabinet?: boolean },
+  _options?: { canAccessManagerCabinet?: boolean },
 ): string {
   switch (role) {
     case "admin":
@@ -123,6 +119,6 @@ export function getShellBasePath(
     case "journalist":
       return "/studio";
     case "user":
-      return options?.canAccessManagerCabinet ? "/manager/houses" : "/app";
+      return "/app";
   }
 }

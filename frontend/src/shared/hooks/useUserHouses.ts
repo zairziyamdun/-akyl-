@@ -50,5 +50,5 @@ export function getHouseNavHref(role: PlatformRole, houseId: string): string {
   if (hasPlatformPermission(role, "houses.manage_all")) {
     return `/admin/houses/${houseId}`;
   }
-  return `/manager/houses/${houseId}/dashboard`;
+  return `/app/houses/${houseId}/overview`;
 }

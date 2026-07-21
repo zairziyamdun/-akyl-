@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import type { PlatformRole } from "@/entities/session";
 import type { NavSection } from "@/features/auth";
-import { useAuth } from "@/features/auth";
 import { useUserHouses } from "@/shared/hooks/useUserHouses";
 import { cn } from "@/shared/lib";
 import {
@@ -39,11 +38,10 @@ export function DashboardSidebarPanel({
   onToggleCollapsed,
 }: DashboardSidebarPanelProps) {
   const pathname = usePathname();
-  const { canAccessManagerCabinet } = useAuth();
-  const showHouses =
-    role === "admin" || (role === "user" && canAccessManagerCabinet);
+  // Nested houses tree only in admin — platform /app/houses is a plain link.
+  const showHouses = role === "admin";
   const { houses, loading } = useUserHouses(role, showHouses);
-  const pinProfileToFooter = !(role === "user" && canAccessManagerCabinet);
+  const pinProfileToFooter = true;
   const { mainSections, profileItem } = pinProfileToFooter
     ? splitNavSections(sections)
     : { mainSections: sections, profileItem: null };

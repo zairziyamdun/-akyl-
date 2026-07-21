@@ -21,6 +21,7 @@ export {
   canAccessPath,
   getAllowedRolesForPath,
   getRequiredRoleForPath,
+  getPostLoginPath,
   getRoleDashboardPath,
 } from "./lib/roleAccess";
 export type {

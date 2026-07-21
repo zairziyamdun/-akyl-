@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { getRoleDashboardPath } from "@/entities/session";
+import { getPostLoginPath } from "@/entities/session";
 import { useAuth } from "../api/AuthProvider";
 
 export function AuthRedirectIfLoggedIn() {
@@ -15,7 +15,7 @@ export function AuthRedirectIfLoggedIn() {
     if (isLoading || !isAuthenticated || !role) return;
     const returnUrl = searchParams.get("returnUrl") ?? searchParams.get("next");
     router.replace(
-      returnUrl ?? getRoleDashboardPath(role, { canAccessManagerCabinet }),
+      returnUrl ?? getPostLoginPath(role, { canAccessManagerCabinet }),
     );
   }, [
     isAuthenticated,

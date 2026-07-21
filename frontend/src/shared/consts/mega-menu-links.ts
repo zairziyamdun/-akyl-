@@ -168,8 +168,8 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             icon: Users,
           },
           {
-            title: "Кабинет менеджера домов",
-            href: "/manager",
+            title: "Мои ЖК",
+            href: "/app/houses",
             icon: Settings2,
           },
         ],

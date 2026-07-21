@@ -32,6 +32,7 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
   "/app": LayoutDashboard,
   "/manager/houses": Building2,
   "/admin/houses": Building2,
+  "/app/houses": Building2,
   "/admin/users": Users,
   "/admin/roles": Shield,
   "/admin/requests": Mail,
@@ -47,6 +48,7 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
   "/app/profile": User,
   "/app/materials": FolderOpen,
   "/app/subscription": Star,
+  "/app/subscriptions": Star,
 };
 
 export function getNavIcon(href: string): LucideIcon {
@@ -54,7 +56,11 @@ export function getNavIcon(href: string): LucideIcon {
 }
 
 export function isHousesNavHref(href: string): boolean {
-  return href === "/manager/houses" || href === "/admin/houses";
+  return (
+    href === "/manager/houses" ||
+    href === "/admin/houses" ||
+    href === "/app/houses"
+  );
 }
 
 export function isProfileNavItem(item: NavItem): boolean {

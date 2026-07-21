@@ -8,7 +8,7 @@ import { Button } from "@/shared/ui/Button";
 import { DataTable, EmptyState, PageHeader } from "@/widgets/dashboard-shell";
 
 type HousesListProps = {
-  basePath: "/admin/houses" | "/manager/houses";
+  basePath: "/admin/houses" | "/manager/houses" | "/app/houses";
   dashboardPath: (id: string) => string;
   showCreate?: boolean;
 };

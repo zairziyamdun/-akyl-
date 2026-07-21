@@ -57,7 +57,7 @@ export function getRequiredRoleForPath(pathname: string): PlatformRole | null {
 
 export function getRoleDashboardPath(
   role: PlatformRole,
-  options?: { canAccessManagerCabinet?: boolean },
+  _options?: { canAccessManagerCabinet?: boolean },
 ): string {
   switch (role) {
     case "admin":
@@ -65,9 +65,21 @@ export function getRoleDashboardPath(
     case "journalist":
       return "/studio";
     case "user":
-      if (options?.canAccessManagerCabinet) {
-        return "/manager/houses";
-      }
       return "/app";
+  }
+}
+
+/** Default destination after login (not the same as cabinet entry). */
+export function getPostLoginPath(
+  role: PlatformRole,
+  _options?: { canAccessManagerCabinet?: boolean },
+): string {
+  switch (role) {
+    case "admin":
+      return "/admin";
+    case "journalist":
+      return "/studio";
+    case "user":
+      return "/";
   }
 }

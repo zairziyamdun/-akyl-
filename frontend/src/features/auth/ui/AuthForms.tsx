@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { getRoleDashboardPath } from "@/entities/session";
+import { getPostLoginPath } from "@/entities/session";
 import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
@@ -52,7 +52,7 @@ export function LoginForm() {
               searchParams.get("returnUrl") ?? searchParams.get("next");
             router.push(
               returnUrl ??
-                getRoleDashboardPath(role, { canAccessManagerCabinet }),
+                getPostLoginPath(role, { canAccessManagerCabinet }),
             );
           } catch (err) {
             setState("error");

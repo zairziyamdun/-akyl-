@@ -11,6 +11,7 @@ export {
   getShellTitle,
   type NavItem,
   type NavSection,
+  userNav,
 } from "./lib/dashboardNav";
 export {
   AuthLayoutShell,

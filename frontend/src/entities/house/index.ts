@@ -12,31 +12,53 @@ export {
   HOUSE_MEMBERSHIP_STATUSES,
 } from "./lib/houseMembershipStatusLabels";
 export {
+  buildHousePanelHref,
+  canAccessHousePanel,
+  extractHouseIdFromPathname,
+  getDashboardPanelsForRole,
+  getHousePanel,
+  getHousePanelsForRole,
+  getNavigationPanelsForRole,
+  getPanelSectionForRole,
+  getQuickActionPanelsForRole,
+  HOUSE_CABINET_BASE,
+  HOUSE_PANELS,
+  HOUSE_SIDEBAR_GROUP_LABELS,
+  HOUSE_SIDEBAR_GROUP_ORDER,
+  type HousePanelConfig,
+  type HousePanelId,
+  type HouseSidebarGroupId,
+  houseCabinetBase,
+  isHouseWorkspacePath,
+  resolveHousePanelFromPathname,
+} from "./lib/housePanelConfig";
+export {
   getHouseRoleBadgeClassName,
   HOUSE_ROLE_BADGE_STYLES,
+  HOUSE_ROLE_BADGE_VARIANTS,
 } from "./lib/houseRoleBadges";
 export {
+  getHouseRoleDescription,
+  HOUSE_ROLE_DESCRIPTIONS,
+} from "./lib/houseRoleDescriptions";
+export {
   canAccessHouseUiSection,
+  getHouseNavHrefForSection,
   getHouseUiSectionsForRole,
   type HouseUiSectionId,
   resolveHouseUiSectionFromPathname,
 } from "./lib/houseRoleHelpers";
-/** @deprecated Use HOUSE_ROLE_LABELS */
 export {
   getHouseRoleLabel,
   HOUSE_ROLE_LABELS,
   HOUSE_ROLE_LABELS as HOUSE_USER_ROLE_LABELS,
 } from "./lib/houseRoleLabels";
 export {
-  getHouseNavHrefForSection,
+  getHouseNavHrefForRole,
   getHouseRoleNavigation,
   type HouseNavItem,
   type HouseNavSection,
 } from "./lib/houseRoleNavigation";
-export {
-  useCurrentHouseMembership,
-  useCurrentHouseRole,
-} from "./lib/useCurrentHouseMembership";
 export type {
   ChartPoint,
   DashboardSectionId,
@@ -56,13 +78,6 @@ export {
   DASHBOARD_SECTIONS,
   DASHBOARD_TABS,
 } from "./model/dashboardModel";
-export {
-  type CurrentHouseMembership,
-  getCurrentHouseMembership,
-  getCurrentHouseRole,
-  MOCK_CURRENT_ROLE,
-  MOCK_MEMBERSHIP,
-} from "./model/mockHouseMembership";
 export type {
   AssignHouseUserPayload,
   CreateHousePayload,
@@ -80,6 +95,21 @@ export type {
   UpdateHouseUserPayload,
 } from "./model/types";
 export { HOUSE_USER_ROLES, houseUserDisplayName } from "./model/types";
+export { HouseCabinetOverview } from "./ui/HouseCabinetOverview";
+export { HouseNoHouseAccess } from "./ui/HouseNoHouseAccess";
+export { HousePanelStubPage } from "./ui/HousePanelStubPage";
+export { HousePicker } from "./ui/HousePicker";
 export { HouseRoleAccessStub } from "./ui/HouseRoleAccessStub";
 export { HouseRoleBadge } from "./ui/HouseRoleBadge";
 export { HouseRoleSection } from "./ui/HouseRoleSection";
+export { HouseRoleSwitcher } from "./ui/HouseRoleSwitcher";
+export {
+  type HouseCabinetMembership,
+  HouseUiProvider,
+  type HouseUiState,
+  useCurrentHouseMembership,
+  useCurrentHouseRole,
+  useHouseUi,
+  useSelectedHouseId,
+} from "./ui/HouseUiProvider";
+export { RedirectToHousePanel } from "./ui/RedirectToHousePanel";

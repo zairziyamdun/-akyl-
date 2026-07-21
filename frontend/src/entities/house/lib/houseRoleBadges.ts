@@ -10,6 +10,9 @@ export const HOUSE_ROLE_BADGE_STYLES: Record<HouseRole, string> = {
   resident: "bg-slate-100 text-slate-700 ring-slate-200",
 };
 
+/** Canonical badge variants alias (same source as HOUSE_ROLE_BADGE_STYLES). */
+export const HOUSE_ROLE_BADGE_VARIANTS = HOUSE_ROLE_BADGE_STYLES;
+
 export function getHouseRoleBadgeClassName(role: HouseRole): string {
   return HOUSE_ROLE_BADGE_STYLES[role];
 }
