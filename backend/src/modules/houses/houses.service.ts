@@ -1,14 +1,12 @@
 import { getSupabaseAdmin } from "../../config/supabase.js";
-import {
-  DatabaseError,
-  ForbiddenError,
-  ValidationError,
-} from "../../common/errors.js";
+import { DatabaseError, ValidationError } from "../../common/errors.js";
 import type { ProfileRole } from "../auth/auth.types.js";
+import { hasPlatformPermission } from "../auth/platform.permissions.js";
+import { getLatestFinanceSummary } from "../finance/finance.service.js";
 import {
-  assertAdminRole,
   assertCanAccessHouse,
-  canAccessHouse,
+  assertPlatformPermission,
+  listHouseIdsWithPermission,
 } from "./houses.permissions.js";
 import type {
   CreateHouseInput,
@@ -16,7 +14,6 @@ import type {
   HouseDashboard,
   UpdateHouseInput,
 } from "./houses.types.js";
-import { getLatestFinanceSummary } from "../finance/finance.service.js";
 
 function toNumber(value: unknown): number | null {
   if (value === null || value === undefined || value === "") return null;
@@ -38,28 +35,16 @@ function mapHouse(row: Record<string, unknown>): House {
   };
 }
 
-async function getManagerHouseIds(userId: string): Promise<string[]> {
-  const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase
-    .from("house_users")
-    .select("house_id")
-    .eq("user_id", userId)
-    .eq("house_role", "manager");
-
-  if (error) {
-    throw new DatabaseError("Failed to load manager houses", error);
-  }
-
-  return (data ?? []).map((row) => String(row.house_id));
-}
-
 export async function listHouses(
   userId: string,
   role: ProfileRole,
 ): Promise<House[]> {
   const supabase = getSupabaseAdmin();
 
-  if (role === "admin") {
+  if (
+    hasPlatformPermission(role, "houses.read_all") ||
+    hasPlatformPermission(role, "houses.manage_all")
+  ) {
     const { data, error } = await supabase
       .from("houses")
       .select("*")
@@ -72,26 +57,22 @@ export async function listHouses(
     return (data ?? []).map((row) => mapHouse(row as Record<string, unknown>));
   }
 
-  if (role === "manager") {
-    const houseIds = await getManagerHouseIds(userId);
-    if (houseIds.length === 0) {
-      return [];
-    }
-
-    const { data, error } = await supabase
-      .from("houses")
-      .select("*")
-      .in("id", houseIds)
-      .order("updated_at", { ascending: false });
-
-    if (error) {
-      throw new DatabaseError("Failed to list manager houses", error);
-    }
-
-    return (data ?? []).map((row) => mapHouse(row as Record<string, unknown>));
+  const houseIds = await listHouseIdsWithPermission(userId, "house.read");
+  if (houseIds.length === 0) {
+    return [];
   }
 
-  throw new ForbiddenError("Insufficient permissions");
+  const { data, error } = await supabase
+    .from("houses")
+    .select("*")
+    .in("id", houseIds)
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    throw new DatabaseError("Failed to list houses", error);
+  }
+
+  return (data ?? []).map((row) => mapHouse(row as Record<string, unknown>));
 }
 
 export async function getHouseById(
@@ -99,7 +80,7 @@ export async function getHouseById(
   userId: string,
   role: ProfileRole,
 ): Promise<House> {
-  await assertCanAccessHouse(userId, role, houseId);
+  await assertCanAccessHouse(userId, role, houseId, "house.read");
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -119,7 +100,7 @@ export async function createHouse(
   input: CreateHouseInput,
   role: ProfileRole,
 ): Promise<House> {
-  assertAdminRole(role);
+  assertPlatformPermission(role, "houses.manage_all");
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -146,7 +127,7 @@ export async function updateHouse(
   input: UpdateHouseInput,
   role: ProfileRole,
 ): Promise<House> {
-  assertAdminRole(role);
+  assertPlatformPermission(role, "houses.manage_all");
 
   if (Object.keys(input).length === 0) {
     throw new ValidationError("No fields to update");
@@ -176,8 +157,11 @@ export async function updateHouse(
   return mapHouse(data as Record<string, unknown>);
 }
 
-export async function deleteHouse(houseId: string, role: ProfileRole): Promise<void> {
-  assertAdminRole(role);
+export async function deleteHouse(
+  houseId: string,
+  role: ProfileRole,
+): Promise<void> {
+  assertPlatformPermission(role, "houses.manage_all");
 
   const supabase = getSupabaseAdmin();
   const { error } = await supabase.from("houses").delete().eq("id", houseId);
@@ -217,12 +201,20 @@ export async function getHouseDashboard(
   userId: string,
   role: ProfileRole,
 ): Promise<HouseDashboard> {
-  const allowed = await canAccessHouse(userId, role, houseId);
-  if (!allowed) {
-    throw new ForbiddenError("No access to this house");
+  await assertCanAccessHouse(userId, role, houseId, "house.dashboard.read");
+
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("houses")
+    .select("*")
+    .eq("id", houseId)
+    .single();
+
+  if (error || !data) {
+    throw new DatabaseError("House not found", error);
   }
 
-  const house = await getHouseById(houseId, userId, role);
+  const house = mapHouse(data as Record<string, unknown>);
   const financeSummary = await getLatestFinanceSummary(houseId);
   const dashboard = buildDashboardMock(house, financeSummary);
   dashboard.kpiSummary.collectionRate = financeSummary.collectionRate;

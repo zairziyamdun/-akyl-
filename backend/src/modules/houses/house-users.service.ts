@@ -6,15 +6,21 @@ import {
 } from "../../common/errors.js";
 import type { ProfileRole } from "../auth/auth.types.js";
 import { throwHouseUserSupabaseError } from "./house-users.errors.js";
-import { houseUserRoleSchema } from "./house-users.schema.js";
-import { assertAdminRole } from "./houses.permissions.js";
+import {
+  houseMembershipStatusSchema,
+  houseUserRoleSchema,
+} from "./house-users.schema.js";
+import { assertCanAccessHouse } from "./houses.permissions.js";
 import type {
   AssignHouseUserInput,
-  HouseUserRole,
+  HouseMembershipStatus,
+  HouseRole,
   HouseUserWithProfile,
 } from "./houses.types.js";
 
-async function buildAuthEmailMap(userIds: string[]): Promise<Map<string, string | null>> {
+async function buildAuthEmailMap(
+  userIds: string[],
+): Promise<Map<string, string | null>> {
   if (userIds.length === 0) {
     return new Map();
   }
@@ -73,16 +79,18 @@ function mapHouseUserWithProfile(
     email: profileEmail ?? email,
     full_name: profile ? ((profile.full_name as string | null) ?? null) : null,
     role: profile ? String(profile.role ?? "") : "",
-    house_role: row.house_role as HouseUserRole,
+    house_role: row.house_role as HouseRole,
+    status: (row.status as HouseMembershipStatus) ?? "active",
     created_at: String(row.created_at ?? ""),
   };
 }
 
 export async function listHouseUsers(
   houseId: string,
+  userId: string,
   role: ProfileRole,
 ): Promise<HouseUserWithProfile[]> {
-  assertAdminRole(role);
+  await assertCanAccessHouse(userId, role, houseId, "members.read");
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -122,11 +130,11 @@ export async function listHouseUsers(
   const emailMap = await buildAuthEmailMap(userIds);
 
   return rows.map((row) => {
-    const userId = String(row.user_id);
+    const memberUserId = String(row.user_id);
     return mapHouseUserWithProfile(
       row as Record<string, unknown>,
-      profileMap.get(userId) ?? null,
-      emailMap.get(userId) ?? null,
+      profileMap.get(memberUserId) ?? null,
+      emailMap.get(memberUserId) ?? null,
     );
   });
 }
@@ -134,16 +142,25 @@ export async function listHouseUsers(
 export async function assignHouseUser(
   houseId: string,
   input: AssignHouseUserInput,
+  actorUserId: string,
   role: ProfileRole,
 ): Promise<HouseUserWithProfile> {
-  assertAdminRole(role);
+  await assertCanAccessHouse(actorUserId, role, houseId, "members.manage");
 
   const roleValidation = houseUserRoleSchema.safeParse(input.houseRole);
   if (!roleValidation.success) {
     throw new ValidationError("Некорректная роль в ЖК");
   }
 
+  const statusValidation = houseMembershipStatusSchema.safeParse(
+    input.status ?? "active",
+  );
+  if (!statusValidation.success) {
+    throw new ValidationError("Некорректный статус membership");
+  }
+
   const houseRole = roleValidation.data;
+  const status = statusValidation.data;
   const supabase = getSupabaseAdmin();
 
   const { data: profile, error: profileError } = await supabase
@@ -182,10 +199,9 @@ export async function assignHouseUser(
 
   const { data: existing, error: existingError } = await supabase
     .from("house_users")
-    .select("id, house_role")
+    .select("*")
     .eq("house_id", houseId)
     .eq("user_id", input.userId)
-    .eq("house_role", houseRole)
     .maybeSingle();
 
   if (existingError) {
@@ -196,38 +212,61 @@ export async function assignHouseUser(
     });
   }
 
+  let row: Record<string, unknown>;
+
   if (existing) {
-    throw new ValidationError(
-      "Пользователь уже назначен на этот ЖК с такой ролью",
-    );
-  }
+    const { data, error } = await supabase
+      .from("house_users")
+      .update({
+        house_role: houseRole,
+        status,
+      })
+      .eq("id", existing.id)
+      .select("*")
+      .single();
 
-  const { data, error } = await supabase
-    .from("house_users")
-    .insert({
-      house_id: houseId,
-      user_id: input.userId,
-      house_role: houseRole,
-    })
-    .select("*")
-    .single();
+    if (error || !data) {
+      if (error) {
+        throwHouseUserSupabaseError("update house user", error, {
+          houseId,
+          userId: input.userId,
+          houseRole,
+        });
+      }
+      throw new DatabaseError("Failed to update house user");
+    }
 
-  if (error) {
-    throwHouseUserSupabaseError("assign house user", error, {
-      houseId,
-      userId: input.userId,
-      houseRole,
-    });
-  }
+    row = data as Record<string, unknown>;
+  } else {
+    const { data, error } = await supabase
+      .from("house_users")
+      .insert({
+        house_id: houseId,
+        user_id: input.userId,
+        house_role: houseRole,
+        status,
+      })
+      .select("*")
+      .single();
 
-  if (!data) {
-    throw new DatabaseError("Failed to assign house user");
+    if (error || !data) {
+      if (error) {
+        throwHouseUserSupabaseError("assign house user", error, {
+          houseId,
+          userId: input.userId,
+          houseRole,
+        });
+      }
+      throw new DatabaseError("Failed to assign house user");
+    }
+
+    row = data as Record<string, unknown>;
   }
 
   const emailMap = await buildAuthEmailMap([input.userId]);
 
   return mapHouseUserWithProfile(
-    data as Record<string, unknown>,
+    row,
     profile as Record<string, unknown>,
     emailMap.get(input.userId) ?? null,
   );
@@ -236,9 +275,10 @@ export async function assignHouseUser(
 export async function removeHouseUser(
   houseId: string,
   userId: string,
+  actorUserId: string,
   role: ProfileRole,
 ): Promise<void> {
-  assertAdminRole(role);
+  await assertCanAccessHouse(actorUserId, role, houseId, "members.manage");
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase

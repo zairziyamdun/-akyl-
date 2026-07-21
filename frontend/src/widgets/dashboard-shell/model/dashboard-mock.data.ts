@@ -1,4 +1,4 @@
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 
 export type RequestStatus = "new" | "in_progress" | "closed";
 export type ContentStatus = "draft" | "review" | "published" | "archived";
@@ -84,7 +84,7 @@ export const mockUsers = [
     id: "u1",
     name: "Асылбек Нурланов",
     email: "admin@akyl.kz",
-    role: "admin" as AkylRole,
+    role: "admin" as PlatformRole,
     status: "active",
     createdAt: "2025-11-10",
   },
@@ -92,7 +92,7 @@ export const mockUsers = [
     id: "u2",
     name: "Мадина Алиева",
     email: "madina@akyl.kz",
-    role: "journalist" as AkylRole,
+    role: "journalist" as PlatformRole,
     status: "active",
     createdAt: "2026-01-15",
   },
@@ -100,7 +100,7 @@ export const mockUsers = [
     id: "u3",
     name: "Серик Б.",
     email: "serik@uk.kz",
-    role: "user" as AkylRole,
+    role: "user" as PlatformRole,
     status: "active",
     createdAt: "2026-03-02",
   },
@@ -108,7 +108,7 @@ export const mockUsers = [
     id: "u4",
     name: "Айгуль К.",
     email: "aigul@osi.kz",
-    role: "user" as AkylRole,
+    role: "user" as PlatformRole,
     status: "active",
     createdAt: "2026-04-18",
   },
@@ -116,7 +116,7 @@ export const mockUsers = [
     id: "u5",
     name: "Тест User",
     email: "blocked@test.kz",
-    role: "user" as AkylRole,
+    role: "user" as PlatformRole,
     status: "suspended",
     createdAt: "2026-02-01",
   },
@@ -124,7 +124,7 @@ export const mockUsers = [
 
 export const mockRoleCards = [
   {
-    role: "admin" as AkylRole,
+    role: "admin" as PlatformRole,
     title: "Admin",
     description: "Полный доступ к платформе, пользователям и контенту",
     permissions: [
@@ -137,13 +137,13 @@ export const mockRoleCards = [
     ],
   },
   {
-    role: "journalist" as AkylRole,
+    role: "journalist" as PlatformRole,
     title: "Journalist",
     description: "Создание и редактирование материалов журнала",
     permissions: ["articles", "issues", "media", "profile"],
   },
   {
-    role: "user" as AkylRole,
+    role: "user" as PlatformRole,
     title: "User",
     description: "Доступ к профилю, подпискам и материалам",
     permissions: ["profile", "materials", "subscription"],

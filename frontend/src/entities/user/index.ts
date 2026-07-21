@@ -1,5 +1,7 @@
 export {
   AdminUsersApiError,
+  createAdminUser,
+  deleteAdminUser,
   getAdminUsers,
   updateUserRole,
   updateUserStatus,
@@ -9,6 +11,7 @@ export type {
   AdminUserProfileStatus,
   AdminUserRole,
   AdminUserStatus,
+  CreateAdminUserPayload,
 } from "./model/types";
 export {
   ADMIN_USER_ROLE_LABELS,

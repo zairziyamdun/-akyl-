@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  HOUSE_MEMBERSHIP_STATUS_LABELS,
   HOUSE_USER_ROLE_LABELS,
   HOUSE_USER_ROLES,
   type HouseUserRole,
@@ -14,7 +15,7 @@ import {
   HouseUsersApiError,
   removeHouseUser,
 } from "@/entities/house-member";
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 import type { AdminUser } from "@/entities/user";
 import { AdminUsersApiError, getAdminUsers } from "@/entities/user";
 import { Button } from "@/shared/ui/Button";
@@ -24,13 +25,8 @@ type HouseUsersManagerProps = {
   houseId: string;
 };
 
-function isAkylRole(value: string): value is AkylRole {
-  return (
-    value === "admin" ||
-    value === "manager" ||
-    value === "journalist" ||
-    value === "user"
-  );
+function isPlatformRole(value: string): value is PlatformRole {
+  return value === "admin" || value === "journalist" || value === "user";
 }
 
 export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
@@ -70,13 +66,9 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
   }, [loadData]);
 
   const availableUsers = useMemo(() => {
-    const assignedKeys = new Set(
-      houseUsers.map((user) => `${user.user_id}:${user.house_role}`),
-    );
-    return allUsers.filter(
-      (user) => !assignedKeys.has(`${user.id}:${selectedHouseRole}`),
-    );
-  }, [allUsers, houseUsers, selectedHouseRole]);
+    const assignedIds = new Set(houseUsers.map((user) => user.user_id));
+    return allUsers.filter((user) => !assignedIds.has(user.id));
+  }, [allUsers, houseUsers]);
 
   const handleAssign = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -90,7 +82,10 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
         userId: selectedUserId,
         houseRole: selectedHouseRole,
       });
-      setHouseUsers((prev) => [assigned, ...prev]);
+      setHouseUsers((prev) => {
+        const without = prev.filter((u) => u.user_id !== assigned.user_id);
+        return [assigned, ...without];
+      });
       setSelectedUserId("");
       setSelectedHouseRole("manager");
     } catch (err) {
@@ -131,7 +126,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
           Пользователи ЖК
         </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Назначение manager и других ролей для доступа к дому
+          Назначение ролей ЖК (membership) для доступа к дому
         </p>
       </div>
 
@@ -240,7 +235,7 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
               key: "profile_role",
               header: "Роль платформы",
               render: (user) =>
-                isAkylRole(user.role) ? (
+                isPlatformRole(user.role) ? (
                   <RoleBadge role={user.role} />
                 ) : (
                   user.role || "—"
@@ -250,6 +245,12 @@ export function HouseUsersManager({ houseId }: HouseUsersManagerProps) {
               key: "house_role",
               header: "Роль в ЖК",
               render: (user) => HOUSE_USER_ROLE_LABELS[user.house_role],
+            },
+            {
+              key: "status",
+              header: "Статус",
+              render: (user) =>
+                HOUSE_MEMBERSHIP_STATUS_LABELS[user.status] ?? user.status,
             },
             {
               key: "actions",

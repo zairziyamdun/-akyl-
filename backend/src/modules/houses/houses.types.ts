@@ -9,19 +9,25 @@ export type House = {
   updated_at: string;
 };
 
-export type HouseUserRole =
+export type HouseRole =
+  | "resident"
+  | "chairman"
   | "manager"
   | "accountant"
   | "engineer"
-  | "dispatcher"
-  | "chairman"
-  | "resident";
+  | "dispatcher";
+
+/** @deprecated Use HouseRole */
+export type HouseUserRole = HouseRole;
+
+export type HouseMembershipStatus = "pending" | "active" | "blocked";
 
 export type HouseUser = {
   id: string;
   house_id: string;
   user_id: string;
-  house_role: HouseUserRole;
+  house_role: HouseRole;
+  status: HouseMembershipStatus;
   created_at: string;
 };
 
@@ -31,8 +37,17 @@ export type HouseUserWithProfile = {
   email: string | null;
   full_name: string | null;
   role: string;
-  house_role: HouseUserRole;
+  house_role: HouseRole;
+  status: HouseMembershipStatus;
   created_at: string;
+};
+
+export type HouseMembership = {
+  id: string;
+  userId: string;
+  houseId: string;
+  role: HouseRole;
+  status: HouseMembershipStatus;
 };
 
 export type CreateHouseInput = {
@@ -47,7 +62,8 @@ export type UpdateHouseInput = Partial<CreateHouseInput>;
 
 export type AssignHouseUserInput = {
   userId: string;
-  houseRole: HouseUserRole;
+  houseRole: HouseRole;
+  status?: HouseMembershipStatus;
 };
 
 import type { FinanceSummary } from "../finance/finance.types.js";

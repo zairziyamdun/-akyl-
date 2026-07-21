@@ -1,6 +1,6 @@
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 
-export type AdminUserRole = AkylRole;
+export type AdminUserRole = PlatformRole;
 
 export type AdminUserStatus = "active" | "blocked" | "pending";
 
@@ -18,10 +18,19 @@ export type AdminUser = {
   updated_at: string;
 };
 
+export type CreateAdminUserPayload = {
+  email: string;
+  password: string;
+  full_name: string;
+  organization: string;
+  phone: string;
+  role: AdminUserRole;
+  status: AdminUserStatus;
+};
+
 export const ADMIN_USER_ROLES: AdminUserRole[] = [
   "user",
   "journalist",
-  "manager",
   "admin",
 ];
 
@@ -34,7 +43,6 @@ export const ADMIN_USER_STATUSES: AdminUserStatus[] = [
 export const ADMIN_USER_ROLE_LABELS: Record<AdminUserRole, string> = {
   user: "User",
   journalist: "Journalist",
-  manager: "Manager",
   admin: "Admin",
 };
 

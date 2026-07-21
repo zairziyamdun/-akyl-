@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { type ReactNode, useEffect, useState } from "react";
-import type { AkylRole } from "@/entities/session";
-import { getNavForRole, getShellTitle } from "@/features/auth";
+import type { PlatformRole } from "@/entities/session";
+import { getNavForRole, getShellTitle, useAuth } from "@/features/auth";
 import { useSidebarCollapsed } from "@/shared/hooks/useSidebarCollapsed";
 import { Sheet, SheetContent } from "@/shared/ui/sheet";
 import { TooltipProvider } from "@/shared/ui/tooltip";
@@ -19,13 +19,15 @@ export function AppShell({
   role,
   children,
 }: {
-  role: AkylRole;
+  role: PlatformRole;
   children: ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { collapsed, toggleCollapsed, hydrated } = useSidebarCollapsed();
-  const sections = getNavForRole(role);
-  const title = getShellTitle(role);
+  const { canAccessManagerCabinet } = useAuth();
+  const navOptions = { canAccessManagerCabinet };
+  const sections = getNavForRole(role, navOptions);
+  const title = getShellTitle(role, navOptions);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {

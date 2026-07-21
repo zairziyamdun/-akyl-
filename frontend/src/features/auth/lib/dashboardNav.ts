@@ -1,4 +1,4 @@
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 
 export type NavItem = {
   label: string;
@@ -82,41 +82,47 @@ export const managerNav: NavSection[] = [
   },
 ];
 
-export function getNavForRole(role: AkylRole): NavSection[] {
+export function getNavForRole(
+  role: PlatformRole,
+  options?: { canAccessManagerCabinet?: boolean },
+): NavSection[] {
   switch (role) {
     case "admin":
       return adminNav;
-    case "manager":
-      return managerNav;
     case "journalist":
       return studioNav;
     case "user":
+      if (options?.canAccessManagerCabinet) {
+        return managerNav;
+      }
       return userNav;
   }
 }
 
-export function getShellTitle(role: AkylRole): string {
+export function getShellTitle(
+  role: PlatformRole,
+  options?: { canAccessManagerCabinet?: boolean },
+): string {
   switch (role) {
     case "admin":
       return "Admin";
-    case "manager":
-      return "Мои ЖК";
     case "journalist":
       return "Studio";
     case "user":
-      return "Кабинет";
+      return options?.canAccessManagerCabinet ? "Мои ЖК" : "Кабинет";
   }
 }
 
-export function getShellBasePath(role: AkylRole): string {
+export function getShellBasePath(
+  role: PlatformRole,
+  options?: { canAccessManagerCabinet?: boolean },
+): string {
   switch (role) {
     case "admin":
       return "/admin";
-    case "manager":
-      return "/manager/houses";
     case "journalist":
       return "/studio";
     case "user":
-      return "/app";
+      return options?.canAccessManagerCabinet ? "/manager/houses" : "/app";
   }
 }

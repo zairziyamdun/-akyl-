@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 
 import { fetchHouses, type House, HousesApiError } from "@/entities/house";
-import type { AkylRole } from "@/entities/session";
+import { hasPlatformPermission, type PlatformRole } from "@/entities/session";
 
-export function useUserHouses(role: AkylRole | null, enabled: boolean) {
+export function useUserHouses(role: PlatformRole | null, enabled: boolean) {
   const [houses, setHouses] = useState<House[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!enabled || !role || (role !== "manager" && role !== "admin")) {
+    if (!enabled || !role) {
       setHouses([]);
       return;
     }
@@ -46,9 +46,9 @@ export function useUserHouses(role: AkylRole | null, enabled: boolean) {
   return { houses, loading, error };
 }
 
-export function getHouseNavHref(role: AkylRole, houseId: string): string {
-  if (role === "manager") {
-    return `/manager/houses/${houseId}/dashboard`;
+export function getHouseNavHref(role: PlatformRole, houseId: string): string {
+  if (hasPlatformPermission(role, "houses.manage_all")) {
+    return `/admin/houses/${houseId}`;
   }
-  return `/admin/houses/${houseId}`;
+  return `/manager/houses/${houseId}/dashboard`;
 }

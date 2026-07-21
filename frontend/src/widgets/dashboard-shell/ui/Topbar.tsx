@@ -45,7 +45,7 @@ export function Topbar({
   showMenuButton?: boolean;
 }) {
   const pathname = usePathname();
-  const { user, role, logout } = useAuth();
+  const { user, role, logout, canAccessManagerCabinet } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const crumbs = buildBreadcrumbs(pathname);
@@ -134,7 +134,9 @@ export function Topbar({
                     </p>
                   </div>
                   <Link
-                    href={getRoleDashboardPath(role)}
+                    href={getRoleDashboardPath(role, {
+                      canAccessManagerCabinet,
+                    })}
                     className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                     onClick={() => setMenuOpen(false)}
                   >
@@ -168,7 +170,14 @@ export function Topbar({
 }
 
 export function PublicUserMenu() {
-  const { isAuthenticated, isLoading, user, role, logout } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading,
+    user,
+    role,
+    logout,
+    canAccessManagerCabinet,
+  } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -197,7 +206,9 @@ export function PublicUserMenu() {
     );
   }
 
-  const dashboardHref = getRoleDashboardPath(role);
+  const dashboardHref = getRoleDashboardPath(role, {
+    canAccessManagerCabinet,
+  });
 
   return (
     <div className="relative hidden md:block" ref={ref}>
@@ -228,7 +239,9 @@ export function PublicUserMenu() {
               ? "Admin"
               : role === "journalist"
                 ? "Studio"
-                : "Кабинет"}
+                : canAccessManagerCabinet
+                  ? "Мои ЖК"
+                  : "Кабинет"}
           </Link>
           <button
             type="button"

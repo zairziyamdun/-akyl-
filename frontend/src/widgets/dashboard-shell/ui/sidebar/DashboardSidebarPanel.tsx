@@ -1,8 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 import type { NavSection } from "@/features/auth";
+import { useAuth } from "@/features/auth";
 import { useUserHouses } from "@/shared/hooks/useUserHouses";
 import { cn } from "@/shared/lib";
 import {
@@ -21,7 +22,7 @@ import { SidebarNavLabel } from "./SidebarNavLabel";
 import { SidebarProfileFooter } from "./SidebarProfileFooter";
 
 type DashboardSidebarPanelProps = {
-  role: AkylRole;
+  role: PlatformRole;
   sections: NavSection[];
   collapsed: boolean;
   onNavigate?: () => void;
@@ -38,9 +39,11 @@ export function DashboardSidebarPanel({
   onToggleCollapsed,
 }: DashboardSidebarPanelProps) {
   const pathname = usePathname();
-  const showHouses = role === "manager" || role === "admin";
+  const { canAccessManagerCabinet } = useAuth();
+  const showHouses =
+    role === "admin" || (role === "user" && canAccessManagerCabinet);
   const { houses, loading } = useUserHouses(role, showHouses);
-  const pinProfileToFooter = role !== "manager";
+  const pinProfileToFooter = !(role === "user" && canAccessManagerCabinet);
   const { mainSections, profileItem } = pinProfileToFooter
     ? splitNavSections(sections)
     : { mainSections: sections, profileItem: null };

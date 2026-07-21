@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { House } from "@/entities/house";
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 import { getHouseNavHref } from "@/shared/hooks/useUserHouses";
 import { cn } from "@/shared/lib";
 import {
@@ -27,7 +27,7 @@ import { SidebarItem } from "./SidebarItem";
 type HousesTreeProps = {
   houses: House[];
   loading: boolean;
-  role: AkylRole;
+  role: PlatformRole;
   onNavigate?: () => void;
   compact?: boolean;
 };
@@ -109,7 +109,7 @@ function HousesPopover({
   listHref: string;
   houses: House[];
   loading: boolean;
-  role: AkylRole;
+  role: PlatformRole;
   onNavigate?: () => void;
   onClose: () => void;
 }) {
@@ -150,7 +150,7 @@ function HousesPopover({
 type MyHousesNavProps = {
   label: string;
   listHref: string;
-  role: AkylRole;
+  role: PlatformRole;
   houses: House[];
   loading: boolean;
   collapsed: boolean;

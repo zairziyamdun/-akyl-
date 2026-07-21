@@ -11,13 +11,14 @@ import {
 } from "./house-users.service.js";
 
 function requireAuthContext(req: Request): {
+  userId: string;
   role: NonNullable<Request["profile"]>["role"];
 } {
   if (!req.user || !req.profile) {
     throw new UnauthorizedError();
   }
 
-  return { role: req.profile.role };
+  return { userId: req.user.id, role: req.profile.role };
 }
 
 function getHouseId(req: Request): string {
@@ -30,22 +31,24 @@ function getHouseId(req: Request): string {
 
 export const listHouseUsersHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const { role } = requireAuthContext(req);
-    const users = await listHouseUsers(getHouseId(req), role);
+    const { userId, role } = requireAuthContext(req);
+    const users = await listHouseUsers(getHouseId(req), userId, role);
     sendSuccess(res, 200, { data: users });
   },
 );
 
 export const assignHouseUserHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const { role } = requireAuthContext(req);
+    const { userId, role } = requireAuthContext(req);
     const body = req.body as AssignHouseUserBody;
     const user = await assignHouseUser(
       getHouseId(req),
       {
         userId: body.userId,
         houseRole: body.houseRole,
+        status: body.status,
       },
+      userId,
       role,
     );
     sendSuccess(res, 201, { data: user, message: "User assigned to house" });
@@ -54,8 +57,8 @@ export const assignHouseUserHandler = asyncHandler(
 
 export const removeHouseUserHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const { role } = requireAuthContext(req);
-    await removeHouseUser(getHouseId(req), req.params.userId!, role);
+    const { userId, role } = requireAuthContext(req);
+    await removeHouseUser(getHouseId(req), req.params.userId!, userId, role);
     sendSuccess(res, 200, { message: "User removed from house" });
   },
 );

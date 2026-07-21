@@ -44,10 +44,16 @@ export function LoginForm() {
           setState("loading");
           setError("");
           try {
-            const role = await login({ email, password });
+            const { role, canAccessManagerCabinet } = await login({
+              email,
+              password,
+            });
             const returnUrl =
               searchParams.get("returnUrl") ?? searchParams.get("next");
-            router.push(returnUrl ?? getRoleDashboardPath(role));
+            router.push(
+              returnUrl ??
+                getRoleDashboardPath(role, { canAccessManagerCabinet }),
+            );
           } catch (err) {
             setState("error");
             setError(

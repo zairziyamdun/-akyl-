@@ -1,9 +1,6 @@
 import { Router } from "express";
 
-import {
-  authMiddleware,
-  roleMiddleware,
-} from "../../middleware/auth.middleware.js";
+import { authMiddleware } from "../../middleware/auth.middleware.js";
 import { validateBody } from "../../middleware/validate.middleware.js";
 import {
   createFinanceRecordHandler,
@@ -18,20 +15,12 @@ import {
 
 const router = Router({ mergeParams: true });
 
-const houseReaders = ["admin", "manager"] as const;
-const adminOnly = ["admin"] as const;
-
-router.get(
-  "/",
-  authMiddleware,
-  roleMiddleware([...houseReaders]),
-  listFinanceRecordsHandler,
-);
+/** Service layer enforces house membership + finance permissions. */
+router.get("/", authMiddleware, listFinanceRecordsHandler);
 
 router.post(
   "/",
   authMiddleware,
-  roleMiddleware([...adminOnly]),
   validateBody(createFinanceRecordSchema),
   createFinanceRecordHandler,
 );
@@ -39,16 +28,10 @@ router.post(
 router.patch(
   "/:recordId",
   authMiddleware,
-  roleMiddleware([...adminOnly]),
   validateBody(updateFinanceRecordSchema),
   updateFinanceRecordHandler,
 );
 
-router.delete(
-  "/:recordId",
-  authMiddleware,
-  roleMiddleware([...adminOnly]),
-  deleteFinanceRecordHandler,
-);
+router.delete("/:recordId", authMiddleware, deleteFinanceRecordHandler);
 
 export default router;

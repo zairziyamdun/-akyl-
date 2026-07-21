@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 import { AuthApiError, useAuth } from "@/features/auth";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
@@ -44,7 +44,7 @@ export function ProfileForm({
           </span>
           <div>
             <p className="font-medium text-slate-900">{user.name}</p>
-            <RoleBadge role={role as AkylRole} className="mt-1" />
+            <RoleBadge role={role as PlatformRole} className="mt-1" />
           </div>
         </div>
 

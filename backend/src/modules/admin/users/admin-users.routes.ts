@@ -6,11 +6,14 @@ import {
 } from "../../../middleware/auth.middleware.js";
 import { validateBody } from "../../../middleware/validate.middleware.js";
 import {
+  createAdminUserHandler,
+  deleteAdminUserHandler,
   listAdminUsersHandler,
   updateUserRoleHandler,
   updateUserStatusHandler,
 } from "./admin-users.controller.js";
 import {
+  createAdminUserSchema,
   updateUserRoleSchema,
   updateUserStatusSchema,
 } from "./admin-users.schema.js";
@@ -23,6 +26,12 @@ router.use(authMiddleware, roleMiddleware([...adminOnly]));
 
 router.get("/", listAdminUsersHandler);
 
+router.post(
+  "/",
+  validateBody(createAdminUserSchema),
+  createAdminUserHandler,
+);
+
 router.patch(
   "/:id/role",
   validateBody(updateUserRoleSchema),
@@ -34,5 +43,7 @@ router.patch(
   validateBody(updateUserStatusSchema),
   updateUserStatusHandler,
 );
+
+router.delete("/:id", deleteAdminUserHandler);
 
 export default router;

@@ -23,29 +23,14 @@ import {
 
 const router = Router();
 
-const houseReaders = ["admin", "manager"] as const;
 const adminOnly = ["admin"] as const;
 
-router.get(
-  "/",
-  authMiddleware,
-  roleMiddleware([...houseReaders]),
-  listHousesHandler,
-);
+/** House-scoped reads: any authenticated user; service enforces membership/permissions. */
+router.get("/", authMiddleware, listHousesHandler);
 
-router.get(
-  "/:id/dashboard",
-  authMiddleware,
-  roleMiddleware([...houseReaders]),
-  getHouseDashboardHandler,
-);
+router.get("/:id/dashboard", authMiddleware, getHouseDashboardHandler);
 
-router.get(
-  "/:id",
-  authMiddleware,
-  roleMiddleware([...houseReaders]),
-  getHouseHandler,
-);
+router.get("/:id", authMiddleware, getHouseHandler);
 
 router.post(
   "/",

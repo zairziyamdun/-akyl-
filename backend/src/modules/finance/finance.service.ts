@@ -4,10 +4,7 @@ import {
   ValidationError,
 } from "../../common/errors.js";
 import type { ProfileRole } from "../auth/auth.types.js";
-import {
-  assertAdminRole,
-  assertCanAccessHouse,
-} from "../houses/houses.permissions.js";
+import { assertCanAccessHouse } from "../houses/houses.permissions.js";
 import type {
   CreateFinanceRecordInput,
   FinanceRecord,
@@ -98,7 +95,7 @@ export async function listFinanceRecords(
   userId: string,
   role: ProfileRole,
 ): Promise<FinanceRecord[]> {
-  await assertCanAccessHouse(userId, role, houseId);
+  await assertCanAccessHouse(userId, role, houseId, "finance.read");
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
@@ -119,9 +116,10 @@ export async function listFinanceRecords(
 export async function createFinanceRecord(
   houseId: string,
   input: CreateFinanceRecordInput,
+  userId: string,
   role: ProfileRole,
 ): Promise<FinanceRecord> {
-  assertAdminRole(role);
+  await assertCanAccessHouse(userId, role, houseId, "finance.manage");
 
   const supabase = getSupabaseAdmin();
   const collectionRate = computeCollectionRate(input.accrued, input.collected);
@@ -178,9 +176,10 @@ export async function updateFinanceRecord(
   houseId: string,
   recordId: string,
   input: UpdateFinanceRecordInput,
+  userId: string,
   role: ProfileRole,
 ): Promise<FinanceRecord> {
-  assertAdminRole(role);
+  await assertCanAccessHouse(userId, role, houseId, "finance.manage");
 
   if (Object.keys(input).length === 0) {
     throw new ValidationError("No fields to update");
@@ -237,9 +236,10 @@ export async function updateFinanceRecord(
 export async function deleteFinanceRecord(
   houseId: string,
   recordId: string,
+  userId: string,
   role: ProfileRole,
 ): Promise<void> {
-  assertAdminRole(role);
+  await assertCanAccessHouse(userId, role, houseId, "finance.manage");
 
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase

@@ -9,13 +9,18 @@ export type House = {
   updated_at: string;
 };
 
-export type HouseUserRole =
+export type HouseRole =
+  | "resident"
+  | "chairman"
   | "manager"
   | "accountant"
   | "engineer"
-  | "dispatcher"
-  | "chairman"
-  | "resident";
+  | "dispatcher";
+
+/** @deprecated Use HouseRole */
+export type HouseUserRole = HouseRole;
+
+export type HouseMembershipStatus = "pending" | "active" | "blocked";
 
 export type HouseUserWithProfile = {
   id: string;
@@ -23,7 +28,8 @@ export type HouseUserWithProfile = {
   email: string | null;
   full_name: string | null;
   role: string;
-  house_role: HouseUserRole;
+  house_role: HouseRole;
+  status: HouseMembershipStatus;
   created_at: string;
 };
 
@@ -77,24 +83,34 @@ export type UpdateHousePayload = Partial<CreateHousePayload>;
 export type AssignHouseUserPayload = {
   userId: string;
   houseRole: HouseUserRole;
+  status?: HouseMembershipStatus;
 };
 
-export const HOUSE_USER_ROLES: HouseUserRole[] = [
+export const HOUSE_USER_ROLES: HouseRole[] = [
+  "resident",
+  "chairman",
   "manager",
   "accountant",
   "engineer",
   "dispatcher",
-  "chairman",
-  "resident",
 ];
 
-export const HOUSE_USER_ROLE_LABELS: Record<HouseUserRole, string> = {
-  manager: "Manager",
-  accountant: "Accountant",
-  engineer: "Engineer",
-  dispatcher: "Dispatcher",
-  chairman: "Chairman",
-  resident: "Resident",
+export const HOUSE_USER_ROLE_LABELS: Record<HouseRole, string> = {
+  resident: "Житель",
+  chairman: "Председатель",
+  manager: "Управляющий",
+  accountant: "Бухгалтер",
+  engineer: "Инженер",
+  dispatcher: "Диспетчер",
+};
+
+export const HOUSE_MEMBERSHIP_STATUS_LABELS: Record<
+  HouseMembershipStatus,
+  string
+> = {
+  pending: "Ожидает",
+  active: "Активен",
+  blocked: "Заблокирован",
 };
 
 export function houseUserDisplayName(user: HouseUserWithProfile): string {

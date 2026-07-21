@@ -46,21 +46,27 @@ export const listFinanceRecordsHandler = asyncHandler(
 
 export const createFinanceRecordHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const { role } = requireAuthContext(req);
+    const { userId, role } = requireAuthContext(req);
     const body = req.body as CreateFinanceRecordBody;
-    const record = await createFinanceRecord(getHouseId(req), body, role);
+    const record = await createFinanceRecord(
+      getHouseId(req),
+      body,
+      userId,
+      role,
+    );
     sendSuccess(res, 201, { data: record, message: "Finance record created" });
   },
 );
 
 export const updateFinanceRecordHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const { role } = requireAuthContext(req);
+    const { userId, role } = requireAuthContext(req);
     const body = req.body as UpdateFinanceRecordBody;
     const record = await updateFinanceRecord(
       getHouseId(req),
       req.params.recordId!,
       body,
+      userId,
       role,
     );
     sendSuccess(res, 200, { data: record, message: "Finance record updated" });
@@ -69,8 +75,13 @@ export const updateFinanceRecordHandler = asyncHandler(
 
 export const deleteFinanceRecordHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const { role } = requireAuthContext(req);
-    await deleteFinanceRecord(getHouseId(req), req.params.recordId!, role);
+    const { userId, role } = requireAuthContext(req);
+    await deleteFinanceRecord(
+      getHouseId(req),
+      req.params.recordId!,
+      userId,
+      role,
+    );
     sendSuccess(res, 200, { message: "Finance record deleted" });
   },
 );

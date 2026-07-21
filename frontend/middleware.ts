@@ -1,22 +1,25 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type { AkylRole } from "@/entities/session";
+import type { HouseMembership, PlatformRole } from "@/entities/session";
 import { AUTH_COOKIE_KEY } from "@/shared/auth";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ??
   "http://localhost:4000";
 
-type RouteRule = {
-  prefix: string;
-  roles: AkylRole[];
-};
+type RouteRule =
+  | { prefix: string; kind: "platform"; roles: PlatformRole[] }
+  | { prefix: string; kind: "manager" };
 
 const PROTECTED_ROUTES: RouteRule[] = [
-  { prefix: "/admin", roles: ["admin"] },
-  { prefix: "/manager", roles: ["manager", "admin"] },
-  { prefix: "/studio", roles: ["journalist", "admin"] },
-  { prefix: "/app", roles: ["user", "journalist", "admin", "manager"] },
+  { prefix: "/admin", kind: "platform", roles: ["admin"] },
+  { prefix: "/manager", kind: "manager" },
+  { prefix: "/studio", kind: "platform", roles: ["journalist", "admin"] },
+  {
+    prefix: "/app",
+    kind: "platform",
+    roles: ["user", "journalist", "admin"],
+  },
 ];
 
 function matchRoute(pathname: string): RouteRule | undefined {
@@ -55,12 +58,35 @@ export async function middleware(request: NextRequest) {
 
     const body = (await response.json()) as {
       success: boolean;
-      data?: { role: AkylRole };
+      data?: {
+        role: PlatformRole;
+        canAccessManagerCabinet?: boolean;
+        houseMemberships?: HouseMembership[];
+      };
     };
 
     const role = body.data?.role;
 
-    if (!role || !rule.roles.includes(role)) {
+    if (!role) {
+      const deniedUrl = request.nextUrl.clone();
+      deniedUrl.pathname = "/403";
+      deniedUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(deniedUrl);
+    }
+
+    if (rule.kind === "manager") {
+      const allowed =
+        role === "admin" || Boolean(body.data?.canAccessManagerCabinet);
+      if (!allowed) {
+        const deniedUrl = request.nextUrl.clone();
+        deniedUrl.pathname = "/403";
+        deniedUrl.searchParams.set("from", pathname);
+        return NextResponse.redirect(deniedUrl);
+      }
+      return NextResponse.next();
+    }
+
+    if (!rule.roles.includes(role)) {
       const deniedUrl = request.nextUrl.clone();
       deniedUrl.pathname = "/403";
       deniedUrl.searchParams.set("from", pathname);

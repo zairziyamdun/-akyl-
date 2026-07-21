@@ -1,10 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 import { getRoleDashboardPath } from "@/entities/session";
+import { useAuth } from "@/features/auth";
 import { Button } from "@/shared/ui/Button";
 
-export function AccessDenied({ role }: { role?: AkylRole }) {
-  const home = role ? getRoleDashboardPath(role) : "/";
+export function AccessDenied({ role }: { role?: PlatformRole }) {
+  const { canAccessManagerCabinet } = useAuth();
+  const home = role
+    ? getRoleDashboardPath(role, { canAccessManagerCabinet })
+    : "/";
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">

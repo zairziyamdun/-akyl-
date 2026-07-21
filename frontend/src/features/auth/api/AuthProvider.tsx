@@ -12,10 +12,11 @@ import {
 } from "react";
 
 import type {
-  AkylRole,
   AuthProfile,
   AuthUser,
+  HouseMembership,
   LoginPayload,
+  PlatformRole,
   RegisterPayload,
   UpdateProfilePayload,
 } from "@/entities/session";
@@ -34,13 +35,26 @@ import {
 } from "./api";
 import { profileToAuthUser } from "./authUtils";
 
+type SessionPayload = {
+  user: { id: string; email: string };
+  profile: AuthProfile;
+  role: PlatformRole;
+  houseMemberships?: HouseMembership[];
+  canAccessManagerCabinet?: boolean;
+};
+
 type AuthContextValue = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  role: AkylRole | null;
+  role: PlatformRole | null;
   user: AuthUser | null;
   profile: AuthProfile | null;
-  login: (payload: LoginPayload) => Promise<AkylRole>;
+  houseMemberships: HouseMembership[];
+  canAccessManagerCabinet: boolean;
+  login: (payload: LoginPayload) => Promise<{
+    role: PlatformRole;
+    canAccessManagerCabinet: boolean;
+  }>;
   register: (payload: RegisterPayload) => Promise<void>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
   logout: () => Promise<void>;
@@ -54,25 +68,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
-  const [role, setRole] = useState<AkylRole | null>(null);
-
-  const applySession = useCallback(
-    (me: {
-      user: { id: string; email: string };
-      profile: AuthProfile;
-      role: AkylRole;
-    }) => {
-      setUser(profileToAuthUser(me.user, me.profile));
-      setProfile(me.profile);
-      setRole(me.role);
-    },
+  const [role, setRole] = useState<PlatformRole | null>(null);
+  const [houseMemberships, setHouseMemberships] = useState<HouseMembership[]>(
     [],
   );
+  const [canAccessManagerCabinet, setCanAccessManagerCabinet] = useState(false);
+
+  const applySession = useCallback((me: SessionPayload) => {
+    setUser(profileToAuthUser(me.user, me.profile));
+    setProfile(me.profile);
+    setRole(me.role);
+    setHouseMemberships(me.houseMemberships ?? []);
+    setCanAccessManagerCabinet(Boolean(me.canAccessManagerCabinet));
+  }, []);
 
   const clearSession = useCallback(() => {
     setUser(null);
     setProfile(null);
     setRole(null);
+    setHouseMemberships([]);
+    setCanAccessManagerCabinet(false);
     clearAccessToken();
   }, []);
 
@@ -94,7 +109,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = getAccessToken();
     if (token) {
-      // Sync cookie for middleware when token exists only in localStorage
       setAccessToken(token);
     }
     void (async () => {
@@ -107,7 +121,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (payload: LoginPayload) => {
       const session = await loginRequest(payload);
       applySession(session);
-      return session.role;
+      return {
+        role: session.role,
+        canAccessManagerCabinet: Boolean(session.canAccessManagerCabinet),
+      };
     },
     [applySession],
   );
@@ -137,6 +154,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role,
       user,
       profile,
+      houseMemberships,
+      canAccessManagerCabinet,
       login,
       register,
       updateProfile,
@@ -147,6 +166,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       role,
       profile,
+      houseMemberships,
+      canAccessManagerCabinet,
       isLoading,
       login,
       register,
@@ -172,7 +193,7 @@ export function useMockAuth() {
   const auth = useAuth();
   return {
     isAuthenticated: auth.isAuthenticated,
-    role: auth.role ?? ("user" as AkylRole),
+    role: auth.role ?? ("user" as PlatformRole),
     user: auth.user ?? {
       id: "",
       name: "",

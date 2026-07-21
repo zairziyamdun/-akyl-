@@ -1,6 +1,11 @@
 import { ApiError, apiFetch } from "@/shared/api";
 
-import type { AdminUser, AdminUserRole, AdminUserStatus } from "../model/types";
+import type {
+  AdminUser,
+  AdminUserRole,
+  AdminUserStatus,
+  CreateAdminUserPayload,
+} from "../model/types";
 
 export class AdminUsersApiError extends ApiError {
   constructor(message: string, status: number) {
@@ -30,6 +35,15 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
   return adminUsersFetch<AdminUser[]>("/api/admin/users");
 }
 
+export async function createAdminUser(
+  payload: CreateAdminUserPayload,
+): Promise<AdminUser> {
+  return adminUsersFetch<AdminUser>("/api/admin/users", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function updateUserRole(
   id: string,
   role: AdminUserRole,
@@ -47,5 +61,11 @@ export async function updateUserStatus(
   return adminUsersFetch<AdminUser>(`/api/admin/users/${id}/status`, {
     method: "PATCH",
     body: JSON.stringify({ status }),
+  });
+}
+
+export async function deleteAdminUser(id: string): Promise<void> {
+  await adminUsersFetch<void>(`/api/admin/users/${id}`, {
+    method: "DELETE",
   });
 }

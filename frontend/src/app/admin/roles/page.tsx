@@ -1,4 +1,4 @@
-import type { AkylRole } from "@/entities/session";
+import type { PlatformRole } from "@/entities/session";
 import {
   mockPermissionMatrix,
   mockRoleCards,
@@ -59,14 +59,16 @@ export default function AdminRolesPage() {
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">
                   Функция
                 </th>
-                {(["admin", "journalist", "user"] as AkylRole[]).map((r) => (
-                  <th
-                    key={r}
-                    className="px-4 py-3 text-center text-xs font-semibold uppercase text-slate-500"
-                  >
-                    {r}
-                  </th>
-                ))}
+                {(["admin", "journalist", "user"] as PlatformRole[]).map(
+                  (r) => (
+                    <th
+                      key={r}
+                      className="px-4 py-3 text-center text-xs font-semibold uppercase text-slate-500"
+                    >
+                      {r}
+                    </th>
+                  ),
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

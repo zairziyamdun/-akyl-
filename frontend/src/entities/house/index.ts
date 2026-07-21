@@ -32,6 +32,8 @@ export type {
   FinanceSummary,
   House,
   HouseDashboard,
+  HouseMembershipStatus,
+  HouseRole,
   HouseUserRole,
   HouseUserWithProfile,
   KpiSummary,
@@ -40,6 +42,7 @@ export type {
   UpdateHousePayload,
 } from "./model/types";
 export {
+  HOUSE_MEMBERSHIP_STATUS_LABELS,
   HOUSE_USER_ROLE_LABELS,
   HOUSE_USER_ROLES,
   houseUserDisplayName,
