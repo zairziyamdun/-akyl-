@@ -45,30 +45,11 @@ async function buildAuthExtras(userId: string, role: Profile["role"]) {
 async function getProfileByUserId(userId: string): Promise<Profile> {
   const supabase = getSupabaseAdmin();
 
-  if (env.NODE_ENV === "development") {
-    logInfo("auth.profile.lookup", { userId });
-  }
-
   const { data, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", userId)
     .single();
-
-  if (env.NODE_ENV === "development") {
-    logInfo("auth.profile.result", {
-      userId,
-      found: Boolean(data),
-      error: error
-        ? {
-            code: error.code,
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-          }
-        : null,
-    });
-  }
 
   if (error || !data) {
     throw new DatabaseError("Profile not found", error);
