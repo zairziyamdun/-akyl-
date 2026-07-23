@@ -1,6 +1,7 @@
 export { MzhdTheoryCtaSection } from "./MzhdTheoryCtaSection";
 export { MzhdTheoryCyberneticsSection } from "./MzhdTheoryCyberneticsSection";
 export { MzhdTheoryDataSection } from "./MzhdTheoryDataSection";
+export { MzhdTheoryDefinitionSection } from "./MzhdTheoryDefinitionSection";
 export { MzhdTheoryFaqSection } from "./MzhdTheoryFaqSection";
 export { MzhdTheoryHeroSection } from "./MzhdTheoryHeroSection";
 export { MzhdTheoryIntroSection } from "./MzhdTheoryIntroSection";

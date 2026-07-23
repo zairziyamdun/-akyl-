@@ -1,6 +1,7 @@
 import { MzhdTheoryCtaSection } from "./MzhdTheoryCtaSection";
 import { MzhdTheoryCyberneticsSection } from "./MzhdTheoryCyberneticsSection";
 import { MzhdTheoryDataSection } from "./MzhdTheoryDataSection";
+import { MzhdTheoryDefinitionSection } from "./MzhdTheoryDefinitionSection";
 import { MzhdTheoryFaqSection } from "./MzhdTheoryFaqSection";
 import { MzhdTheoryHeroSection } from "./MzhdTheoryHeroSection";
 import { MzhdTheoryIntroSection } from "./MzhdTheoryIntroSection";
@@ -15,6 +16,7 @@ export function MzhdTheoryPage() {
     <main className="min-w-0 overflow-x-hidden bg-white text-slate-900">
       <MzhdTheoryHeroSection />
       <MzhdTheorySubnavSection />
+      <MzhdTheoryDefinitionSection />
       <MzhdTheoryIntroSection />
       <MzhdTheoryPrinciplesSection />
       <MzhdTheorySystemSection />

@@ -12,7 +12,11 @@ import { MzhdTheorySectionHeader } from "./MzhdTheorySectionHeader";
 
 export function MzhdTheoryFaqSection() {
   return (
-    <section className="py-16 sm:py-20">
+    <section
+      className="py-16 sm:py-20"
+      aria-label="Частые вопросы о теории"
+      data-geo-faq
+    >
       <Container>
         <motion.div {...sectionMotion}>
           <MzhdTheorySectionHeader

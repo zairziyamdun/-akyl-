@@ -12,6 +12,7 @@ export {
   createPageMetadata,
   HOME_SEO,
   MZHD_SEO,
+  MZHD_THEORY_SEO,
   organizationId,
   SITE_DEFAULT_DESCRIPTION,
   SITE_DEFAULT_TITLE,

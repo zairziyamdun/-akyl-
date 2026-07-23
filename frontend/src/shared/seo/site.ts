@@ -46,6 +46,22 @@ export const MZHD_SEO = {
   ],
 } as const;
 
+export const MZHD_THEORY_SEO = {
+  title: "Теория управления МЖД | AKYL",
+  description:
+    "Научная база профессионального управления многоквартирными домами: системный подход, социотехника, кибернетика, цикл данных и связь теории с KPI и индексом IEU.",
+  keywords: [
+    "теория управления МЖД",
+    "системный подход к управлению домом",
+    "кибернетика ЖКХ",
+    "социотехническая система МЖД",
+    "обратная связь в управлении домом",
+    "принципы управления МЖД",
+    "KPI и IEU",
+    "AKYL методология",
+  ],
+} as const;
+
 export function absoluteUrl(path = "/"): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
