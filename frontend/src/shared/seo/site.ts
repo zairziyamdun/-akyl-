@@ -142,6 +142,22 @@ export const MZHD_STANDARDS_SEO = {
   ],
 } as const;
 
+export const MZHD_ROLES_SEO = {
+  title: "Роли участников управления МЖД | AKYL",
+  description:
+    "Роли в управлении многоквартирным домом: собственники, ОСИ и совет дома, УК, подрядчики и акимат — зоны ответственности и взаимодействие в методологии AKYL.",
+  keywords: [
+    "роли участников МЖД",
+    "ответственность УК и ОСИ",
+    "собственники многоквартирного дома",
+    "совет дома",
+    "подрядчики ЖКХ",
+    "роль акимата в управлении МЖД",
+    "матрица ролей управления домом",
+    "AKYL роли",
+  ],
+} as const;
+
 export function absoluteUrl(path = "/"): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
