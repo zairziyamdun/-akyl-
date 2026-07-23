@@ -1,5 +1,7 @@
 import { MzhdArchitectureContoursSection } from "./MzhdArchitectureContoursSection";
 import { MzhdArchitectureCtaSection } from "./MzhdArchitectureCtaSection";
+import { MzhdArchitectureDefinitionSection } from "./MzhdArchitectureDefinitionSection";
+import { MzhdArchitectureFaqSection } from "./MzhdArchitectureFaqSection";
 import { MzhdArchitectureHeroSection } from "./MzhdArchitectureHeroSection";
 import { MzhdArchitectureParticipantsSection } from "./MzhdArchitectureParticipantsSection";
 import { MzhdArchitectureProcessesSection } from "./MzhdArchitectureProcessesSection";
@@ -8,9 +10,11 @@ export function MzhdArchitecturePage() {
   return (
     <main className="min-w-0 overflow-x-hidden bg-white text-slate-900">
       <MzhdArchitectureHeroSection />
+      <MzhdArchitectureDefinitionSection />
       <MzhdArchitectureParticipantsSection />
       <MzhdArchitectureProcessesSection />
       <MzhdArchitectureContoursSection />
+      <MzhdArchitectureFaqSection />
       <MzhdArchitectureCtaSection />
     </main>
   );
