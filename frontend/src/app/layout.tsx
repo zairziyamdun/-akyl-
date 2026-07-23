@@ -4,6 +4,14 @@ import "./globals.css";
 
 import { AuthProvider } from "@/features/auth";
 import { JournalIssuesProvider } from "@/features/manage-journal-issue";
+import { SITE_URL } from "@/shared/config";
+import {
+  SITE_DEFAULT_DESCRIPTION,
+  SITE_DEFAULT_TITLE,
+  SITE_NAME,
+  siteOpenGraph,
+  siteTwitter,
+} from "@/shared/seo";
 import { AppChrome } from "@/widgets/site";
 
 const inter = Inter({
@@ -20,8 +28,34 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "AKYL - система управления МЖД",
-  description: "AKYL - это платформа для системного управления МЖД",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_DEFAULT_TITLE,
+  description: SITE_DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: siteOpenGraph,
+  twitter: siteTwitter,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({

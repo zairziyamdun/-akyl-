@@ -1,0 +1,52 @@
+import type { Metadata } from "next";
+
+import { SITE_URL } from "@/shared/config";
+
+export const SITE_NAME = "AKYL";
+
+export const SITE_DEFAULT_TITLE = "AKYL — система управления МЖД";
+
+export const SITE_DEFAULT_DESCRIPTION =
+  "Методология и платформа AKYL для профессионального управления многоквартирными жилыми домами: процессы, финансы, KPI и цифровые инструменты в единой системе.";
+
+export const HOME_SEO = {
+  title: "AKYL — профессиональное управление МЖД",
+  description:
+    "Методология и платформа, объединяющая процессы, финансы, участников, KPI и цифровые инструменты в единую систему управления многоквартирными жилыми домами.",
+  keywords: [
+    "AKYL",
+    "управление МЖД",
+    "многоквартирный дом",
+    "ЖКХ",
+    "ОСИ",
+    "управляющая компания",
+    "акимат",
+    "методология управления",
+    "индекс эффективности",
+    "KPI МЖД",
+  ],
+} as const;
+
+export function absoluteUrl(path = "/"): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${SITE_URL}${normalized === "/" ? "" : normalized}`;
+}
+
+export const siteOpenGraph: Metadata["openGraph"] = {
+  type: "website",
+  locale: "ru_KZ",
+  siteName: SITE_NAME,
+  url: SITE_URL,
+  title: SITE_DEFAULT_TITLE,
+  description: SITE_DEFAULT_DESCRIPTION,
+};
+
+export const siteTwitter: Metadata["twitter"] = {
+  card: "summary_large_image",
+  title: SITE_DEFAULT_TITLE,
+  description: SITE_DEFAULT_DESCRIPTION,
+};
