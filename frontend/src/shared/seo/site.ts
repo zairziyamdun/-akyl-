@@ -27,6 +27,25 @@ export const HOME_SEO = {
   ],
 } as const;
 
+export const MZHD_SEO = {
+  title: "Управление МЖД как профессиональная система | AKYL",
+  description:
+    "Методология AKYL для управления многоквартирным домом: архитектура, роли участников, бизнес-процессы, финансы, KPI, стандарты и индекс эффективности IEU.",
+  keywords: [
+    "управление МЖД",
+    "методология управления МЖД",
+    "система управления многоквартирным домом",
+    "AKYL",
+    "архитектура управления МЖД",
+    "роли УК ОСИ",
+    "бизнес-процессы МЖД",
+    "финансы МЖД",
+    "KPI управления домом",
+    "индекс эффективности IEU",
+    "стандарты управления ЖКХ",
+  ],
+} as const;
+
 export function absoluteUrl(path = "/"): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
@@ -34,6 +53,56 @@ export function absoluteUrl(path = "/"): string {
 
   const normalized = path.startsWith("/") ? path : `/${path}`;
   return `${SITE_URL}${normalized === "/" ? "" : normalized}`;
+}
+
+export function organizationId(): string {
+  return `${SITE_URL}/#organization`;
+}
+
+export function websiteId(): string {
+  return `${SITE_URL}/#website`;
+}
+
+export function webpageId(path: string): string {
+  return `${absoluteUrl(path)}/#webpage`;
+}
+
+type PageMetadataInput = {
+  title: string;
+  description: string;
+  path: string;
+  keywords?: readonly string[];
+};
+
+export function createPageMetadata({
+  title,
+  description,
+  path,
+  keywords,
+}: PageMetadataInput): Metadata {
+  const url = absoluteUrl(path);
+
+  return {
+    title: { absolute: title },
+    description,
+    keywords: keywords ? [...keywords] : undefined,
+    alternates: {
+      canonical: path,
+    },
+    openGraph: {
+      type: "website",
+      locale: "ru_KZ",
+      url,
+      siteName: SITE_NAME,
+      title,
+      description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
 }
 
 export const siteOpenGraph: Metadata["openGraph"] = {

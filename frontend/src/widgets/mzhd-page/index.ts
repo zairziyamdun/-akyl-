@@ -1,5 +1,6 @@
 export * from "./model/mzhd.data";
 export * from "./model/mzhd-architecture.data";
+export * from "./model/mzhd-faq.data";
 export * from "./model/mzhd-finance.data";
 export * from "./model/mzhd-kpi.data";
 export * from "./model/mzhd-processes.data";

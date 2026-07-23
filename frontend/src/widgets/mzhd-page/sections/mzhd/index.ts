@@ -1,6 +1,8 @@
 export { MzhdArchitecturePreviewSection } from "./MzhdArchitecturePreviewSection";
 export { MzhdAudienceSection } from "./MzhdAudienceSection";
 export { MzhdCtaSection } from "./MzhdCtaSection";
+export { MzhdDefinitionSection } from "./MzhdDefinitionSection";
+export { MzhdFaqSection } from "./MzhdFaqSection";
 export { MzhdHeroSection } from "./MzhdHeroSection";
 export { MzhdIeuSection } from "./MzhdIeuSection";
 export { MzhdMethodologySection } from "./MzhdMethodologySection";
