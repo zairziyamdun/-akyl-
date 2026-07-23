@@ -94,6 +94,22 @@ export const MZHD_PROCESSES_SEO = {
   ],
 } as const;
 
+export const MZHD_FINANCE_SEO = {
+  title: "Финансовое управление МЖД | AKYL",
+  description:
+    "Финансовое управление многоквартирным домом: бюджетирование, план-факт, работа с задолженностью, прозрачная отчётность и устойчивость дома.",
+  keywords: [
+    "финансовое управление МЖД",
+    "бюджет многоквартирного дома",
+    "план-факт МЖД",
+    "отчётность для жителей",
+    "задолженность ЖКХ",
+    "смета дома",
+    "прозрачность финансов МЖД",
+    "AKYL финансы",
+  ],
+} as const;
+
 export function absoluteUrl(path = "/"): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
