@@ -78,6 +78,22 @@ export const MZHD_ARCHITECTURE_SEO = {
   ],
 } as const;
 
+export const MZHD_PROCESSES_SEO = {
+  title: "Бизнес-процессы управления МЖД | AKYL",
+  description:
+    "Бизнес-процессы управления многоквартирным домом: заявки, эксплуатация, финансы, подрядчики, отчётность и контроль качества в методологии AKYL.",
+  keywords: [
+    "бизнес-процессы МЖД",
+    "управление заявками МЖД",
+    "эксплуатация многоквартирного дома",
+    "контроль подрядчиков ЖКХ",
+    "финансовый процесс МЖД",
+    "регламенты управления домом",
+    "SLA заявок МЖД",
+    "AKYL процессы",
+  ],
+} as const;
+
 export function absoluteUrl(path = "/"): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
