@@ -1,6 +1,8 @@
 "use client";
 
 import { ImplementationBeforeAfter } from "./ImplementationBeforeAfter";
+import { ImplementationDefinitionSection } from "./ImplementationDefinitionSection";
+import { ImplementationFaqSection } from "./ImplementationFaqSection";
 import { ImplementationFinalCta } from "./ImplementationFinalCta";
 import { ImplementationForWhom } from "./ImplementationForWhom";
 import { ImplementationHero } from "./ImplementationHero";
@@ -11,15 +13,17 @@ import { ImplementationToolsConnection } from "./ImplementationToolsConnection";
 
 export function ImplementationPage() {
   return (
-    <div className="min-w-0 overflow-x-hidden text-stone-900">
+    <main className="min-w-0 overflow-x-hidden text-stone-900">
       <ImplementationHero />
+      <ImplementationDefinitionSection />
       <ImplementationProblems />
       <ImplementationRoadmap />
       <ImplementationBeforeAfter />
       <ImplementationPilot />
       <ImplementationForWhom />
       <ImplementationToolsConnection />
+      <ImplementationFaqSection />
       <ImplementationFinalCta />
-    </div>
+    </main>
   );
 }

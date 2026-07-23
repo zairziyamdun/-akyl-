@@ -11,6 +11,7 @@ export {
   absoluteUrl,
   createPageMetadata,
   HOME_SEO,
+  IMPLEMENTATION_SEO,
   MZHD_SEO,
   MZHD_ARCHITECTURE_SEO,
   MZHD_FINANCE_SEO,
