@@ -1,5 +1,7 @@
 export { MzhdKpiCategoriesSection } from "./MzhdKpiCategoriesSection";
 export { MzhdKpiCtaSection } from "./MzhdKpiCtaSection";
+export { MzhdKpiDefinitionSection } from "./MzhdKpiDefinitionSection";
+export { MzhdKpiFaqSection } from "./MzhdKpiFaqSection";
 export { MzhdKpiHeroSection } from "./MzhdKpiHeroSection";
 export { MzhdKpiIeuSection } from "./MzhdKpiIeuSection";
 export { MzhdKpiPage } from "./MzhdKpiPage";

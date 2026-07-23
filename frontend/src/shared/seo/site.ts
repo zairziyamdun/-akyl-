@@ -110,6 +110,22 @@ export const MZHD_FINANCE_SEO = {
   ],
 } as const;
 
+export const MZHD_KPI_SEO = {
+  title: "KPI и эффективность управления МЖД | AKYL",
+  description:
+    "KPI управления многоквартирным домом: технические, финансовые и сервисные показатели, индекс эффективности IEU и измеримая оценка работы УК.",
+  keywords: [
+    "KPI управления МЖД",
+    "индекс эффективности IEU",
+    "показатели управления домом",
+    "финансовые KPI ЖКХ",
+    "сервисные KPI МЖД",
+    "эффективность управляющей компании",
+    "метрики эксплуатации МЖД",
+    "AKYL KPI",
+  ],
+} as const;
+
 export function absoluteUrl(path = "/"): string {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
