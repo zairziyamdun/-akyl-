@@ -4,47 +4,76 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
-import { methodologyCards } from "@/widgets/mzhd-page";
 
-import { sectionMotion } from "../../model/mzhdMotion";
+import { methodologyCards } from "../../model/mzhd.data";
+import {
+  mzhdStagger,
+  mzhdStaggerItem,
+  sectionMotion,
+} from "../../model/mzhdMotion";
 
 export function MzhdMethodologySection() {
   return (
-    <motion.section
+    <section
       id="methodology"
-      className="py-16 sm:py-20"
-      {...sectionMotion}
+      className="scroll-mt-24 border-b border-slate-200 bg-white py-16 sm:py-20"
+      aria-labelledby="mzhd-methodology-heading"
     >
       <Container>
-        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Методология профессионального управления
-        </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {methodologyCards.map((card) => {
+        <motion.div {...sectionMotion}>
+          <p className="text-xs font-medium tracking-[0.18em] text-slate-500 uppercase">
+            Методология
+          </p>
+          <h2
+            id="mzhd-methodology-heading"
+            className="mt-3 max-w-3xl font-[family-name:var(--font-sora)] text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl"
+          >
+            Семь блоков профессионального управления
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
+            Каждый блок раскрывает отдельный контур системы — от теории и
+            архитектуры до KPI и стандартов качества.
+          </p>
+        </motion.div>
+
+        <motion.div
+          className="mt-12 divide-y divide-slate-200 border-y border-slate-200"
+          variants={mzhdStagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          {methodologyCards.map((card, index) => {
             const Icon = card.icon;
             return (
-              <article
-                key={card.title}
-                className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
-              >
-                <div className="inline-flex rounded-xl bg-slate-100 p-2.5 text-slate-700">
-                  <Icon size={20} />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold">{card.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {card.description}
-                </p>
+              <motion.div key={card.href} variants={mzhdStaggerItem}>
                 <Link
                   href={card.href}
-                  className="mt-5 inline-flex text-sm font-medium text-slate-900 underline-offset-4 transition group-hover:underline"
+                  className="group grid gap-4 py-6 transition-colors hover:bg-slate-50/80 sm:grid-cols-[3rem_2.5rem_1fr_auto] sm:items-center sm:gap-6 sm:py-7"
                 >
-                  Подробнее
+                  <span className="font-[family-name:var(--font-sora)] text-xs font-semibold tracking-[0.14em] text-slate-400 tabular-nums">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="inline-flex h-10 w-10 items-center justify-center bg-slate-900 text-white">
+                    <Icon size={18} strokeWidth={1.75} aria-hidden />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-semibold text-slate-900 group-hover:underline group-hover:underline-offset-4">
+                      {card.title}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-7 text-slate-600">
+                      {card.description}
+                    </p>
+                  </div>
+                  <span className="text-sm font-medium text-slate-900 sm:justify-self-end">
+                    Подробнее →
+                  </span>
                 </Link>
-              </article>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </Container>
-    </motion.section>
+    </section>
   );
 }

@@ -1,97 +1,90 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
-import {
-  heroKpiRows,
-  heroManagementIndex,
-  mzhdImages,
-} from "@/widgets/mzhd-page";
 
-import { sectionMotion } from "../../model/mzhdMotion";
+import { mzhdHero, mzhdImages } from "../../model/mzhd.data";
+import { mzhdStagger, mzhdStaggerItem } from "../../model/mzhdMotion";
 
 export function MzhdHeroSection() {
+  const reduced = useReducedMotion();
+
   return (
-    <section className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden">
-      <div className="absolute inset-0">
+    <section className="relative isolate min-h-[min(88svh,860px)] overflow-hidden text-white">
+      <motion.div
+        className="absolute inset-0"
+        initial={reduced ? false : { scale: 1.06 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+      >
         <Image
           src={mzhdImages.hero}
           alt={mzhdImages.heroAlt}
           fill
           priority
-          className="object-cover"
+          className="object-cover object-center"
+          sizes="100vw"
         />
-        <div className="absolute inset-0 bg-white/72" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/65" />
-      </div>
+      </motion.div>
 
-      <Container className="relative w-full py-20 sm:py-24 lg:py-28">
+      <div className="absolute inset-0 bg-slate-950/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-900/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-slate-950/35" />
+
+      <Container className="relative z-10 flex min-h-[min(88svh,860px)] flex-col justify-end pb-16 pt-28 sm:justify-center sm:pb-24 sm:pt-32">
         <motion.div
-          className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:gap-12"
-          {...sectionMotion}
+          className="max-w-3xl"
+          variants={mzhdStagger}
+          initial={reduced ? "show" : "hidden"}
+          animate="show"
         >
-          <div>
-            <span className="inline-flex rounded-full border border-slate-200 bg-white/85 px-4 py-1.5 text-xs font-medium tracking-[0.16em] text-slate-600 uppercase">
-              Управление МЖД
+          <motion.p
+            variants={mzhdStaggerItem}
+            className="font-[family-name:var(--font-sora)] text-sm font-semibold tracking-[0.28em] text-white/90 uppercase sm:text-base"
+          >
+            {mzhdHero.brand}
+            <span className="mx-3 inline-block h-3 w-px bg-white/35 align-middle" />
+            <span className="tracking-[0.18em] text-white/65">
+              {mzhdHero.audience}
             </span>
-            <h1 className="mt-6 text-4xl leading-tight font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-              Управление МЖД как профессиональная система
-            </h1>
-            <p className="mt-6 max-w-3xl text-base leading-8 text-slate-700 sm:text-lg">
-              Методология AKYL объединяет архитектуру управления, роли
-              участников, бизнес-процессы, финансы, KPI и цифровые инструменты в
-              единую систему управления многоквартирным домом.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Button asChild>
-                <Link href="#methodology">Изучить методологию</Link>
-              </Button>
-              <Button variant="secondary" asChild>
-                <Link href="/tools">Перейти к инструментам</Link>
-              </Button>
-            </div>
-          </div>
+          </motion.p>
 
-          <div className="rounded-3xl border border-slate-200/90 bg-white/92 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-slate-500">
-                {heroManagementIndex.panelLabel}
-              </p>
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                {heroManagementIndex.badge}
-              </span>
-            </div>
-            <p className="mt-3 text-4xl font-semibold tracking-tight">
-              {heroManagementIndex.score}
-            </p>
-            <div className="mt-6 space-y-4">
-              {heroKpiRows.map((row) => (
-                <div key={row.label}>
-                  <div className="mb-1.5 flex items-center justify-between text-sm">
-                    <span className="text-slate-600">{row.label}</span>
-                    <span className="font-medium text-slate-800">
-                      {row.value}%
-                    </span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full bg-slate-900"
-                      style={{ width: `${row.value}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-              <p className="font-medium text-slate-800">
-                {heroManagementIndex.contourTitle}
-              </p>
-              <p className="mt-2">{heroManagementIndex.contourFlow}</p>
-            </div>
-          </div>
+          <motion.h1
+            variants={mzhdStaggerItem}
+            className="mt-5 font-[family-name:var(--font-sora)] text-[2.15rem] font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.4rem]"
+          >
+            {mzhdHero.title}
+          </motion.h1>
+
+          <motion.p
+            variants={mzhdStaggerItem}
+            className="mt-6 max-w-2xl text-base leading-8 text-white/72 sm:text-lg"
+          >
+            {mzhdHero.description}
+          </motion.p>
+
+          <motion.div
+            variants={mzhdStaggerItem}
+            className="mt-10 flex flex-wrap gap-3"
+          >
+            <Button
+              asChild
+              className="h-12 rounded-xl bg-white px-6 text-slate-950 hover:bg-slate-100"
+            >
+              <Link href="#methodology">{mzhdHero.primaryCta}</Link>
+            </Button>
+            <Button
+              asChild
+              variant="secondary"
+              className="h-12 rounded-xl border-0 bg-white/10 text-white ring-1 ring-white/25 hover:bg-white/15"
+            >
+              <Link href="/tools">{mzhdHero.secondaryCta}</Link>
+            </Button>
+          </motion.div>
         </motion.div>
       </Container>
     </section>

@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 
 import {
   AkimatAnalyticsSection,
-  AkimatBenefitsSection,
+  AkimatCapabilitiesSection,
+  AkimatChallengesSection,
   AkimatControlSection,
   AkimatCtaSection,
+  AkimatDefinitionSection,
   AkimatHeroSection,
+  AkimatOutcomesSection,
+  AkimatProgramSection,
 } from "@/widgets/akimat-page";
 
 export const metadata: Metadata = {
@@ -18,9 +22,13 @@ export default function AkimatPage() {
   return (
     <main className="min-w-0 overflow-x-hidden bg-white text-slate-900">
       <AkimatHeroSection />
-      <AkimatBenefitsSection />
+      <AkimatDefinitionSection />
+      <AkimatChallengesSection />
+      <AkimatCapabilitiesSection />
       <AkimatControlSection />
       <AkimatAnalyticsSection />
+      <AkimatProgramSection />
+      <AkimatOutcomesSection />
       <AkimatCtaSection />
     </main>
   );

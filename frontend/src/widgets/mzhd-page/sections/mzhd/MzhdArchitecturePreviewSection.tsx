@@ -2,67 +2,105 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
+import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
+
 import {
   architectureLevels,
   architecturePreviewCards,
   mzhdImages,
-} from "@/widgets/mzhd-page";
-
-import { sectionMotion } from "../../model/mzhdMotion";
+} from "../../model/mzhd.data";
+import {
+  mzhdStagger,
+  mzhdStaggerItem,
+  sectionMotion,
+} from "../../model/mzhdMotion";
 
 export function MzhdArchitecturePreviewSection() {
   return (
-    <motion.section className="py-16 sm:py-20" {...sectionMotion}>
-      <Container>
-        <div className="grid gap-8 overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_20px_60px_rgba(15,23,42,0.08)] lg:grid-cols-2 lg:p-10">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight">
+    <section
+      className="relative isolate overflow-hidden border-b border-slate-800 bg-slate-950 py-16 text-white sm:py-20"
+      aria-labelledby="mzhd-architecture-heading"
+    >
+      <div className="absolute inset-0">
+        <Image
+          src={mzhdImages.architecturePreview}
+          alt=""
+          fill
+          className="object-cover object-center opacity-25"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-slate-950/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-950/65" />
+      </div>
+
+      <Container className="relative">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <motion.div {...sectionMotion}>
+            <p className="text-xs font-medium tracking-[0.18em] text-slate-400 uppercase">
+              Архитектура
+            </p>
+            <h2
+              id="mzhd-architecture-heading"
+              className="mt-3 font-[family-name:var(--font-sora)] text-3xl font-semibold tracking-tight sm:text-4xl"
+            >
               Архитектура управления домом
             </h2>
-            <p className="mt-4 text-slate-600">
-              Профессиональная модель управления выстраивается по уровням, где
-              каждый уровень имеет свои роли, решения и цифровой контур
-              контроля.
+            <p className="mt-5 text-base leading-8 text-slate-400">
+              Профессиональная модель выстраивается по уровням: у каждого — свои
+              роли, решения и цифровой контур контроля.
             </p>
-            <ul className="mt-6 space-y-3 text-sm">
-              {architectureLevels.map((item) => (
+
+            <ul className="mt-8 space-y-0 border-t border-white/15">
+              {architectureLevels.map((item, index) => (
                 <li
                   key={item}
-                  className="flex items-center gap-2 text-slate-700"
+                  className="flex items-center gap-4 border-b border-white/15 py-4 text-sm text-slate-200 sm:text-base"
                 >
-                  <span className="h-2 w-2 rounded-full bg-slate-900" />
+                  <span className="font-[family-name:var(--font-sora)] text-xs font-semibold tracking-[0.14em] text-slate-500 tabular-nums">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                   {item}
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <Image
-              src={mzhdImages.architecturePreview}
-              alt={mzhdImages.architecturePreviewAlt}
-              fill
-              className="object-cover opacity-18"
-            />
-            <div className="relative space-y-3">
-              {architecturePreviewCards.map((card) => (
-                <div
-                  key={card.levelLabel}
-                  className="rounded-xl border border-slate-200 bg-white/90 p-4 shadow-sm"
-                >
-                  <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
-                    {card.levelLabel}
-                  </p>
-                  <p className="mt-1 text-sm font-medium text-slate-800">
-                    {card.description}
-                  </p>
-                </div>
-              ))}
+
+            <div className="mt-8">
+              <Button
+                asChild
+                className="h-12 rounded-xl bg-white px-6 text-slate-950 hover:bg-slate-100"
+              >
+                <Link href="/mzhd/architecture">Подробнее об архитектуре</Link>
+              </Button>
             </div>
-          </div>
+          </motion.div>
+
+          <motion.div
+            className="space-y-0 border-t border-white/15 lg:border-t-0 lg:border-l lg:border-white/15 lg:pl-12"
+            variants={mzhdStagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.25 }}
+          >
+            {architecturePreviewCards.map((card) => (
+              <motion.article
+                key={card.levelLabel}
+                variants={mzhdStaggerItem}
+                className="border-b border-white/15 py-6"
+              >
+                <p className="text-xs font-medium tracking-[0.16em] text-slate-500 uppercase">
+                  {card.levelLabel}
+                </p>
+                <p className="mt-2 text-base font-medium text-slate-100">
+                  {card.description}
+                </p>
+              </motion.article>
+            ))}
+          </motion.div>
         </div>
       </Container>
-    </motion.section>
+    </section>
   );
 }

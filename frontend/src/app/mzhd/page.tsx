@@ -16,13 +16,13 @@ import {
   MzhdCtaSection,
   MzhdDefinitionSection,
   MzhdFaqSection,
-  mzhdDefinition,
   MzhdHeroSection,
-  mzhdFaqItems,
   MzhdIeuSection,
   MzhdMethodologySection,
   MzhdProblemsSection,
   MzhdSystemSection,
+  mzhdDefinition,
+  mzhdFaqItems,
 } from "@/widgets/mzhd-page";
 
 const MZHD_PATH = "/mzhd";
@@ -63,7 +63,7 @@ const mzhdJsonLd = jsonLdGraph([
 
 export default function MzhdPage() {
   return (
-    <main className="min-w-0 overflow-x-hidden bg-slate-50 text-slate-900">
+    <main className="min-w-0 overflow-x-hidden bg-white text-slate-900">
       <JsonLd data={mzhdJsonLd} />
       <MzhdHeroSection />
       <MzhdDefinitionSection />
