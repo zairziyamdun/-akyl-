@@ -38,7 +38,7 @@ async function getProfileByUserId(userId: string): Promise<Profile> {
 
 async function updateProfileAfterRegister(
   userId: string,
-  input: Pick<RegisterInput, "full_name" | "organization" | "phone">,
+  input: Pick<RegisterInput, "full_name" | "phone">,
 ): Promise<Profile> {
   const supabase = getSupabaseAdmin();
 
@@ -46,7 +46,7 @@ async function updateProfileAfterRegister(
     .from("profiles")
     .update({
       full_name: input.full_name,
-      organization: input.organization,
+      organization: null,
       phone: input.phone,
       role: "user",
       status: "active",
@@ -61,7 +61,7 @@ async function updateProfileAfterRegister(
       .upsert({
         id: userId,
         full_name: input.full_name,
-        organization: input.organization,
+        organization: null,
         phone: input.phone,
         role: "user",
         status: "active",
@@ -89,7 +89,6 @@ export async function registerUser(input: RegisterInput): Promise<void> {
     email_confirm: true,
     user_metadata: {
       full_name: input.full_name,
-      organization: input.organization,
       phone: input.phone,
     },
   });
@@ -98,7 +97,10 @@ export async function registerUser(input: RegisterInput): Promise<void> {
     throw new DatabaseError(error?.message ?? "Failed to create user", error);
   }
 
-  await updateProfileAfterRegister(data.user.id, input);
+  await updateProfileAfterRegister(data.user.id, {
+    full_name: input.full_name,
+    phone: input.phone,
+  });
 }
 
 export async function loginUser(input: LoginInput): Promise<AuthSessionResponse> {

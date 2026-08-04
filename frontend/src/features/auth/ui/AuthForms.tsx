@@ -2,13 +2,19 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { getPostLoginPath } from "@/entities/session";
 import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
+import { useToast } from "@/shared/ui/toast";
 import { AuthCard } from "@/widgets/dashboard-shell";
 import { AuthApiError, useAuth } from "../api/AuthProvider";
+import {
+  getPasswordRuleResults,
+  getPasswordStrengthError,
+  isPasswordStrong,
+} from "../lib/passwordStrength";
 
 type FormState = "idle" | "loading" | "success" | "error";
 
@@ -16,6 +22,7 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
+  const { success: toastSuccess, error: toastError } = useToast();
   const [state, setState] = useState<FormState>("idle");
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
@@ -50,14 +57,16 @@ export function LoginForm() {
             });
             const returnUrl =
               searchParams.get("returnUrl") ?? searchParams.get("next");
+            toastSuccess("Вход выполнен");
             router.push(returnUrl ?? getPostLoginPath(role));
           } catch (err) {
             setState("error");
-            setError(
+            const message =
               err instanceof AuthApiError
                 ? err.message
-                : "Не удалось войти. Проверьте email и пароль.",
-            );
+                : "Не удалось войти. Проверьте email и пароль.";
+            setError(message);
+            toastError(message);
           }
         }}
       >
@@ -121,13 +130,19 @@ export function LoginForm() {
 export function RegisterForm() {
   const router = useRouter();
   const { register } = useAuth();
+  const { success: toastSuccess, error: toastError } = useToast();
   const [state, setState] = useState<FormState>("idle");
   const [error, setError] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [organization, setOrganization] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const passwordRules = useMemo(
+    () => getPasswordRuleResults(password),
+    [password],
+  );
 
   return (
     <AuthCard
@@ -149,25 +164,46 @@ export function RegisterForm() {
         className="space-y-4"
         onSubmit={async (e) => {
           e.preventDefault();
-          setState("loading");
           setError("");
+
+          if (password !== passwordConfirm) {
+            const message = "Пароли не совпадают";
+            setState("error");
+            setError(message);
+            toastError(message);
+            return;
+          }
+
+          if (!isPasswordStrong(password)) {
+            const message =
+              getPasswordStrengthError(password) ??
+              "Пароль не соответствует требованиям";
+            setState("error");
+            setError(message);
+            toastError(message);
+            return;
+          }
+
+          setState("loading");
           try {
             await register({
               email,
               password,
               full_name: fullName,
-              organization,
               phone,
             });
             setState("success");
+            toastSuccess("Аккаунт создан. Войдите, чтобы получить доступ.");
+            // Do not auto-login — user must sign in explicitly.
             setTimeout(() => router.push("/login"), 1500);
           } catch (err) {
             setState("error");
-            setError(
+            const message =
               err instanceof AuthApiError
                 ? err.message
-                : "Не удалось создать аккаунт",
-            );
+                : "Не удалось создать аккаунт";
+            setError(message);
+            toastError(message);
           }
         }}
       >
@@ -182,7 +218,7 @@ export function RegisterForm() {
             id="register-full-name"
             placeholder="Иван Иванов"
             required
-            disabled={state === "loading"}
+            disabled={state === "loading" || state === "success"}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
@@ -199,25 +235,9 @@ export function RegisterForm() {
             type="email"
             placeholder="you@example.kz"
             required
-            disabled={state === "loading"}
+            disabled={state === "loading" || state === "success"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="register-organization"
-            className="mb-1.5 block text-sm font-medium text-slate-700"
-          >
-            Организация
-          </label>
-          <Input
-            id="register-organization"
-            placeholder="ОСИ / УК / Акимат"
-            required
-            disabled={state === "loading"}
-            value={organization}
-            onChange={(e) => setOrganization(e.target.value)}
           />
         </div>
         <div>
@@ -232,7 +252,7 @@ export function RegisterForm() {
             type="tel"
             placeholder="+7 777 000 0000"
             required
-            disabled={state === "loading"}
+            disabled={state === "loading" || state === "success"}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
@@ -250,9 +270,53 @@ export function RegisterForm() {
             placeholder="мин. 8 символов"
             required
             minLength={8}
-            disabled={state === "loading"}
+            autoComplete="new-password"
+            disabled={state === "loading" || state === "success"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <ul className="mt-2 space-y-1">
+            {passwordRules.map((rule) => (
+              <li
+                key={rule.id}
+                className={cn(
+                  "flex items-center gap-2 text-xs",
+                  rule.passed ? "text-emerald-700" : "text-slate-400",
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-semibold",
+                    rule.passed
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-slate-100 text-slate-400",
+                  )}
+                  aria-hidden
+                >
+                  {rule.passed ? "✓" : "·"}
+                </span>
+                {rule.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <label
+            htmlFor="register-password-confirm"
+            className="mb-1.5 block text-sm font-medium text-slate-700"
+          >
+            Подтверждение пароля
+          </label>
+          <Input
+            id="register-password-confirm"
+            type="password"
+            placeholder="повторите пароль"
+            required
+            minLength={8}
+            autoComplete="new-password"
+            disabled={state === "loading" || state === "success"}
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
           />
         </div>
 
@@ -264,7 +328,7 @@ export function RegisterForm() {
 
         {state === "success" ? (
           <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            Аккаунт создан. Перенаправление на вход…
+            Аккаунт создан. Войдите, чтобы получить доступ.
           </p>
         ) : null}
 

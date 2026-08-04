@@ -111,7 +111,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const register = useCallback(async (payload: RegisterPayload) => {
+    // Creates account only — no session / token. User must log in separately.
+    clearAccessToken();
     await registerRequest(payload);
+    clearAccessToken();
   }, []);
 
   const updateProfile = useCallback(

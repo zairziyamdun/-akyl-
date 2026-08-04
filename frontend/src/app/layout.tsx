@@ -12,6 +12,7 @@ import {
   siteOpenGraph,
   siteTwitter,
 } from "@/shared/seo";
+import { ToastProvider } from "@/shared/ui";
 import { AppChrome } from "@/widgets/site";
 
 const inter = Inter({
@@ -67,9 +68,11 @@ export default function RootLayout({
     <html lang="ru" className={`${inter.variable} ${sora.variable}`}>
       <body className="flex min-h-screen flex-col antialiased">
         <AuthProvider>
-          <JournalIssuesProvider>
-            <AppChrome>{children}</AppChrome>
-          </JournalIssuesProvider>
+          <ToastProvider>
+            <JournalIssuesProvider>
+              <AppChrome>{children}</AppChrome>
+            </JournalIssuesProvider>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

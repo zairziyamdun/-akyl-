@@ -1,10 +1,20 @@
 import { z } from "zod";
 
+const strongPasswordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-ZА-ЯЁ]/, "Password must include an uppercase letter")
+  .regex(/[a-zа-яё]/, "Password must include a lowercase letter")
+  .regex(/\d/, "Password must include a digit")
+  .regex(
+    /[^A-Za-zА-Яа-яЁё0-9\s]/,
+    "Password must include a special character",
+  );
+
 export const registerSchema = z.object({
   email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: strongPasswordSchema,
   full_name: z.string().min(1, "Full name is required"),
-  organization: z.string().min(1, "Organization is required"),
   phone: z.string().min(1, "Phone is required"),
 });
 
