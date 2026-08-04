@@ -1,6 +1,11 @@
 import { ApiError, apiFetch } from "@/shared/api";
 
-import type { ConsultationPayload, ConsultationResponse } from "../model/types";
+import type {
+  ConsultationPayload,
+  ConsultationRequest,
+  ConsultationResponse,
+  ConsultationStatus,
+} from "../model/types";
 
 export class ConsultationApiError extends ApiError {
   constructor(message: string, status: number) {
@@ -9,22 +14,50 @@ export class ConsultationApiError extends ApiError {
   }
 }
 
-export async function submitConsultationRequest(
-  payload: ConsultationPayload,
-): Promise<ConsultationResponse | undefined> {
+async function consultationFetch<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> {
   try {
-    return await apiFetch<ConsultationResponse | undefined>(
-      "/api/consultation",
-      {
-        method: "POST",
-        body: JSON.stringify(payload),
-        errorName: "ConsultationApiError",
-      },
-    );
+    return await apiFetch<T>(path, {
+      ...options,
+      errorName: "ConsultationApiError",
+    });
   } catch (err) {
     if (err instanceof ApiError) {
       throw new ConsultationApiError(err.message, err.status);
     }
     throw err;
   }
+}
+
+export async function submitConsultationRequest(
+  payload: ConsultationPayload,
+): Promise<ConsultationResponse | undefined> {
+  return consultationFetch<ConsultationResponse | undefined>(
+    "/api/consultation",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+  );
+}
+
+export async function listConsultationRequests(): Promise<
+  ConsultationRequest[]
+> {
+  return consultationFetch<ConsultationRequest[]>("/api/consultation");
+}
+
+export async function updateConsultationRequestStatus(
+  id: string,
+  status: ConsultationStatus,
+): Promise<ConsultationRequest> {
+  return consultationFetch<ConsultationRequest>(
+    `/api/consultation/${id}/status`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    },
+  );
 }

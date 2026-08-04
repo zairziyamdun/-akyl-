@@ -1,6 +1,5 @@
 import type { PlatformRole } from "@/entities/session";
 
-export type RequestStatus = "new" | "in_progress" | "closed";
 export type ContentStatus = "draft" | "review" | "published" | "archived";
 export type SystemStatus = "ok" | "warning" | "error";
 
@@ -34,49 +33,6 @@ export const mockSystemStatuses = [
   },
   { name: "Supabase", status: "ok" as SystemStatus, detail: "Connected" },
   { name: "Telegram", status: "warning" as SystemStatus, detail: "Mock mode" },
-];
-
-export const mockConsultationRequests = [
-  {
-    id: "req_001",
-    name: "Заир К.",
-    organization: "ОСИ дома №12",
-    role: "ОСИ",
-    email: "zair@example.kz",
-    status: "new" as RequestStatus,
-    createdAt: "2026-06-05",
-    message: "Нужна консультация по внедрению KPI",
-  },
-  {
-    id: "req_002",
-    name: "Алма Т.",
-    organization: "УК «Город»",
-    role: "Управляющая компания",
-    email: "alma@uk.kz",
-    status: "in_progress" as RequestStatus,
-    createdAt: "2026-06-04",
-    message: "Аудит процессов управления МЖД",
-  },
-  {
-    id: "req_003",
-    name: "Ерлан М.",
-    organization: "Акимат",
-    role: "Акимат",
-    email: "erlan@akimat.kz",
-    status: "closed" as RequestStatus,
-    createdAt: "2026-06-01",
-    message: "Пилотная программа AKYL",
-  },
-  {
-    id: "req_004",
-    name: "Дина С.",
-    organization: "Совет дома",
-    role: "ОСИ",
-    email: "dina@mail.kz",
-    status: "new" as RequestStatus,
-    createdAt: "2026-06-05",
-    message: "Прозрачность финансов и отчётность",
-  },
 ];
 
 export const mockUsers = [

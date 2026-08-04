@@ -159,7 +159,9 @@ pnpm dev       # http://localhost:3000
 | `GET/POST/PATCH/DELETE` | `/api/journal/issues` | Выпуски журнала |
 | `POST` | `/api/journal/upload-cover` | Загрузка обложки |
 | `POST` | `/api/journal/upload-pdf` | Загрузка PDF |
-| `POST` | `/api/consultation` | Заявка на консультацию |
+| `POST` | `/api/consultation` | Заявка на консультацию (публично) |
+| `GET` | `/api/consultation` | Список заявок (admin) |
+| `PATCH` | `/api/consultation/:id/status` | Смена статуса заявки (admin) |
 | `GET` | `/api/admin/users` | Список пользователей (admin) |
 | `PATCH` | `/api/admin/users/:id/role` | Смена роли (admin) |
 | `PATCH` | `/api/admin/users/:id/status` | Смена статуса (admin) |

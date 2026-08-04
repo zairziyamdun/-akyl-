@@ -1,16 +1,43 @@
 import { Router } from "express";
 
-import { asyncHandler } from "../../common/async-handler.js";
+import {
+  authMiddleware,
+  roleMiddleware,
+} from "../../middleware/auth.middleware.js";
 import { validateBody } from "../../middleware/validate.middleware.js";
-import { createConsultationHandler } from "./consultation.controller.js";
-import { createConsultationSchema } from "./consultation.schema.js";
+import {
+  createConsultationHandler,
+  listConsultationRequestsHandler,
+  updateConsultationStatusHandler,
+} from "./consultation.controller.js";
+import {
+  createConsultationSchema,
+  updateConsultationStatusSchema,
+} from "./consultation.schema.js";
 
 const consultationRouter = Router();
 
+/** Public — site consultation form */
 consultationRouter.post(
   "/",
   validateBody(createConsultationSchema),
-  asyncHandler(createConsultationHandler),
+  createConsultationHandler,
+);
+
+/** Admin — list & status updates */
+consultationRouter.get(
+  "/",
+  authMiddleware,
+  roleMiddleware(["admin"]),
+  listConsultationRequestsHandler,
+);
+
+consultationRouter.patch(
+  "/:id/status",
+  authMiddleware,
+  roleMiddleware(["admin"]),
+  validateBody(updateConsultationStatusSchema),
+  updateConsultationStatusHandler,
 );
 
 export default consultationRouter;
