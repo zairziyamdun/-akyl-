@@ -137,7 +137,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
 
   return (
     <section
-      className="relative isolate overflow-hidden bg-slate-950 lg:min-h-[100svh]"
+      className="page-hero-height relative isolate overflow-hidden bg-slate-950"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -190,7 +190,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
         </>
       ) : null}
 
-      <div className="relative mx-auto flex w-full max-w-7xl flex-col px-4 pb-36 pt-20 sm:px-6 sm:pb-32 sm:pt-24 lg:min-h-[100svh] lg:px-8 lg:pb-32 lg:pt-24">
+      <div className="page-hero-height relative mx-auto flex w-full max-w-7xl flex-col px-4 pb-36 pt-20 sm:px-6 sm:pb-32 sm:pt-24 lg:px-8 lg:pb-32 lg:pt-24">
         <div className="flex flex-1 flex-col items-center justify-center py-6 sm:py-8 lg:py-0">
           <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
             <AnimatePresence mode="wait">

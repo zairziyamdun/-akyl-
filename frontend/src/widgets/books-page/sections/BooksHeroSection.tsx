@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -28,7 +28,7 @@ export function BooksHeroSection() {
   const backBookTwo = bookItems[(activeIndex + 2) % bookItems.length];
 
   return (
-    <section className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-white/10 bg-[#071019] text-white">
+    <section className="relative isolate flex page-hero-height items-center overflow-hidden border-b border-white/10 bg-[#071019] text-white">
       <div className="absolute inset-0" aria-hidden>
         <div className="absolute inset-0 bg-[#071019]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(212,186,122,0.14),transparent_20%),radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.05),transparent_24%),linear-gradient(180deg,rgba(7,16,25,0.88)_0%,rgba(7,16,25,0.94)_52%,rgba(7,16,25,1)_100%)]" />

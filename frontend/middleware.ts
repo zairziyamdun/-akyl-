@@ -1,36 +1,25 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type { HouseMembership, PlatformRole } from "@/entities/session";
+import { canAccessPath } from "@/entities/session/lib/roleAccess";
+import type { PlatformRole } from "@/entities/session/model/types";
 import { AUTH_COOKIE_KEY } from "@/shared/auth";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "") ??
   "http://localhost:4000";
 
-type RouteRule =
-  | { prefix: string; kind: "platform"; roles: PlatformRole[] }
-  | { prefix: string; kind: "manager" };
+const PROTECTED_PREFIXES = ["/admin", "/studio", "/app"] as const;
 
-const PROTECTED_ROUTES: RouteRule[] = [
-  { prefix: "/admin", kind: "platform", roles: ["admin"] },
-  { prefix: "/manager", kind: "manager" },
-  { prefix: "/studio", kind: "platform", roles: ["journalist", "admin"] },
-  {
-    prefix: "/app",
-    kind: "platform",
-    roles: ["user", "journalist", "admin"],
-  },
-];
-
-function matchRoute(pathname: string): RouteRule | undefined {
-  return PROTECTED_ROUTES.find((r) => pathname.startsWith(r.prefix));
+function isProtectedPath(pathname: string): boolean {
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const rule = matchRoute(pathname);
 
-  if (!rule) {
+  if (!isProtectedPath(pathname)) {
     return NextResponse.next();
   }
 
@@ -60,33 +49,12 @@ export async function middleware(request: NextRequest) {
       success: boolean;
       data?: {
         role: PlatformRole;
-        canAccessManagerCabinet?: boolean;
-        houseMemberships?: HouseMembership[];
       };
     };
 
     const role = body.data?.role;
 
-    if (!role) {
-      const deniedUrl = request.nextUrl.clone();
-      deniedUrl.pathname = "/403";
-      deniedUrl.searchParams.set("from", pathname);
-      return NextResponse.redirect(deniedUrl);
-    }
-
-    if (rule.kind === "manager") {
-      const allowed =
-        role === "admin" || Boolean(body.data?.canAccessManagerCabinet);
-      if (!allowed) {
-        const deniedUrl = request.nextUrl.clone();
-        deniedUrl.pathname = "/403";
-        deniedUrl.searchParams.set("from", pathname);
-        return NextResponse.redirect(deniedUrl);
-      }
-      return NextResponse.next();
-    }
-
-    if (!rule.roles.includes(role)) {
+    if (!role || !canAccessPath(role, pathname)) {
       const deniedUrl = request.nextUrl.clone();
       deniedUrl.pathname = "/403";
       deniedUrl.searchParams.set("from", pathname);
@@ -103,10 +71,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/app/:path*",
-    "/studio/:path*",
-    "/admin/:path*",
-    "/manager/:path*",
-  ],
+  matcher: ["/app/:path*", "/studio/:path*", "/admin/:path*"],
 };

@@ -7,7 +7,6 @@ import {
   getNavForRole,
   getShellTitle,
   type NavSection,
-  useAuth,
 } from "@/features/auth";
 import { useSidebarCollapsed } from "@/shared/hooks/useSidebarCollapsed";
 import { Sheet, SheetContent } from "@/shared/ui/sheet";
@@ -33,10 +32,8 @@ export function AppShell({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { collapsed, toggleCollapsed, hydrated } = useSidebarCollapsed();
-  const { canAccessManagerCabinet } = useAuth();
-  const navOptions = { canAccessManagerCabinet };
-  const sections = sectionsProp ?? getNavForRole(role, navOptions);
-  const title = titleProp ?? getShellTitle(role, navOptions);
+  const sections = sectionsProp ?? getNavForRole(role);
+  const title = titleProp ?? getShellTitle(role);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -63,7 +60,6 @@ export function AppShell({
           className="relative sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r border-[#E2E8F0] bg-white md:flex"
         >
           <DashboardSidebarPanel
-            role={role}
             sections={sections}
             collapsed={isCollapsed}
             showCollapseToggle
@@ -77,7 +73,6 @@ export function AppShell({
             className="w-[280px] border-[#E2E8F0] p-0 shadow-2xl"
           >
             <DashboardSidebarPanel
-              role={role}
               sections={sections}
               collapsed={false}
               onNavigate={() => setMobileOpen(false)}

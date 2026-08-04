@@ -175,18 +175,6 @@ export async function deleteAdminUser(
     throw new ValidationError("User not found");
   }
 
-  const { error: membershipError } = await supabase
-    .from("house_users")
-    .delete()
-    .eq("user_id", targetUserId);
-
-  if (membershipError) {
-    throw new DatabaseError(
-      "Failed to remove house memberships",
-      membershipError,
-    );
-  }
-
   const { error: authDeleteError } =
     await supabase.auth.admin.deleteUser(targetUserId);
 

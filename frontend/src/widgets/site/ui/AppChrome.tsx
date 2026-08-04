@@ -7,7 +7,7 @@ import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password"];
-const DASHBOARD_PREFIXES = ["/app", "/admin", "/studio", "/manager"];
+const DASHBOARD_PREFIXES = ["/app", "/admin", "/studio"];
 
 function isAuthRoute(pathname: string) {
   return AUTH_ROUTES.some(

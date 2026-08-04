@@ -11,36 +11,10 @@ import {
   toAuthUser,
   type AuthMeResponse,
   type AuthSessionResponse,
-  type HouseMembershipDto,
   type Profile,
   isActiveProfileStatus,
   normalizeProfileRole,
 } from "./auth.types.js";
-import { canAccessManagerCabinet } from "../houses/house.permissions.js";
-import { listUserHouseMemberships } from "../houses/houses.permissions.js";
-import type { HouseRole } from "../houses/houses.types.js";
-import type { MembershipStatus } from "../houses/house.permissions.js";
-
-async function buildAuthExtras(userId: string, role: Profile["role"]) {
-  const rows = await listUserHouseMemberships(userId);
-  const houseMemberships: HouseMembershipDto[] = rows.map((row) => ({
-    id: row.id,
-    houseId: row.house_id,
-    role: row.house_role,
-    status: row.status,
-  }));
-
-  return {
-    houseMemberships,
-    canAccessManagerCabinet: canAccessManagerCabinet(
-      role,
-      rows.map((row) => ({
-        role: row.house_role as HouseRole,
-        status: row.status as MembershipStatus,
-      })),
-    ),
-  };
-}
 
 async function getProfileByUserId(userId: string): Promise<Profile> {
   const supabase = getSupabaseAdmin();
@@ -153,14 +127,11 @@ export async function loginUser(input: LoginInput): Promise<AuthSessionResponse>
     throw new ForbiddenError("Account is not active");
   }
 
-  const extras = await buildAuthExtras(data.user.id, profile.role);
-
   return {
     user: toAuthUser(data.user),
     profile,
     role: profile.role,
     access_token: data.session.access_token,
-    ...extras,
   };
 }
 
@@ -179,13 +150,10 @@ export async function getMe(accessToken: string): Promise<AuthMeResponse> {
     throw new ForbiddenError("Account is not active");
   }
 
-  const extras = await buildAuthExtras(data.user.id, profile.role);
-
   return {
     user: toAuthUser(data.user),
     profile,
     role: profile.role,
-    ...extras,
   };
 }
 

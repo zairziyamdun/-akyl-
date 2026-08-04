@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/shared/ui/Container";
@@ -9,7 +9,7 @@ import {
 
 export function MzhdArchitectureHeroSection() {
   return (
-    <section className="relative min-h-[80vh] overflow-hidden text-white">
+    <section className="relative page-hero-height overflow-hidden text-white">
       <div className="absolute inset-0">
         <Image
           src={mzhdArchitectureImages.hero}
@@ -21,7 +21,7 @@ export function MzhdArchitectureHeroSection() {
         />
         <div className="absolute inset-0 bg-black/60" />
       </div>
-      <Container className="relative z-10 flex min-h-[80vh] flex-col justify-center py-20">
+      <Container className="relative z-10 flex page-hero-height flex-col justify-center py-20">
         <span className="mb-4 inline-flex w-fit rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase">
           {mzhdArchitectureHero.badge}
         </span>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Activity, ClipboardList } from "lucide-react";
@@ -44,7 +44,7 @@ export function ConsultationHero() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-white/10">
+    <section className="relative isolate flex page-hero-height items-center overflow-hidden border-b border-white/10">
       <Image
         src={consultationImages.hero}
         alt=""

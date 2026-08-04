@@ -3,14 +3,10 @@
 import Link from "next/link";
 import type { PlatformRole } from "@/entities/session";
 import { getRoleDashboardPath } from "@/entities/session";
-import { useAuth } from "@/features/auth";
 import { Button } from "@/shared/ui/Button";
 
 export function AccessDenied({ role }: { role?: PlatformRole }) {
-  const { canAccessManagerCabinet } = useAuth();
-  const home = role
-    ? getRoleDashboardPath(role, { canAccessManagerCabinet })
-    : "/";
+  const home = role ? getRoleDashboardPath(role) : "/";
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">

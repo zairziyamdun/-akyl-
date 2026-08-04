@@ -14,7 +14,6 @@ export * from "./ui/RoleGuard";
 export * from "./ui/StatCard";
 export * from "./ui/StatusBadge";
 export * from "./ui/sidebar/DashboardSidebarPanel";
-export * from "./ui/sidebar/MyHousesNav";
 export * from "./ui/sidebar/SidebarCollapseToggle";
 export * from "./ui/sidebar/SidebarItem";
 export * from "./ui/sidebar/SidebarLogo";

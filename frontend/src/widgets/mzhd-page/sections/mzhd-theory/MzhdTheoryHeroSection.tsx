@@ -13,7 +13,7 @@ import {
 
 export function MzhdTheoryHeroSection() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-slate-200/80">
+    <section className="page-hero-height relative isolate flex items-center overflow-hidden border-b border-slate-200/80">
       <div className="absolute inset-0">
         <Image
           src={mzhdTheoryImages.hero}

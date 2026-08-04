@@ -6,13 +6,6 @@ export {
   setAccessToken,
 } from "@/shared/auth";
 export {
-  canAccessManagerCabinetFromMemberships,
-  getActiveHouseMembership,
-  getHousePermissions,
-  type HousePermission,
-  hasHousePermission,
-} from "./lib/housePermissions";
-export {
   getPlatformPermissions,
   hasPlatformPermission,
   type PlatformPermission,
@@ -25,12 +18,8 @@ export {
   getRoleDashboardPath,
 } from "./lib/roleAccess";
 export type {
-  AkylRole,
   AuthProfile,
   AuthUser,
-  HouseMembership,
-  HouseMembershipStatus,
-  HouseRole,
   LoginPayload,
   LoginResponse,
   MeResponse,

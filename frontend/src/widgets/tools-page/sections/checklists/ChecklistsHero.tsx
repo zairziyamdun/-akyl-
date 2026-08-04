@@ -1,4 +1,4 @@
-import { ClipboardCheck, Gauge, ListChecks } from "lucide-react";
+﻿import { ClipboardCheck, Gauge, ListChecks } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
@@ -24,7 +24,7 @@ const highlights = [
 
 export function ChecklistsHero() {
   return (
-    <header className="flex min-h-[min(72svh,780px)] items-center border-b border-black/5 bg-gradient-to-b from-slate-50 to-white">
+    <header className="flex page-hero-height items-center border-b border-black/5 bg-gradient-to-b from-slate-50 to-white">
       <Container className="w-full py-20 md:py-24 lg:py-28">
         <div className="grid items-start gap-12 lg:grid-cols-[1fr_minmax(0,380px)] lg:gap-16">
           <div>

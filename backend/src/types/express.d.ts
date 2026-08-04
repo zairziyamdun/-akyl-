@@ -1,4 +1,4 @@
-import type { AuthMeResponse, AuthUserResponse, Profile } from "../modules/auth/auth.types.js";
+import type { AuthUserResponse, Profile } from "../modules/auth/auth.types.js";
 
 declare global {
   namespace Express {
@@ -10,4 +10,4 @@ declare global {
   }
 }
 
-export type { AuthMeResponse, AuthUserResponse, Profile };
+export {};

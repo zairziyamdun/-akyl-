@@ -36,23 +36,12 @@ export type AuthSessionResponse = {
   profile: Profile;
   role: ProfileRole;
   access_token: string;
-  houseMemberships: HouseMembershipDto[];
-  canAccessManagerCabinet: boolean;
 };
 
 export type AuthMeResponse = {
   user: AuthUserResponse;
   profile: Profile;
   role: ProfileRole;
-  houseMemberships: HouseMembershipDto[];
-  canAccessManagerCabinet: boolean;
-};
-
-export type HouseMembershipDto = {
-  id: string;
-  houseId: string;
-  role: string;
-  status: "pending" | "active" | "blocked";
 };
 
 export function toAuthUser(user: User): AuthUserResponse {

@@ -1,11 +1,11 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
 
 export function IEUHero() {
   return (
-    <header className="flex min-h-[min(72svh,780px)] items-center border-b border-black/5 bg-gradient-to-b from-slate-50 to-white">
+    <header className="flex page-hero-height items-center border-b border-black/5 bg-gradient-to-b from-slate-50 to-white">
       <Container className="w-full py-20 md:py-24 lg:py-28">
         <div className="mx-auto max-w-4xl text-center">
           <p className="mb-4 inline-flex items-center rounded-full border border-black/10 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">

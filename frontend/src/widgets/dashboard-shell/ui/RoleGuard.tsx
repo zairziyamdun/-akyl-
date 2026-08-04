@@ -10,13 +10,7 @@ import { AccessDenied } from "./AccessDenied";
 export function RoleGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const {
-    role,
-    isAuthenticated,
-    isLoading,
-    canAccessManagerCabinet,
-    houseMemberships,
-  } = useAuth();
+  const { role, isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -36,12 +30,7 @@ export function RoleGuard({ children }: { children: ReactNode }) {
     return null;
   }
 
-  if (
-    !canAccessPath(role, pathname, {
-      canAccessManagerCabinet,
-      houseMemberships,
-    })
-  ) {
+  if (!canAccessPath(role, pathname)) {
     return <AccessDenied role={role as PlatformRole} />;
   }
 

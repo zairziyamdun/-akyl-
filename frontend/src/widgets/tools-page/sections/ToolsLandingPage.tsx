@@ -121,7 +121,7 @@ function HeroSection() {
   );
 
   return (
-    <section className="overflow-hidden border-b border-black/5 bg-[radial-gradient(ellipse_80%_60%_at_15%_0%,rgba(15,23,42,0.06),transparent_60%),radial-gradient(ellipse_60%_45%_at_85%_10%,rgba(99,102,241,0.10),transparent_62%),#fff] py-14 md:py-20">
+    <section className="page-hero-height flex items-center overflow-hidden border-b border-black/5 bg-[radial-gradient(ellipse_80%_60%_at_15%_0%,rgba(15,23,42,0.06),transparent_60%),radial-gradient(ellipse_60%_45%_at_85%_10%,rgba(99,102,241,0.10),transparent_62%),#fff] py-14 md:py-20">
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div>

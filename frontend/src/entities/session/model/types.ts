@@ -1,26 +1,6 @@
 export type PlatformRole = "user" | "journalist" | "admin";
 
-/** @deprecated Use PlatformRole */
-export type AkylRole = PlatformRole;
-
 export type ProfileStatus = "active" | "suspended" | "blocked" | "pending";
-
-export type HouseMembershipStatus = "pending" | "active" | "blocked";
-
-export type HouseRole =
-  | "resident"
-  | "chairman"
-  | "manager"
-  | "accountant"
-  | "engineer"
-  | "dispatcher";
-
-export type HouseMembership = {
-  id: string;
-  houseId: string;
-  role: HouseRole;
-  status: HouseMembershipStatus;
-};
 
 export type AuthProfile = {
   id: string;
@@ -47,16 +27,12 @@ export type LoginResponse = {
   profile: AuthProfile;
   role: PlatformRole;
   access_token: string;
-  houseMemberships: HouseMembership[];
-  canAccessManagerCabinet: boolean;
 };
 
 export type MeResponse = {
   user: { id: string; email: string };
   profile: AuthProfile;
   role: PlatformRole;
-  houseMemberships: HouseMembership[];
-  canAccessManagerCabinet: boolean;
 };
 
 export type RegisterPayload = {

@@ -18,7 +18,6 @@ export const adminNav: NavSection[] = [
   {
     title: "Управление",
     items: [
-      { label: "Мои ЖК", href: "/admin/houses", icon: "⌂" },
       { label: "Пользователи", href: "/admin/users", icon: "◎" },
       { label: "Роли", href: "/admin/roles", icon: "◈" },
       { label: "Заявки", href: "/admin/requests", icon: "✉" },
@@ -59,7 +58,7 @@ export const studioNav: NavSection[] = [
   },
 ];
 
-/** Platform user cabinet — no ЖК workspace panels. */
+/** Platform user cabinet. */
 export const userNav: NavSection[] = [
   {
     items: [{ label: "Главная", href: "/app", icon: "◫" }],
@@ -69,7 +68,6 @@ export const userNav: NavSection[] = [
     items: [
       { label: "Подписки", href: "/app/subscriptions", icon: "★" },
       { label: "Материалы", href: "/app/materials", icon: "▣" },
-      { label: "Мои ЖК", href: "/app/houses", icon: "⌂" },
     ],
   },
   {
@@ -81,10 +79,7 @@ export const userNav: NavSection[] = [
   },
 ];
 
-export function getNavForRole(
-  role: PlatformRole,
-  _options?: { canAccessManagerCabinet?: boolean },
-): NavSection[] {
+export function getNavForRole(role: PlatformRole): NavSection[] {
   switch (role) {
     case "admin":
       return adminNav;
@@ -95,10 +90,7 @@ export function getNavForRole(
   }
 }
 
-export function getShellTitle(
-  role: PlatformRole,
-  _options?: { canAccessManagerCabinet?: boolean },
-): string {
+export function getShellTitle(role: PlatformRole): string {
   switch (role) {
     case "admin":
       return "Admin";
@@ -109,10 +101,7 @@ export function getShellTitle(
   }
 }
 
-export function getShellBasePath(
-  role: PlatformRole,
-  _options?: { canAccessManagerCabinet?: boolean },
-): string {
+export function getShellBasePath(role: PlatformRole): string {
   switch (role) {
     case "admin":
       return "/admin";

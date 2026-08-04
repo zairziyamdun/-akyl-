@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { CheckCircle2, CircleDot } from "lucide-react";
@@ -32,7 +32,7 @@ const badges = ["Диагностика", "Аудит", "KPI", "BI", "Контр
 export function ImplementationHero() {
   return (
     <section
-      className="relative isolate flex min-h-[min(72svh,780px)] items-center overflow-hidden border-b border-stone-200/60"
+      className="relative isolate flex page-hero-height items-center overflow-hidden border-b border-stone-200/60"
       style={{
         background:
           "linear-gradient(165deg, #f7f3ea 0%, #f8f5ef 45%, #f3efe6 100%)",

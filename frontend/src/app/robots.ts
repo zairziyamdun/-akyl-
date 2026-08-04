@@ -9,8 +9,6 @@ const PRIVATE_PATHS = [
   "/app/",
   "/studio",
   "/studio/",
-  "/manager",
-  "/manager/",
   "/login",
   "/register",
   "/forgot-password",

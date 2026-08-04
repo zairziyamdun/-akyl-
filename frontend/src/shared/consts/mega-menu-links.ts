@@ -167,11 +167,6 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             href: "/implementation",
             icon: Users,
           },
-          {
-            title: "Мои ЖК",
-            href: "/app/houses",
-            icon: Settings2,
-          },
         ],
       },
       {

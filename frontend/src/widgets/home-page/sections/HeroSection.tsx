@@ -252,7 +252,7 @@ export function HeroSection() {
         </AnimatePresence>
       </div>
 
-      <div className="relative mx-auto flex min-h-[calc(100svh-4.25rem)] w-full max-w-7xl items-center px-4 py-14 sm:min-h-[calc(100svh-4.5rem)] sm:px-6 sm:py-16 md:py-20 lg:min-h-[calc(100svh-6.5rem)] lg:px-8 lg:py-20 xl:py-24">
+      <div className="page-hero-height relative mx-auto flex w-full max-w-7xl items-center px-4 py-14 sm:px-6 sm:py-16 md:py-20 lg:px-8 lg:py-20 xl:py-24">
         <div className="grid w-full min-w-0 max-w-full grid-cols-1 items-center gap-8 sm:gap-9 md:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(260px,1fr)] lg:gap-9 xl:grid-cols-[minmax(0,1fr)_minmax(300px,430px)] xl:gap-12">
           <div className="min-w-0 max-w-full lg:max-w-3xl">
             <AnimatePresence mode="wait">

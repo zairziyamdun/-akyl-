@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
@@ -18,7 +18,7 @@ export function AkimatHeroSection() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative isolate min-h-[min(92svh,900px)] overflow-hidden text-white">
+    <section className="relative isolate page-hero-height overflow-hidden text-white">
       <motion.div
         className="absolute inset-0"
         initial={reduced ? false : { scale: 1.08 }}
@@ -53,7 +53,7 @@ export function AkimatHeroSection() {
         }}
       />
 
-      <Container className="relative z-10 flex min-h-[min(92svh,900px)] flex-col justify-end pb-16 pt-28 sm:justify-center sm:pb-24 sm:pt-32">
+      <Container className="relative z-10 flex page-hero-height flex-col justify-end pb-16 pt-28 sm:justify-center sm:pb-24 sm:pt-32">
         <motion.div
           className="max-w-3xl"
           variants={akimatStagger}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -119,7 +119,7 @@ export function ToolsHero() {
   }, [activeTool.status]);
 
   return (
-    <section className="flex min-h-[min(72svh,780px)] items-center border-b border-slate-200/60 bg-gradient-to-b from-sky-50 via-white to-white">
+    <section className="flex page-hero-height items-center border-b border-slate-200/60 bg-gradient-to-b from-sky-50 via-white to-white">
       <Container className="w-full py-20 md:py-24 lg:py-28">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <AnimatePresence mode="wait">

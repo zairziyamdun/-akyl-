@@ -23,12 +23,10 @@ function buildBreadcrumbs(pathname: string) {
           ? "Studio"
           : segment === "app"
             ? "Кабинет"
-            : segment === "manager"
-              ? "Мои ЖК"
-              : segment === "articles" && segments.includes("new")
-                ? "Новая статья"
-                : segment.charAt(0).toUpperCase() +
-                  segment.slice(1).replace(/-/g, " ");
+            : segment === "articles" && segments.includes("new")
+              ? "Новая статья"
+              : segment.charAt(0).toUpperCase() +
+                segment.slice(1).replace(/-/g, " ");
     crumbs.push({ label, href: path });
   }
 
@@ -45,7 +43,7 @@ export function Topbar({
   showMenuButton?: boolean;
 }) {
   const pathname = usePathname();
-  const { user, role, logout, canAccessManagerCabinet } = useAuth();
+  const { user, role, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const crumbs = buildBreadcrumbs(pathname);
@@ -134,9 +132,7 @@ export function Topbar({
                     </p>
                   </div>
                   <Link
-                    href={getRoleDashboardPath(role, {
-                      canAccessManagerCabinet,
-                    })}
+                    href={getRoleDashboardPath(role)}
                     className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                     onClick={() => setMenuOpen(false)}
                   >
@@ -170,14 +166,7 @@ export function Topbar({
 }
 
 export function PublicUserMenu() {
-  const {
-    isAuthenticated,
-    isLoading,
-    user,
-    role,
-    logout,
-    canAccessManagerCabinet,
-  } = useAuth();
+  const { isAuthenticated, isLoading, user, role, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -206,9 +195,7 @@ export function PublicUserMenu() {
     );
   }
 
-  const dashboardHref = getRoleDashboardPath(role, {
-    canAccessManagerCabinet,
-  });
+  const dashboardHref = getRoleDashboardPath(role);
 
   return (
     <div className="relative hidden md:block" ref={ref}>
@@ -239,9 +226,7 @@ export function PublicUserMenu() {
               ? "Admin"
               : role === "journalist"
                 ? "Studio"
-                : canAccessManagerCabinet
-                  ? "Мои ЖК"
-                  : "Кабинет"}
+                : "Кабинет"}
           </Link>
           <button
             type="button"

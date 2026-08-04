@@ -1,13 +1,8 @@
-import type { HouseMembership, PlatformRole } from "../model/types";
-import { canAccessManagerCabinetFromMemberships } from "./housePermissions";
-import { hasPlatformPermission } from "./platformPermissions";
+import type { PlatformRole } from "../model/types";
 
-type DashboardPrefix = "/app" | "/studio" | "/admin" | "/manager";
+type DashboardPrefix = "/app" | "/studio" | "/admin";
 
-const PLATFORM_DASHBOARD_ACCESS: Record<
-  Exclude<DashboardPrefix, "/manager">,
-  PlatformRole[]
-> = {
+const PLATFORM_DASHBOARD_ACCESS: Record<DashboardPrefix, PlatformRole[]> = {
   "/app": ["user", "journalist", "admin"],
   "/studio": ["journalist", "admin"],
   "/admin": ["admin"],
@@ -20,28 +15,10 @@ export function getAllowedRolesForPath(
   if (pathname.startsWith("/studio"))
     return PLATFORM_DASHBOARD_ACCESS["/studio"];
   if (pathname.startsWith("/app")) return PLATFORM_DASHBOARD_ACCESS["/app"];
-  if (pathname.startsWith("/manager")) return null; // membership-gated
   return null;
 }
 
-export function canAccessPath(
-  role: PlatformRole,
-  pathname: string,
-  options?: {
-    canAccessManagerCabinet?: boolean;
-    houseMemberships?: readonly HouseMembership[];
-  },
-): boolean {
-  if (pathname.startsWith("/manager")) {
-    if (hasPlatformPermission(role, "houses.read_all")) return true;
-    if (hasPlatformPermission(role, "houses.manage_all")) return true;
-    if (options?.canAccessManagerCabinet) return true;
-    if (options?.houseMemberships) {
-      return canAccessManagerCabinetFromMemberships(options.houseMemberships);
-    }
-    return false;
-  }
-
+export function canAccessPath(role: PlatformRole, pathname: string): boolean {
   const allowed = getAllowedRolesForPath(pathname);
   if (!allowed) return true;
   return allowed.includes(role);
@@ -51,14 +28,10 @@ export function getRequiredRoleForPath(pathname: string): PlatformRole | null {
   if (pathname.startsWith("/admin")) return "admin";
   if (pathname.startsWith("/studio")) return "journalist";
   if (pathname.startsWith("/app")) return "user";
-  if (pathname.startsWith("/manager")) return null;
   return null;
 }
 
-export function getRoleDashboardPath(
-  role: PlatformRole,
-  _options?: { canAccessManagerCabinet?: boolean },
-): string {
+export function getRoleDashboardPath(role: PlatformRole): string {
   switch (role) {
     case "admin":
       return "/admin";
@@ -70,10 +43,7 @@ export function getRoleDashboardPath(
 }
 
 /** Default destination after login (not the same as cabinet entry). */
-export function getPostLoginPath(
-  role: PlatformRole,
-  _options?: { canAccessManagerCabinet?: boolean },
-): string {
+export function getPostLoginPath(role: PlatformRole): string {
   switch (role) {
     case "admin":
       return "/admin";

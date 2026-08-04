@@ -14,7 +14,6 @@ import {
 import type {
   AuthProfile,
   AuthUser,
-  HouseMembership,
   LoginPayload,
   PlatformRole,
   RegisterPayload,
@@ -39,8 +38,6 @@ type SessionPayload = {
   user: { id: string; email: string };
   profile: AuthProfile;
   role: PlatformRole;
-  houseMemberships?: HouseMembership[];
-  canAccessManagerCabinet?: boolean;
 };
 
 type AuthContextValue = {
@@ -49,12 +46,7 @@ type AuthContextValue = {
   role: PlatformRole | null;
   user: AuthUser | null;
   profile: AuthProfile | null;
-  houseMemberships: HouseMembership[];
-  canAccessManagerCabinet: boolean;
-  login: (payload: LoginPayload) => Promise<{
-    role: PlatformRole;
-    canAccessManagerCabinet: boolean;
-  }>;
+  login: (payload: LoginPayload) => Promise<{ role: PlatformRole }>;
   register: (payload: RegisterPayload) => Promise<void>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
   logout: () => Promise<void>;
@@ -69,25 +61,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
   const [role, setRole] = useState<PlatformRole | null>(null);
-  const [houseMemberships, setHouseMemberships] = useState<HouseMembership[]>(
-    [],
-  );
-  const [canAccessManagerCabinet, setCanAccessManagerCabinet] = useState(false);
 
   const applySession = useCallback((me: SessionPayload) => {
     setUser(profileToAuthUser(me.user, me.profile));
     setProfile(me.profile);
     setRole(me.role);
-    setHouseMemberships(me.houseMemberships ?? []);
-    setCanAccessManagerCabinet(Boolean(me.canAccessManagerCabinet));
   }, []);
 
   const clearSession = useCallback(() => {
     setUser(null);
     setProfile(null);
     setRole(null);
-    setHouseMemberships([]);
-    setCanAccessManagerCabinet(false);
     clearAccessToken();
   }, []);
 
@@ -121,10 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (payload: LoginPayload) => {
       const session = await loginRequest(payload);
       applySession(session);
-      return {
-        role: session.role,
-        canAccessManagerCabinet: Boolean(session.canAccessManagerCabinet),
-      };
+      return { role: session.role };
     },
     [applySession],
   );
@@ -154,8 +135,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role,
       user,
       profile,
-      houseMemberships,
-      canAccessManagerCabinet,
       login,
       register,
       updateProfile,
@@ -166,8 +145,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       role,
       profile,
-      houseMemberships,
-      canAccessManagerCabinet,
       isLoading,
       login,
       register,
@@ -186,26 +163,6 @@ export function useAuth() {
     throw new Error("useAuth must be used within AuthProvider");
   }
   return ctx;
-}
-
-/** @deprecated Use useAuth — kept for existing imports */
-export function useMockAuth() {
-  const auth = useAuth();
-  return {
-    isAuthenticated: auth.isAuthenticated,
-    role: auth.role ?? ("user" as PlatformRole),
-    user: auth.user ?? {
-      id: "",
-      name: "",
-      email: "",
-      organization: "",
-      initials: "?",
-    },
-    isLoading: auth.isLoading,
-    login: auth.login,
-    register: auth.register,
-    logout: auth.logout,
-  };
 }
 
 export { getRoleDashboardPath } from "@/entities/session";

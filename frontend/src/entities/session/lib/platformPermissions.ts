@@ -3,21 +3,13 @@ import type { PlatformRole } from "../model/types";
 export type PlatformPermission =
   | "admin.access"
   | "users.manage"
-  | "houses.read_all"
-  | "houses.manage_all"
   | "journal.manage";
 
 const PLATFORM_ROLE_PERMISSIONS: Record<
   PlatformRole,
   readonly PlatformPermission[]
 > = {
-  admin: [
-    "admin.access",
-    "users.manage",
-    "houses.read_all",
-    "houses.manage_all",
-    "journal.manage",
-  ],
+  admin: ["admin.access", "users.manage", "journal.manage"],
   journalist: ["journal.manage"],
   user: [],
 };

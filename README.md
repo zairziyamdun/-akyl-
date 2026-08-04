@@ -1,6 +1,6 @@
-# AKYL — платформа профессионального управления МЖД
+# AKYL — методология и инструменты управления МЖД
 
-AKYL — веб-платформа для популяризации и внедрения методологии профессионального управления многоквартирными жилыми домами (МЖД). Проект объединяет методологию, цифровые инструменты анализа, библиотеку знаний, журнал и личные кабинеты для разных ролей участников рынка.
+AKYL — веб-платформа для популяризации и внедрения методологии профессионального управления многоквартирными жилыми домами (МЖД). Сайт объединяет презентацию теории автора, цифровые инструменты анализа, библиотеку знаний, журнал и личные кабинеты (подписки, материалы, редакция, админка).
 
 Многоквартирный дом рассматривается не как объект обслуживания, а как управляемая система, где связаны процессы, финансы, участники, данные, KPI, отчётность и цифровой контроль.
 
@@ -34,18 +34,15 @@ AKYL — веб-платформа для популяризации и внед
 
 | Роль | Кабинет | Назначение |
 |------|---------|------------|
-| `user` | `/app` | Базовый пользовательский кабинет |
-| `journalist` | `/studio` | Редакция журнала: выпуски, статьи, медиа |
-| `manager` | `/manager` | Управление домами и дашборды |
-| `admin` | `/admin` | Администрирование: пользователи, дома, журнал, заявки |
+| `user` | `/app` | Подписки, материалы, профиль |
+| `journalist` | `/studio` | Редакция журнала: выпуски, медиа |
+| `admin` | `/admin` | Пользователи, журнал, библиотека, заявки |
 
 Доступ к защищённым маршрутам проверяется в Next.js middleware и на backend через JWT Supabase Auth.
 
-### Операционные модули backend
+### Модули backend
 
 - **Аутентификация** — регистрация, вход, профиль, роли.
-- **Дома** — CRUD домов, дашборд, привязка пользователей.
-- **Финансы** — учёт финансовых записей по дому.
 - **Журнал** — жизненный цикл выпусков (черновик → отправка → публикация → архив), загрузка обложек и PDF в Supabase Storage.
 - **Консультации** — приём заявок с сайта.
 - **Администрирование** — управление ролями и статусами пользователей.
@@ -67,6 +64,7 @@ AKYL — веб-платформа для популяризации и внед
 - Node.js, Express, TypeScript
 - Supabase (Auth, PostgreSQL, Storage)
 - Zod (валидация), Multer (загрузка файлов)
+- Vitest (unit-тесты auth/permissions)
 - Опционально: Telegram Bot API для уведомлений о заявках
 
 ## Структура проекта
@@ -78,10 +76,10 @@ AKYL — веб-платформа для популяризации и внед
 │   │   ├── app/              # маршруты Next.js (публичные и кабинеты)
 │   │   ├── widgets/          # составные UI-блоки страниц
 │   │   ├── features/         # пользовательские сценарии (auth, журнал, бюджет…)
-│   │   ├── entities/         # доменные сущности (house, session, journal-issue…)
+│   │   ├── entities/         # доменные сущности (session, journal-issue…)
 │   │   └── shared/           # UI-kit, конфиг, утилиты
 │   ├── public/
-│   ├── middleware.ts         # защита /app, /studio, /admin, /manager
+│   ├── middleware.ts         # защита /app, /studio, /admin
 │   └── package.json
 │
 └── backend/
@@ -90,9 +88,10 @@ AKYL — веб-платформа для популяризации и внед
     │   ├── app.ts            # Express-приложение и маршруты API
     │   ├── config/           # env, Supabase client
     │   ├── middleware/       # auth, validation, errors
-    │   ├── modules/          # auth, houses, finance, journal, consultation, admin
+    │   ├── modules/          # auth, journal, consultation, admin
     │   ├── routes/           # health check
     │   └── services/         # telegram, health
+    ├── docs/                 # SQL-скрипты (consultation, cleanup)
     ├── .env.example
     └── package.json
 ```
@@ -157,10 +156,6 @@ pnpm dev       # http://localhost:3000
 | `GET` | `/api/auth/me` | Текущий пользователь |
 | `PATCH` | `/api/auth/profile` | Обновление профиля |
 | `POST` | `/api/auth/logout` | Выход |
-| `GET/POST/PATCH/DELETE` | `/api/houses` | Управление домами |
-| `GET` | `/api/houses/:id/dashboard` | Данные дашборда дома |
-| `GET/POST/PATCH/DELETE` | `/api/houses/:houseId/finance` | Финансовые записи |
-| `GET/POST/PATCH/DELETE` | `/api/houses/:houseId/users` | Участники дома |
 | `GET/POST/PATCH/DELETE` | `/api/journal/issues` | Выпуски журнала |
 | `POST` | `/api/journal/upload-cover` | Загрузка обложки |
 | `POST` | `/api/journal/upload-pdf` | Загрузка PDF |
@@ -187,6 +182,7 @@ pnpm lint:fix     # автоисправление
 pnpm dev          # tsx watch
 pnpm build        # компиляция TypeScript
 pnpm start        # node dist/src/index.js
+pnpm test         # vitest (auth / permissions / cabinet access)
 ```
 
 ## Деплой

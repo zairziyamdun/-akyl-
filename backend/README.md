@@ -126,6 +126,12 @@ backend/docs/consultation_requests.sql
 
 Apply it manually in Supabase SQL Editor.
 
+Operational house tables (`houses`, `house_users`, `finance_records`) were removed from the product. Cleanup script (if an old project still has them):
+
+```bash
+backend/docs/drop_jk_tables.sql
+```
+
 ## Consultation API
 
 Create a consultation request:

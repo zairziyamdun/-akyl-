@@ -187,7 +187,7 @@ export default function AdminUsersPage() {
     const name = adminUserDisplayName(user);
     if (
       !window.confirm(
-        `Удалить пользователя «${name}»? Действие необратимо: аккаунт, профиль и memberships ЖК будут удалены.`,
+        `Удалить пользователя «${name}»? Действие необратимо: аккаунт и профиль будут удалены.`,
       )
     ) {
       return;

@@ -8,23 +8,13 @@ import { useAuth } from "../api/AuthProvider";
 export function AuthRedirectIfLoggedIn() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, isLoading, role, canAccessManagerCabinet } =
-    useAuth();
+  const { isAuthenticated, isLoading, role } = useAuth();
 
   useEffect(() => {
     if (isLoading || !isAuthenticated || !role) return;
     const returnUrl = searchParams.get("returnUrl") ?? searchParams.get("next");
-    router.replace(
-      returnUrl ?? getPostLoginPath(role, { canAccessManagerCabinet }),
-    );
-  }, [
-    isAuthenticated,
-    isLoading,
-    role,
-    canAccessManagerCabinet,
-    router,
-    searchParams,
-  ]);
+    router.replace(returnUrl ?? getPostLoginPath(role));
+  }, [isAuthenticated, isLoading, role, router, searchParams]);
 
   return null;
 }

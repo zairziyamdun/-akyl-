@@ -3,7 +3,6 @@ export {
   AuthProvider,
   getRoleDashboardPath,
   useAuth,
-  useMockAuth,
 } from "./api/AuthProvider";
 export {
   getNavForRole,

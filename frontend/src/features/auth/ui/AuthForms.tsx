@@ -24,7 +24,7 @@ export function LoginForm() {
   return (
     <AuthCard
       title="Вход в AKYL"
-      description="Профессиональная платформа управления МЖД"
+      description="Войдите, чтобы открыть материалы и кабинет AKYL"
       footer={
         <p className="text-center text-sm text-slate-500">
           Нет аккаунта?{" "}
@@ -44,16 +44,13 @@ export function LoginForm() {
           setState("loading");
           setError("");
           try {
-            const { role, canAccessManagerCabinet } = await login({
+            const { role } = await login({
               email,
               password,
             });
             const returnUrl =
               searchParams.get("returnUrl") ?? searchParams.get("next");
-            router.push(
-              returnUrl ??
-                getPostLoginPath(role, { canAccessManagerCabinet }),
-            );
+            router.push(returnUrl ?? getPostLoginPath(role));
           } catch (err) {
             setState("error");
             setError(

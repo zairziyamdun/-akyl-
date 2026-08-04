@@ -1,7 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
-  Building2,
   FileText,
   FolderOpen,
   ImageIcon,
@@ -30,9 +29,6 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
   "/admin": LayoutDashboard,
   "/studio": LayoutDashboard,
   "/app": LayoutDashboard,
-  "/manager/houses": Building2,
-  "/admin/houses": Building2,
-  "/app/houses": Building2,
   "/admin/users": Users,
   "/admin/roles": Shield,
   "/admin/requests": Mail,
@@ -53,14 +49,6 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
 
 export function getNavIcon(href: string): LucideIcon {
   return NAV_ICONS[href] ?? FileText;
-}
-
-export function isHousesNavHref(href: string): boolean {
-  return (
-    href === "/manager/houses" ||
-    href === "/admin/houses" ||
-    href === "/app/houses"
-  );
 }
 
 export function isProfileNavItem(item: NavItem): boolean {
@@ -92,9 +80,6 @@ export function splitNavSections(sections: NavSection[]): {
 export function isNavItemActive(pathname: string, href: string): boolean {
   if (href === "/admin" || href === "/studio" || href === "/app") {
     return pathname === href;
-  }
-  if (isHousesNavHref(href)) {
-    return pathname.startsWith(`${href.split("/houses")[0]}/houses`);
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }

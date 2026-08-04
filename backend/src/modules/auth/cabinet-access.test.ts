@@ -1,27 +1,32 @@
 import { describe, expect, it } from "vitest";
 
 /**
- * Mirrors frontend entities/session roleAccess rules for cabinet routing.
- * Kept in backend test suite to avoid adding FE test runner in this iteration.
+ * Mirrors frontend `entities/session/lib/roleAccess` cabinet routing.
+ * Keep in sync when platform cabinet prefixes change.
  */
 type PlatformRole = "user" | "journalist" | "admin";
 
-function canAccessPath(
-  role: PlatformRole,
-  pathname: string,
-  options?: { canAccessManagerCabinet?: boolean },
-): boolean {
-  if (pathname.startsWith("/admin")) return role === "admin";
-  if (pathname.startsWith("/studio")) {
-    return role === "journalist" || role === "admin";
-  }
-  if (pathname.startsWith("/app")) {
-    return role === "user" || role === "journalist" || role === "admin";
-  }
-  if (pathname.startsWith("/manager")) {
-    return role === "admin" || Boolean(options?.canAccessManagerCabinet);
-  }
-  return true;
+const PLATFORM_DASHBOARD_ACCESS: Record<
+  "/app" | "/studio" | "/admin",
+  PlatformRole[]
+> = {
+  "/app": ["user", "journalist", "admin"],
+  "/studio": ["journalist", "admin"],
+  "/admin": ["admin"],
+};
+
+function getAllowedRolesForPath(pathname: string): PlatformRole[] | null {
+  if (pathname.startsWith("/admin")) return PLATFORM_DASHBOARD_ACCESS["/admin"];
+  if (pathname.startsWith("/studio"))
+    return PLATFORM_DASHBOARD_ACCESS["/studio"];
+  if (pathname.startsWith("/app")) return PLATFORM_DASHBOARD_ACCESS["/app"];
+  return null;
+}
+
+function canAccessPath(role: PlatformRole, pathname: string): boolean {
+  const allowed = getAllowedRolesForPath(pathname);
+  if (!allowed) return true;
+  return allowed.includes(role);
 }
 
 describe("cabinet route access (UX mirror)", () => {
@@ -29,21 +34,21 @@ describe("cabinet route access (UX mirror)", () => {
     expect(canAccessPath("user", "/admin")).toBe(false);
   });
 
-  it("house manager (platform user + membership flag) cannot open /admin", () => {
-    expect(
-      canAccessPath("user", "/admin", { canAccessManagerCabinet: true }),
-    ).toBe(false);
+  it("admin can open /admin", () => {
+    expect(canAccessPath("admin", "/admin")).toBe(true);
   });
 
-  it("house manager can open /manager without platform manager role", () => {
-    expect(
-      canAccessPath("user", "/manager/houses", {
-        canAccessManagerCabinet: true,
-      }),
-    ).toBe(true);
+  it("journalist can open /studio but not /admin", () => {
+    expect(canAccessPath("journalist", "/studio")).toBe(true);
+    expect(canAccessPath("journalist", "/admin")).toBe(false);
   });
 
-  it("user without membership cannot open /manager", () => {
-    expect(canAccessPath("user", "/manager/houses")).toBe(false);
+  it("user can open /app", () => {
+    expect(canAccessPath("user", "/app")).toBe(true);
+  });
+
+  it("legacy /manager is not a protected platform cabinet", () => {
+    expect(getAllowedRolesForPath("/manager")).toBeNull();
+    expect(canAccessPath("user", "/manager")).toBe(true);
   });
 });
