@@ -34,6 +34,7 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
   "/admin/requests": Mail,
   "/admin/journal": Newspaper,
   "/admin/journal/new": Plus,
+  "/admin/subscription": Star,
   "/admin/library": BookOpen,
   "/admin/profile": User,
   "/admin/settings": Settings,

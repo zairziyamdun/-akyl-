@@ -4,9 +4,11 @@ import express from "express";
 import { env, getAllowedOrigins } from "./config/env.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import adminUsersRoutes from "./modules/admin/users/admin-users.routes.js";
+import adminSubscriptionRoutes from "./modules/admin/subscription/subscription.routes.js";
 import consultationRoutes from "./modules/consultation/consultation.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import journalRoutes from "./modules/journal/journal.routes.js";
+import subscriptionRoutes from "./modules/subscription/subscription.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 
 const app = express();
@@ -28,7 +30,9 @@ app.use(express.json());
 app.use("/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/journal", journalRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/admin/users", adminUsersRoutes);
+app.use("/api/admin/subscription", adminSubscriptionRoutes);
 app.use("/api/consultation", consultationRoutes);
 
 app.use(errorMiddleware);

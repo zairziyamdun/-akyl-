@@ -124,7 +124,13 @@ Before using consultation API, run SQL from:
 backend/docs/consultation_requests.sql
 ```
 
-Apply it manually in Supabase SQL Editor.
+For journal subscription settings (admin offer price/info):
+
+```bash
+backend/docs/journal_subscription_settings.sql
+```
+
+Apply scripts manually in Supabase SQL Editor.
 
 Operational house tables (`houses`, `house_users`, `finance_records`) were removed from the product. Cleanup script (if an old project still has them):
 
