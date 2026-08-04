@@ -136,6 +136,14 @@ For real journal subscribers (`journal_subscriptions`, stores `price_paid` snaps
 backend/docs/journal_subscriptions.sql
 ```
 
+If the table already exists without the unique open-subscription index, run:
+
+```sql
+create unique index if not exists journal_subscriptions_one_open_per_user_uidx
+  on journal_subscriptions (user_id)
+  where status in ('pending', 'active');
+```
+
 Apply scripts manually in Supabase SQL Editor.
 
 Operational house tables (`houses`, `house_users`, `finance_records`) were removed from the product. Cleanup script (if an old project still has them):

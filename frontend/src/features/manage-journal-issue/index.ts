@@ -4,6 +4,7 @@ export {
   useJournalIssues,
 } from "./JournalIssuesProvider";
 export { JOURNAL_ACCESS_HREF } from "./model/journal-public.const";
+export { useJournalAccess } from "./model/useJournalAccess";
 export { AdminJournalList } from "./ui/AdminJournalList";
 export { FileDropzone } from "./ui/FileDropzone";
 export { AccessTypeBadge, IssueStatusBadge } from "./ui/IssueBadges";

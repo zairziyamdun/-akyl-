@@ -71,6 +71,17 @@ export const JOURNAL_SUBSCRIPTION_STATUSES = [
 export type JournalSubscriptionStatus =
   (typeof JOURNAL_SUBSCRIPTION_STATUSES)[number];
 
+export const updateJournalSubscriptionSchema = z.object({
+  status: z.enum(JOURNAL_SUBSCRIPTION_STATUSES),
+  startedAt: z.string().datetime().nullable().optional(),
+  expiresAt: z.string().datetime().nullable().optional(),
+  paymentId: z.string().trim().min(1).nullable().optional(),
+});
+
+export type UpdateJournalSubscriptionInput = z.infer<
+  typeof updateJournalSubscriptionSchema
+>;
+
 export type JournalSubscriptionDto = {
   id: string;
   userId: string;
@@ -103,11 +114,11 @@ export type JournalSubscriptionRow = {
   profiles?:
     | {
         full_name: string | null;
-        email: string | null;
+        email?: string | null;
       }
     | {
         full_name: string | null;
-        email: string | null;
+        email?: string | null;
       }[]
     | null;
 };
@@ -122,8 +133,12 @@ function profileFromJoin(
   profiles: JournalSubscriptionRow["profiles"],
 ): { full_name: string | null; email: string | null } | null {
   if (!profiles) return null;
-  if (Array.isArray(profiles)) return profiles[0] ?? null;
-  return profiles;
+  const profile = Array.isArray(profiles) ? (profiles[0] ?? null) : profiles;
+  if (!profile) return null;
+  return {
+    full_name: profile.full_name ?? null,
+    email: profile.email ?? null,
+  };
 }
 
 export function mapJournalSubscription(

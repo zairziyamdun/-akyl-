@@ -46,7 +46,11 @@ export const getIssueHandler = asyncHandler(async (req: Request, res: Response) 
 
 export const getIssuePdfHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const url = await getIssuePdfSignedUrl(req.params.id!, req.profile?.role);
+    const url = await getIssuePdfSignedUrl(
+      req.params.id!,
+      req.profile?.role,
+      req.user?.id,
+    );
 
     res.status(200).json({ success: true, url });
   },
@@ -60,6 +64,7 @@ export const getIssuePdfFileHandler = asyncHandler(
     const { buffer, fileName } = await getIssuePdfFile(
       issueId,
       req.profile?.role,
+      req.user?.id,
     );
 
     const asDownload = req.query.download === "1";

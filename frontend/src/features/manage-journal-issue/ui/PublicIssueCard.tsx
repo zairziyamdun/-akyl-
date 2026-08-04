@@ -6,10 +6,12 @@ import type { JournalIssueRecord } from "@/entities/journal-issue";
 import { getJournalIssuePath } from "@/entities/journal-issue";
 import { Button } from "@/shared/ui/Button";
 import { JOURNAL_ACCESS_HREF } from "../model/journal-public.const";
+import { useJournalAccess } from "../model/useJournalAccess";
 import { AccessTypeBadge, IssueCoverThumb } from ".";
 
 export function IssueAccessGate({ issue }: { issue: JournalIssueRecord }) {
   const issueHref = getJournalIssuePath(issue.id);
+  const { loading, hasActiveAccess } = useJournalAccess();
 
   if (issue.accessType === "FREE") {
     return (
@@ -20,6 +22,20 @@ export function IssueAccessGate({ issue }: { issue: JournalIssueRecord }) {
   }
 
   if (issue.accessType === "PAID") {
+    if (loading) {
+      return (
+        <p className="text-center text-xs text-slate-500">Проверка доступа…</p>
+      );
+    }
+
+    if (hasActiveAccess) {
+      return (
+        <Button asChild className="w-full">
+          <Link href={issueHref}>Читать</Link>
+        </Button>
+      );
+    }
+
     return (
       <div className="space-y-3">
         <div className="rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-center">

@@ -20,6 +20,13 @@ export type UpdateJournalSubscriptionSettingsPayload = {
   isActive: boolean;
 };
 
+export type UpdateJournalSubscriberPayload = {
+  status: JournalSubscriberStatus;
+  startedAt?: string | null;
+  expiresAt?: string | null;
+  paymentId?: string | null;
+};
+
 export type JournalSubscriberStatus =
   | "pending"
   | "active"
@@ -40,6 +47,13 @@ export type JournalSubscriber = {
   updatedAt: string;
   userName: string | null;
   userEmail: string | null;
+};
+
+export type MySubscriptionOverview = {
+  offer: JournalSubscriptionSettings;
+  current: JournalSubscriber | null;
+  history: JournalSubscriber[];
+  hasActiveAccess: boolean;
 };
 
 export const JOURNAL_SUBSCRIBER_STATUSES: JournalSubscriberStatus[] = [

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   mapJournalSubscription,
   mapSubscriptionSettings,
+  updateJournalSubscriptionSchema,
   updateSubscriptionSettingsSchema,
   type JournalSubscriptionRow,
   type SubscriptionSettingsRow,
@@ -107,5 +108,19 @@ describe("subscription settings schema", () => {
       userName: "Тест Пользователь",
       userEmail: "test@example.kz",
     });
+  });
+
+  it("accepts admin status update payload", () => {
+    const result = updateJournalSubscriptionSchema.safeParse({
+      status: "active",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects invalid subscription status", () => {
+    const result = updateJournalSubscriptionSchema.safeParse({
+      status: "paid",
+    });
+    expect(result.success).toBe(false);
   });
 });

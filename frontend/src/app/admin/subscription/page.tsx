@@ -10,6 +10,7 @@ import {
   JournalSubscriptionApiError,
   JOURNAL_SUBSCRIBER_STATUS_LABELS,
   JOURNAL_SUBSCRIBER_STATUSES,
+  updateAdminSubscriber,
   updateAdminSubscriptionSettings,
 } from "@/entities/journal-subscription";
 import { Button } from "@/shared/ui/Button";
@@ -79,6 +80,9 @@ export default function AdminSubscriptionPage() {
   const [subscribers, setSubscribers] = useState<JournalSubscriber[]>([]);
   const [subscribersLoading, setSubscribersLoading] = useState(true);
   const [subscribersError, setSubscribersError] = useState<string | null>(null);
+  const [updatingSubscriberId, setUpdatingSubscriberId] = useState<string | null>(
+    null,
+  );
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
@@ -134,6 +138,32 @@ export default function AdminSubscriptionPage() {
       return name.includes(query) || email.includes(query);
     });
   }, [search, statusFilter, subscribers]);
+
+  const handleSubscriberStatusChange = async (
+    subscriber: JournalSubscriber,
+    status: JournalSubscriberStatus,
+  ) => {
+    if (subscriber.status === status) return;
+
+    setUpdatingSubscriberId(subscriber.id);
+    try {
+      const updated = await updateAdminSubscriber(subscriber.id, { status });
+      setSubscribers((prev) =>
+        prev.map((row) => (row.id === updated.id ? updated : row)),
+      );
+      toastSuccess(
+        `Статус: ${JOURNAL_SUBSCRIBER_STATUS_LABELS[updated.status]}`,
+      );
+    } catch (err) {
+      const message =
+        err instanceof JournalSubscriptionApiError
+          ? err.message
+          : "Не удалось обновить статус подписки";
+      toastError(message);
+    } finally {
+      setUpdatingSubscriberId(null);
+    }
+  };
 
   const updateField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => (prev ? { ...prev, [key]: value } : prev));
@@ -380,8 +410,8 @@ export default function AdminSubscriptionPage() {
               Подписчики
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Записи из journal_subscriptions. Оплаченная цена сохраняется в
-              pricePaid и не меняется при обновлении тарифа.
+              Реальные записи. Смена статуса на «Активна» проставляет даты
+              начала/окончания по сроку тарифа. pricePaid не меняется.
             </p>
           </div>
           <Button
@@ -478,10 +508,29 @@ export default function AdminSubscriptionPage() {
                 key: "status",
                 header: "Статус",
                 render: (row) => (
-                  <StatusBadge
-                    status={statusBadgeVariant(row.status)}
-                    label={JOURNAL_SUBSCRIBER_STATUS_LABELS[row.status]}
-                  />
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <StatusBadge
+                      status={statusBadgeVariant(row.status)}
+                      label={JOURNAL_SUBSCRIBER_STATUS_LABELS[row.status]}
+                    />
+                    <select
+                      className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 disabled:opacity-60"
+                      value={row.status}
+                      disabled={updatingSubscriberId === row.id}
+                      onChange={(e) =>
+                        void handleSubscriberStatusChange(
+                          row,
+                          e.target.value as JournalSubscriberStatus,
+                        )
+                      }
+                    >
+                      {JOURNAL_SUBSCRIBER_STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {JOURNAL_SUBSCRIBER_STATUS_LABELS[status]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 ),
               },
             ]}

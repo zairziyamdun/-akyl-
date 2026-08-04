@@ -163,8 +163,11 @@ pnpm dev       # http://localhost:3000
 | `GET` | `/api/consultation` | Список заявок (admin) |
 | `PATCH` | `/api/consultation/:id/status` | Смена статуса заявки (admin) |
 | `GET` | `/api/subscription` | Настройки подписки на журнал (публично; `isActive` управляет CTA) |
+| `GET` | `/api/subscription/me` | Моя подписка: оферта, текущая, история (auth) |
+| `POST` | `/api/subscription/me` | Начать оформление (`pending`, снимок `pricePaid`) |
 | `GET` | `/api/admin/subscription` | Настройки подписки (admin) |
 | `GET` | `/api/admin/subscription/subscribers` | Список подписок journal_subscriptions (admin) |
+| `PATCH` | `/api/admin/subscription/subscribers/:id` | Смена статуса/дат подписки (admin) |
 | `PATCH` | `/api/admin/subscription` | Обновление настроек подписки (admin) |
 | `GET` | `/api/admin/users` | Список пользователей (admin) |
 | `PATCH` | `/api/admin/users/:id/role` | Смена роли (admin) |

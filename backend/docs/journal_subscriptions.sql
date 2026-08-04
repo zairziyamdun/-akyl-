@@ -26,6 +26,11 @@ create index if not exists journal_subscriptions_status_idx
 create index if not exists journal_subscriptions_expires_at_idx
   on journal_subscriptions (expires_at);
 
+-- At most one open (pending/active) subscription per user.
+create unique index if not exists journal_subscriptions_one_open_per_user_uidx
+  on journal_subscriptions (user_id)
+  where status in ('pending', 'active');
+
 grant usage on schema public to postgres, anon, authenticated, service_role;
 
 grant all on table journal_subscriptions to service_role;

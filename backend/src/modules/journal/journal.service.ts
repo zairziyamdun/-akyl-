@@ -6,6 +6,7 @@ import {
   ValidationError,
 } from "../../common/errors.js";
 import type { ProfileRole } from "../auth/auth.types.js";
+import { userHasActiveJournalSubscription } from "../subscription/subscription.service.js";
 import {
   assertStatusTransition,
   canViewUnpublished,
@@ -194,6 +195,7 @@ export function assertAuthenticated(userId?: string): asserts userId is string {
 export async function assertIssuePdfAccess(
   id: string,
   role?: ProfileRole,
+  userId?: string,
 ): Promise<JournalIssueWithAuthor> {
   const issue = await getJournalIssueById(id, role);
 
@@ -211,26 +213,35 @@ export async function assertIssuePdfAccess(
     throw new ForbiddenError("Issue is not published");
   }
 
-  if (issue.access_type !== "free") {
-    throw new ForbiddenError("Нужен доступ");
+  if (issue.access_type === "free") {
+    return issue;
   }
 
-  return issue;
+  if (issue.access_type === "paid") {
+    if (userId && (await userHasActiveJournalSubscription(userId))) {
+      return issue;
+    }
+    throw new ForbiddenError("Нужна активная подписка на журнал");
+  }
+
+  throw new ForbiddenError("Нужен доступ");
 }
 
 export async function getIssuePdfSignedUrl(
   id: string,
   role?: ProfileRole,
+  userId?: string,
 ): Promise<string> {
-  const issue = await assertIssuePdfAccess(id, role);
+  const issue = await assertIssuePdfAccess(id, role, userId);
   return createSignedPdfUrl(issue.pdf_url!);
 }
 
 export async function getIssuePdfFile(
   id: string,
   role?: ProfileRole,
+  userId?: string,
 ): Promise<{ buffer: Buffer; fileName: string }> {
-  const issue = await assertIssuePdfAccess(id, role);
+  const issue = await assertIssuePdfAccess(id, role, userId);
   const buffer = await downloadPdfFromStorage(issue.pdf_url!);
   const pathName = issue.pdf_url!.split("/").pop() ?? "issue.pdf";
   const fileName = pathName.includes("-")

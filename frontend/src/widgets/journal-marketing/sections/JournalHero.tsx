@@ -14,6 +14,7 @@ import {
 } from "react";
 import type { HeroSlide } from "@/entities/journal-issue";
 import { getJournalIssuePath } from "@/entities/journal-issue";
+import { useJournalAccess } from "@/features/manage-journal-issue/model/useJournalAccess";
 import { cn } from "@/shared/lib";
 import {
   JOURNAL_ACCESS_HREF,
@@ -65,6 +66,7 @@ function slideKey(slide: HeroSlide): string {
 export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const reduced = useReducedMotion();
+  const { hasActiveAccess } = useJournalAccess();
 
   const hasIssueSlides = slides.some((s) => s.kind === "issue");
   const activeSlide = slides[activeIndex] ?? slides[0];
@@ -241,10 +243,16 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                         О журнале
                       </Link>
                       <Link
-                        href={JOURNAL_ACCESS_HREF}
+                        href={
+                          hasActiveAccess
+                            ? "/app/subscriptions"
+                            : JOURNAL_ACCESS_HREF
+                        }
                         className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
-                        Оформить подписку
+                        {hasActiveAccess
+                          ? "Моя подписка"
+                          : "Оформить подписку"}
                       </Link>
                     </div>
                     {!isLoading && !hasIssueSlides ? (

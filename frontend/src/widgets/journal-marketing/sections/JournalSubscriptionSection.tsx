@@ -8,6 +8,7 @@ import {
   type JournalSubscriptionSettings,
   JournalSubscriptionApiError,
 } from "@/entities/journal-subscription";
+import { useJournalAccess } from "@/features/manage-journal-issue/model/useJournalAccess";
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
@@ -32,6 +33,8 @@ function formatDuration(months: number): string {
 }
 
 export function JournalSubscriptionSection() {
+  const { loading: accessLoading, hasActiveAccess, current } =
+    useJournalAccess();
   const [settings, setSettings] = useState<JournalSubscriptionSettings | null>(
     null,
   );
@@ -61,7 +64,7 @@ export function JournalSubscriptionSection() {
     };
   }, []);
 
-  if (loading) {
+  if (loading || accessLoading) {
     return (
       <Section id="subscription" className="scroll-mt-24 bg-white pb-16 sm:pb-24">
         <Container className="px-4 sm:px-6">
@@ -77,7 +80,9 @@ export function JournalSubscriptionSection() {
     return null;
   }
 
-  const canSubscribe = settings.isActive;
+  const hasOpenSubscription =
+    hasActiveAccess || current?.status === "pending";
+  const canSubscribe = settings.isActive && !hasOpenSubscription;
 
   return (
     <Section id="subscription" className="scroll-mt-24 bg-white pb-16 sm:pb-24">
@@ -127,9 +132,24 @@ export function JournalSubscriptionSection() {
           ) : null}
 
           <div className="mt-8">
-            {canSubscribe ? (
+            {hasActiveAccess ? (
+              <div className="space-y-3">
+                <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                  У вас уже есть активная подписка.
+                </p>
+                <Button asChild variant="secondary">
+                  <Link href="/app/subscriptions">Моя подписка</Link>
+                </Button>
+              </div>
+            ) : current?.status === "pending" ? (
+              <Button asChild variant="secondary">
+                <Link href="/app/subscriptions/checkout">
+                  Продолжить оформление
+                </Link>
+              </Button>
+            ) : canSubscribe ? (
               <Button asChild>
-                <Link href="/login?returnUrl=/app/subscriptions">
+                <Link href="/app/subscriptions/checkout">
                   Оформить подписку
                 </Link>
               </Button>

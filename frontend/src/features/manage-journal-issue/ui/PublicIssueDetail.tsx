@@ -18,7 +18,7 @@ import type { PdfViewerErrorPayload } from "@/shared/pdf/ui/PdfViewer";
 import { usePdfViewerMode } from "@/shared/pdf/usePdfViewerMode";
 import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
-import { JOURNAL_ACCESS_HREF } from "../model/journal-public.const";
+import { useJournalAccess } from "../model/useJournalAccess";
 import { JournalListSkeleton, PdfDiagnosticsPanel } from ".";
 
 const JournalPdfJsViewer = dynamic(
@@ -55,7 +55,7 @@ function PaywallView({
             Этот выпуск доступен по подписке. Оформите доступ, чтобы читать PDF.
           </p>
           <Button asChild className="mt-6">
-            <Link href={JOURNAL_ACCESS_HREF}>Оформить подписку</Link>
+            <Link href="/app/subscriptions/checkout">Оформить подписку</Link>
           </Button>
         </>
       ) : (
@@ -151,6 +151,7 @@ function PdfViewerErrorFallback({
 
 export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   const viewerMode = usePdfViewerMode();
+  const { loading: accessLoading, hasActiveAccess } = useJournalAccess();
   const [issue, setIssue] = useState<JournalIssueRecord | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -220,10 +221,14 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
   }, [issue]);
 
   useEffect(() => {
-    if (issue?.accessType !== "FREE") return;
+    if (!issue) return;
+    const canRead =
+      issue.accessType === "FREE" ||
+      (issue.accessType === "PAID" && hasActiveAccess);
+    if (!canRead) return;
     if (viewerMode !== "iframe") return;
     void loadSignedPdfUrl();
-  }, [issue, viewerMode, loadSignedPdfUrl]);
+  }, [issue, viewerMode, hasActiveAccess, loadSignedPdfUrl]);
 
   const handlePdfJsError = useCallback(
     ({ message, diagnostics }: PdfViewerErrorPayload) => {
@@ -260,7 +265,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
     }
   };
 
-  if (loading || viewerMode === null) {
+  if (loading || viewerMode === null || accessLoading) {
     return (
       <div className="flex flex-1 items-center justify-center bg-slate-50 py-20">
         <JournalListSkeleton count={1} />
@@ -284,7 +289,7 @@ export function PublicIssueDetail({ issueId }: PublicIssueDetailProps) {
     );
   }
 
-  if (issue.accessType === "PAID") {
+  if (issue.accessType === "PAID" && !hasActiveAccess) {
     return <PaywallView issue={issue} variant="paid" />;
   }
 
