@@ -7,6 +7,7 @@ import {
 import { validateBody } from "../../../middleware/validate.middleware.js";
 import {
   getAdminSubscriptionHandler,
+  listAdminSubscribersHandler,
   patchAdminSubscriptionHandler,
 } from "../../subscription/subscription.controller.js";
 import { updateSubscriptionSettingsSchema } from "../../subscription/subscription.schema.js";
@@ -16,6 +17,8 @@ const router = Router();
 router.use(authMiddleware, roleMiddleware(["admin"]));
 
 router.get("/", getAdminSubscriptionHandler);
+
+router.get("/subscribers", listAdminSubscribersHandler);
 
 router.patch(
   "/",

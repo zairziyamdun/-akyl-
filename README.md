@@ -162,8 +162,9 @@ pnpm dev       # http://localhost:3000
 | `POST` | `/api/consultation` | Заявка на консультацию (публично) |
 | `GET` | `/api/consultation` | Список заявок (admin) |
 | `PATCH` | `/api/consultation/:id/status` | Смена статуса заявки (admin) |
-| `GET` | `/api/subscription` | Активные настройки подписки на журнал (публично) |
+| `GET` | `/api/subscription` | Настройки подписки на журнал (публично; `isActive` управляет CTA) |
 | `GET` | `/api/admin/subscription` | Настройки подписки (admin) |
+| `GET` | `/api/admin/subscription/subscribers` | Список подписок journal_subscriptions (admin) |
 | `PATCH` | `/api/admin/subscription` | Обновление настроек подписки (admin) |
 | `GET` | `/api/admin/users` | Список пользователей (admin) |
 | `PATCH` | `/api/admin/users/:id/role` | Смена роли (admin) |

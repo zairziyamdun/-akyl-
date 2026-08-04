@@ -55,7 +55,7 @@ function PaywallView({
             Этот выпуск доступен по подписке. Оформите доступ, чтобы читать PDF.
           </p>
           <Button asChild className="mt-6">
-            <Link href={JOURNAL_ACCESS_HREF}>Получить доступ</Link>
+            <Link href={JOURNAL_ACCESS_HREF}>Оформить подписку</Link>
           </Button>
         </>
       ) : (

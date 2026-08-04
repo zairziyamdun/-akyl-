@@ -244,7 +244,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                         href={JOURNAL_ACCESS_HREF}
                         className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
-                        Связаться
+                        Оформить подписку
                       </Link>
                     </div>
                     {!isLoading && !hasIssueSlides ? (

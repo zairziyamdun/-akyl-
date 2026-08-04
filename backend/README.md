@@ -130,6 +130,12 @@ For journal subscription settings (admin offer price/info):
 backend/docs/journal_subscription_settings.sql
 ```
 
+For real journal subscribers (`journal_subscriptions`, stores `price_paid` snapshot):
+
+```bash
+backend/docs/journal_subscriptions.sql
+```
+
 Apply scripts manually in Supabase SQL Editor.
 
 Operational house tables (`houses`, `house_users`, `finance_records`) were removed from the product. Cleanup script (if an old project still has them):

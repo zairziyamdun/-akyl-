@@ -8,3 +8,4 @@ export * from "./sections/JournalHeroConnected";
 export * from "./sections/JournalIntroVisual";
 export * from "./sections/JournalIssueSlider";
 export * from "./sections/JournalPage";
+export * from "./sections/JournalSubscriptionSection";

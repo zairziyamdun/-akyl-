@@ -49,4 +49,4 @@ export const journalCoverSpine: Record<string, string> = {
   "10": "bg-indigo-950",
 };
 
-export const JOURNAL_ACCESS_HREF = "/consultation";
+export const JOURNAL_ACCESS_HREF = "/journal#subscription";

@@ -1,17 +1,17 @@
 export {
+  getAdminSubscribers,
   getAdminSubscriptionSettings,
   getPublicSubscriptionSettings,
   JournalSubscriptionApiError,
   updateAdminSubscriptionSettings,
 } from "./api/journal-subscription.service";
-export { MOCK_JOURNAL_SUBSCRIBERS } from "./model/mock-subscribers";
 export type {
+  JournalSubscriber,
+  JournalSubscriberStatus,
   JournalSubscriptionSettings,
-  MockSubscriber,
-  MockSubscriberStatus,
   UpdateJournalSubscriptionSettingsPayload,
 } from "./model/types";
 export {
-  MOCK_SUBSCRIBER_STATUS_LABELS,
-  MOCK_SUBSCRIBER_STATUSES,
+  JOURNAL_SUBSCRIBER_STATUS_LABELS,
+  JOURNAL_SUBSCRIBER_STATUSES,
 } from "./model/types";

@@ -60,3 +60,93 @@ export function mapSubscriptionSettings(
     updatedAt: row.updated_at,
   };
 }
+
+export const JOURNAL_SUBSCRIPTION_STATUSES = [
+  "pending",
+  "active",
+  "expired",
+  "cancelled",
+] as const;
+
+export type JournalSubscriptionStatus =
+  (typeof JOURNAL_SUBSCRIPTION_STATUSES)[number];
+
+export type JournalSubscriptionDto = {
+  id: string;
+  userId: string;
+  settingsId: string;
+  pricePaid: number;
+  currency: string;
+  startedAt: string | null;
+  expiresAt: string | null;
+  status: JournalSubscriptionStatus;
+  paymentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  /** Joined from profiles for admin list */
+  userName: string | null;
+  userEmail: string | null;
+};
+
+export type JournalSubscriptionRow = {
+  id: string;
+  user_id: string;
+  settings_id: string;
+  price_paid: number;
+  currency: string;
+  started_at: string | null;
+  expires_at: string | null;
+  status: string;
+  payment_id: string | null;
+  created_at: string;
+  updated_at: string;
+  profiles?:
+    | {
+        full_name: string | null;
+        email: string | null;
+      }
+    | {
+        full_name: string | null;
+        email: string | null;
+      }[]
+    | null;
+};
+
+function isJournalSubscriptionStatus(
+  value: string,
+): value is JournalSubscriptionStatus {
+  return (JOURNAL_SUBSCRIPTION_STATUSES as readonly string[]).includes(value);
+}
+
+function profileFromJoin(
+  profiles: JournalSubscriptionRow["profiles"],
+): { full_name: string | null; email: string | null } | null {
+  if (!profiles) return null;
+  if (Array.isArray(profiles)) return profiles[0] ?? null;
+  return profiles;
+}
+
+export function mapJournalSubscription(
+  row: JournalSubscriptionRow,
+): JournalSubscriptionDto {
+  const status = isJournalSubscriptionStatus(row.status)
+    ? row.status
+    : "pending";
+  const profile = profileFromJoin(row.profiles);
+
+  return {
+    id: row.id,
+    userId: row.user_id,
+    settingsId: row.settings_id,
+    pricePaid: row.price_paid,
+    currency: row.currency,
+    startedAt: row.started_at,
+    expiresAt: row.expires_at,
+    status,
+    paymentId: row.payment_id,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    userName: profile?.full_name ?? null,
+    userEmail: profile?.email ?? null,
+  };
+}

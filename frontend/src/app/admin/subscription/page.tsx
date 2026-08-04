@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  getAdminSubscribers,
   getAdminSubscriptionSettings,
+  type JournalSubscriber,
+  type JournalSubscriberStatus,
   type JournalSubscriptionSettings,
   JournalSubscriptionApiError,
-  MOCK_JOURNAL_SUBSCRIBERS,
-  type MockSubscriberStatus,
-  MOCK_SUBSCRIBER_STATUS_LABELS,
-  MOCK_SUBSCRIBER_STATUSES,
+  JOURNAL_SUBSCRIBER_STATUS_LABELS,
+  JOURNAL_SUBSCRIBER_STATUSES,
   updateAdminSubscriptionSettings,
 } from "@/entities/journal-subscription";
 import { Button } from "@/shared/ui/Button";
@@ -26,7 +27,7 @@ type FormState = {
   isActive: boolean;
 };
 
-type StatusFilter = MockSubscriberStatus | "all";
+type StatusFilter = JournalSubscriberStatus | "all";
 
 function toFormState(settings: JournalSubscriptionSettings): FormState {
   return {
@@ -40,6 +41,34 @@ function toFormState(settings: JournalSubscriptionSettings): FormState {
   };
 }
 
+function formatDate(value: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("ru-RU");
+}
+
+function formatPrice(price: number, currency: string): string {
+  const formatted = new Intl.NumberFormat("ru-RU").format(price);
+  if (currency === "KZT") return `${formatted} ₸`;
+  return `${formatted} ${currency}`;
+}
+
+function statusBadgeVariant(
+  status: JournalSubscriberStatus,
+): "pending" | "active" | "suspended" | "blocked" {
+  switch (status) {
+    case "pending":
+      return "pending";
+    case "active":
+      return "active";
+    case "expired":
+      return "suspended";
+    case "cancelled":
+      return "blocked";
+  }
+}
+
 export default function AdminSubscriptionPage() {
   const { success: toastSuccess, error: toastError } = useToast();
   const [form, setForm] = useState<FormState | null>(null);
@@ -47,6 +76,9 @@ export default function AdminSubscriptionPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [subscribers, setSubscribers] = useState<JournalSubscriber[]>([]);
+  const [subscribersLoading, setSubscribersLoading] = useState(true);
+  const [subscribersError, setSubscribersError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
@@ -68,23 +100,40 @@ export default function AdminSubscriptionPage() {
     }
   }, [toastError]);
 
+  const loadSubscribers = useCallback(async () => {
+    setSubscribersLoading(true);
+    setSubscribersError(null);
+    try {
+      const rows = await getAdminSubscribers();
+      setSubscribers(rows);
+    } catch (err) {
+      const message =
+        err instanceof JournalSubscriptionApiError
+          ? err.message
+          : "Не удалось загрузить подписчиков";
+      setSubscribersError(message);
+    } finally {
+      setSubscribersLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     void loadSettings();
-  }, [loadSettings]);
+    void loadSubscribers();
+  }, [loadSettings, loadSubscribers]);
 
   const filteredSubscribers = useMemo(() => {
     const query = search.trim().toLowerCase();
-    return MOCK_JOURNAL_SUBSCRIBERS.filter((subscriber) => {
+    return subscribers.filter((subscriber) => {
       if (statusFilter !== "all" && subscriber.status !== statusFilter) {
         return false;
       }
       if (!query) return true;
-      return (
-        subscriber.name.toLowerCase().includes(query) ||
-        subscriber.email.toLowerCase().includes(query)
-      );
+      const name = (subscriber.userName ?? "").toLowerCase();
+      const email = (subscriber.userEmail ?? "").toLowerCase();
+      return name.includes(query) || email.includes(query);
     });
-  }, [search, statusFilter]);
+  }, [search, statusFilter, subscribers]);
 
   const updateField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => (prev ? { ...prev, [key]: value } : prev));
@@ -324,14 +373,26 @@ export default function AdminSubscriptionPage() {
         </form>
       )}
 
-      <section className="rounded-2xl border border-amber-200 bg-amber-50/40 p-5">
-        <div className="mb-4">
-          <h2 className="font-[family-name:var(--font-sora)] text-lg font-medium text-slate-900">
-            Подписчики
-          </h2>
-          <p className="mt-1 text-sm text-amber-800">
-            Пока mock-данные для макета. Не из базы и не через API.
-          </p>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-[family-name:var(--font-sora)] text-lg font-medium text-slate-900">
+              Подписчики
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Записи из journal_subscriptions. Оплаченная цена сохраняется в
+              pricePaid и не меняется при обновлении тарифа.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => void loadSubscribers()}
+            disabled={subscribersLoading}
+          >
+            Обновить
+          </Button>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-3">
@@ -347,46 +408,79 @@ export default function AdminSubscriptionPage() {
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
           >
             <option value="all">Все статусы</option>
-            {MOCK_SUBSCRIBER_STATUSES.map((status) => (
+            {JOURNAL_SUBSCRIBER_STATUSES.map((status) => (
               <option key={status} value={status}>
-                {MOCK_SUBSCRIBER_STATUS_LABELS[status]}
+                {JOURNAL_SUBSCRIBER_STATUS_LABELS[status]}
               </option>
             ))}
           </select>
         </div>
 
-        {filteredSubscribers.length === 0 ? (
-          <p className="text-sm text-slate-500">Нет mock-записей по фильтру</p>
+        {subscribersLoading ? (
+          <p className="text-sm text-slate-500">Загрузка подписчиков…</p>
+        ) : subscribersError ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {subscribersError}
+            <p className="mt-2 text-red-600/90">
+              Если таблицы ещё нет — примените SQL из{" "}
+              <code className="rounded bg-red-100 px-1">
+                backend/docs/journal_subscriptions.sql
+              </code>
+            </p>
+            <div className="mt-3">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => void loadSubscribers()}
+              >
+                Повторить
+              </Button>
+            </div>
+          </div>
+        ) : filteredSubscribers.length === 0 ? (
+          <p className="text-sm text-slate-500">
+            {subscribers.length === 0
+              ? "Подписчиков пока нет"
+              : "Нет записей по фильтру"}
+          </p>
         ) : (
           <DataTable
             data={filteredSubscribers}
             keyExtractor={(row) => row.id}
             columns={[
-              { key: "name", header: "Имя", render: (row) => row.name },
-              { key: "email", header: "Email", render: (row) => row.email },
+              {
+                key: "name",
+                header: "Имя",
+                render: (row) => row.userName ?? "—",
+              },
+              {
+                key: "email",
+                header: "Email",
+                render: (row) => row.userEmail ?? "—",
+              },
+              {
+                key: "pricePaid",
+                header: "Оплачено",
+                render: (row) => formatPrice(row.pricePaid, row.currency),
+              },
               {
                 key: "startedAt",
                 header: "Начало",
-                render: (row) => row.startedAt,
+                render: (row) => formatDate(row.startedAt),
               },
               {
-                key: "endsAt",
+                key: "expiresAt",
                 header: "Окончание",
-                render: (row) => row.endsAt,
+                render: (row) => formatDate(row.expiresAt),
               },
               {
                 key: "status",
                 header: "Статус",
                 render: (row) => (
                   <StatusBadge
-                    status={
-                      row.status === "active"
-                        ? "active"
-                        : row.status === "expired"
-                          ? "suspended"
-                          : "blocked"
-                    }
-                    label={MOCK_SUBSCRIBER_STATUS_LABELS[row.status]}
+                    status={statusBadgeVariant(row.status)}
+                    label={JOURNAL_SUBSCRIBER_STATUS_LABELS[row.status]}
                   />
                 ),
               },

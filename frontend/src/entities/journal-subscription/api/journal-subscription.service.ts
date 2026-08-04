@@ -1,6 +1,7 @@
 import { ApiError, apiFetch } from "@/shared/api";
 
 import type {
+  JournalSubscriber,
   JournalSubscriptionSettings,
   UpdateJournalSubscriptionSettingsPayload,
 } from "../model/types";
@@ -48,5 +49,11 @@ export async function updateAdminSubscriptionSettings(
       method: "PATCH",
       body: JSON.stringify(payload),
     },
+  );
+}
+
+export async function getAdminSubscribers(): Promise<JournalSubscriber[]> {
+  return subscriptionFetch<JournalSubscriber[]>(
+    "/api/admin/subscription/subscribers",
   );
 }

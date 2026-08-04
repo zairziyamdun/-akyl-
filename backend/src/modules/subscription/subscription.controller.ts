@@ -4,14 +4,15 @@ import { asyncHandler } from "../../common/async-handler.js";
 import { sendSuccess } from "../../common/response.js";
 import type { UpdateSubscriptionSettingsInput } from "./subscription.schema.js";
 import {
-  getActiveSubscriptionSettings,
+  getPublicSubscriptionSettings,
   getSubscriptionSettingsForAdmin,
+  listJournalSubscriptions,
   updateSubscriptionSettings,
 } from "./subscription.service.js";
 
 export const getPublicSubscriptionHandler = asyncHandler(
   async (_req: Request, res: Response) => {
-    const settings = await getActiveSubscriptionSettings();
+    const settings = await getPublicSubscriptionSettings();
     sendSuccess(res, 200, { data: settings });
   },
 );
@@ -31,5 +32,12 @@ export const patchAdminSubscriptionHandler = asyncHandler(
       data: settings,
       message: "Subscription settings updated",
     });
+  },
+);
+
+export const listAdminSubscribersHandler = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const subscriptions = await listJournalSubscriptions();
+    sendSuccess(res, 200, { data: subscriptions });
   },
 );

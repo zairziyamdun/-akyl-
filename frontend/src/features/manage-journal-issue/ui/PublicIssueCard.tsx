@@ -35,7 +35,7 @@ export function IssueAccessGate({ issue }: { issue: JournalIssueRecord }) {
           <Link href={issueHref}>Подробнее о выпуске</Link>
         </Button>
         <Button asChild variant="ghost" className="w-full">
-          <Link href={JOURNAL_ACCESS_HREF}>Получить доступ</Link>
+          <Link href={JOURNAL_ACCESS_HREF}>Оформить подписку</Link>
         </Button>
       </div>
     );

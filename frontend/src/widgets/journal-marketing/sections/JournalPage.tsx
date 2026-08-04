@@ -1,16 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { Lock } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/shared/ui/Button";
+import { motion } from "framer-motion";
 import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
 import { SectionHeading } from "@/shared/ui/SectionHeading";
-import {
-  JOURNAL_ACCESS_HREF,
-  journalEditorialDirections,
-} from "@/widgets/journal-marketing";
+import { journalEditorialDirections } from "@/widgets/journal-marketing";
 import {
   journalReveal,
   journalStagger,
@@ -18,6 +12,7 @@ import {
 } from "../model/journalMotion";
 import { JournalArchiveSection } from "./JournalArchiveSection";
 import { JournalHeroConnected } from "./JournalHeroConnected";
+import { JournalSubscriptionSection } from "./JournalSubscriptionSection";
 
 function JournalEditorial() {
   return (
@@ -64,53 +59,13 @@ function JournalEditorial() {
   );
 }
 
-function JournalAccessCta() {
-  const reduced = useReducedMotion();
-
-  return (
-    <Section className="bg-white pb-16 sm:pb-20 md:pb-28">
-      <Container className="px-4 sm:px-6">
-        <motion.div
-          {...journalReveal}
-          className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 px-5 py-10 text-center shadow-xl sm:rounded-3xl sm:px-12 sm:py-16"
-        >
-          <div
-            className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-sky-500/20 blur-3xl"
-            aria-hidden
-          />
-          <Lock className="relative mx-auto h-9 w-9 text-sky-300/90 sm:h-10 sm:w-10" />
-          <h2 className="relative mt-4 font-[family-name:var(--font-sora)] text-xl font-semibold text-white sm:text-2xl md:text-3xl">
-            Хотите получить доступ к закрытым выпускам?
-          </h2>
-          <p className="relative mx-auto mt-3 max-w-lg text-sm text-white/70 sm:text-base">
-            Оформите консультацию — расскажем о полном архиве журнала и
-            методологии AKYL для вашей организации.
-          </p>
-          <motion.div
-            className="relative mt-8"
-            whileHover={reduced ? undefined : { scale: 1.03 }}
-            whileTap={reduced ? undefined : { scale: 0.98 }}
-          >
-            <Button
-              asChild
-              className="bg-white text-slate-900 hover:bg-slate-100"
-            >
-              <Link href={JOURNAL_ACCESS_HREF}>Получить доступ</Link>
-            </Button>
-          </motion.div>
-        </motion.div>
-      </Container>
-    </Section>
-  );
-}
-
 export function JournalPage() {
   return (
     <div className="bg-white [overflow-x:clip]">
       <JournalHeroConnected />
       <JournalArchiveSection />
       <JournalEditorial />
-      <JournalAccessCta />
+      <JournalSubscriptionSection />
     </div>
   );
 }
