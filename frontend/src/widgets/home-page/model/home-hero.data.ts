@@ -1,69 +1,84 @@
 import type {
+  HomeHeroContent,
   HomeHeroDiagramItem,
-  HomeHeroKpi,
-  HomeHeroSlide,
+  HomeHeroMetric,
 } from "./home.types";
 
-export const homeHeroSlides: ReadonlyArray<HomeHeroSlide> = [
-  {
-    id: 1,
-    eyebrow: "Методология AKYL",
-    title: "Профессиональное управление многоквартирными жилыми домами",
-    description:
-      "Методология и платформа, объединяющая процессы, финансы, участников, KPI и цифровые инструменты в единую систему управления МЖД.",
-    primaryCta: {
-      label: "Изучить методологию",
-      href: "/methodology",
-    },
-    secondaryCta: {
-      label: "Консультация",
-      href: "/consultation",
-    },
-    image: "https://photocentra.ru/images/main109/1092096_main.jpg",
+export const homeHeroContent: HomeHeroContent = {
+  eyebrow: "Методология AKYL",
+  title: "Профессиональное управление многоквартирными жилыми домами",
+  description:
+    "Методология и платформа, объединяющая процессы, финансы, участников, KPI и цифровые инструменты в единую систему управления МЖД.",
+  primaryCta: {
+    label: "Изучить методологию",
+    href: "/methodology",
   },
-  {
-    id: 2,
-    eyebrow: "Индекс эффективности",
-    title: "Управление должно быть измеримым",
-    description:
-      "Оценка качества управления МЖД через систему показателей и индексов эффективности.",
-    primaryCta: {
-      label: "Рассчитать индекс",
-      href: "/tools/index-efficiency",
-    },
-    secondaryCta: {
-      label: "Инструменты",
-      href: "/tools",
-    },
-    image:
-      "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1800&q=80",
+  secondaryCta: {
+    label: "Консультация",
+    href: "/consultation",
   },
-];
+  image: "https://photocentra.ru/images/main109/1092096_main.jpg",
+};
 
 export const homeHeroDiagramItems: ReadonlyArray<HomeHeroDiagramItem> = [
   {
-    label: "Эксплуатация",
-    className: "left-2 top-1/2 z-20 -translate-y-1/2 sm:left-5 md:left-6",
+    id: "kpi",
+    label: "KPI",
+    description: "Измеримые показатели эффективности",
   },
   {
-    label: "Финансы",
-    className: "left-1/2 top-2 z-20 -translate-x-1/2 sm:top-5 md:top-6",
-  },
-  {
+    id: "residents",
     label: "Жители",
-    className: "right-2 top-1/2 z-20 -translate-y-1/2 sm:right-5 md:right-6",
+    description: "Коммуникация, участие и обратная связь",
   },
   {
-    label: "Подрядчики",
-    className:
-      "bottom-2 left-1/2 z-20 -translate-x-1/2 sm:bottom-5 md:bottom-6",
+    id: "documents",
+    label: "Документы",
+    description: "Регламенты, планы и отчётность",
+  },
+  {
+    id: "ecology",
+    label: "Экология",
+    description: "Устойчивость и бережное использование ресурсов",
+  },
+  {
+    id: "security",
+    label: "Безопасность",
+    description: "Контроль рисков и технического состояния",
+  },
+  {
+    id: "analytics",
+    label: "Аналитика",
+    description: "Данные для управленческих решений",
+  },
+  {
+    id: "processes",
+    label: "Процессы",
+    description: "Системное управление ежедневными задачами",
   },
 ];
 
-export const homeHeroKpis: ReadonlyArray<HomeHeroKpi> = [
-  { label: "Финансы", value: 82 },
-  { label: "Эксплуатация", value: 74 },
-  { label: "Коммуникации", value: 68 },
+export const homeHeroMetrics: ReadonlyArray<HomeHeroMetric> = [
+  {
+    title: "Управление по стандартам",
+    description: "Прозрачность, порядок и контроль",
+    icon: "standards",
+  },
+  {
+    title: "Эффективность",
+    value: "20–30%",
+    description: "Рост эффективности управления",
+    icon: "efficiency",
+  },
+  {
+    title: "Оперативность",
+    value: "24/7",
+    description: "Быстрое реагирование и решения",
+    icon: "speed",
+  },
+  {
+    title: "Доверие",
+    description: "Участие жителей и ответственность",
+    icon: "trust",
+  },
 ];
-
-export const homeHeroIeuValue = "78%";

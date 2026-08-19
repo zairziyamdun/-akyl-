@@ -3,8 +3,7 @@ export type HomeHeroCta = {
   href: string;
 };
 
-export type HomeHeroSlide = {
-  id: number;
+export type HomeHeroContent = {
   eyebrow: string;
   title: string;
   description: string;
@@ -14,11 +13,21 @@ export type HomeHeroSlide = {
 };
 
 export type HomeHeroDiagramItem = {
+  id:
+    | "kpi"
+    | "residents"
+    | "documents"
+    | "ecology"
+    | "security"
+    | "analytics"
+    | "processes";
   label: string;
-  className: string;
+  description: string;
 };
 
-export type HomeHeroKpi = {
-  label: string;
-  value: number;
+export type HomeHeroMetric = {
+  title: string;
+  value?: string;
+  description: string;
+  icon: "standards" | "efficiency" | "speed" | "trust";
 };
