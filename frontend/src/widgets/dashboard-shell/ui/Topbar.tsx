@@ -188,7 +188,7 @@ export function PublicUserMenu() {
     return (
       <Link
         href="/login"
-        className="hidden rounded-full border border-white/15 px-4 py-2 text-sm font-medium text-white/90 transition hover:bg-white/10 md:inline-flex"
+        className="hidden h-9 items-center rounded-full border border-white/15 px-4 text-sm font-medium text-white/90 transition hover:bg-white/10 md:inline-flex"
       >
         Войти
       </Link>

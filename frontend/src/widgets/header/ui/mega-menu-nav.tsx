@@ -65,7 +65,7 @@ export function MegaMenuNav() {
                 type="button"
                 onClick={() => handleToggle(category.id)}
                 className={cn(
-                  "group flex h-10 items-center gap-1 rounded-full px-4 text-sm font-semibold transition",
+                  "group flex h-9 items-center gap-1 rounded-full px-3.5 text-sm font-semibold transition",
                   isButtonActive
                     ? "bg-white/12 text-white"
                     : "text-white/75 hover:bg-white/7 hover:text-white",
@@ -90,7 +90,7 @@ export function MegaMenuNav() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       aria-label="Закрыть меню"
-                      className="fixed inset-0 top-[4.25rem] -z-10 bg-black/40 backdrop-blur-[2px]"
+                      className="fixed inset-0 top-[var(--site-header-height)] -z-10 bg-black/40 backdrop-blur-[2px]"
                       onClick={() => setActiveCategoryId(null)}
                     />
 
@@ -99,7 +99,7 @@ export function MegaMenuNav() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="fixed left-0 right-0 top-[4.25rem] z-50 overflow-hidden border-b border-white/10 bg-[#0a101c] shadow-2xl shadow-black/50"
+                      className="fixed left-0 right-0 top-[var(--site-header-height)] z-50 overflow-hidden border-b border-white/10 bg-[#0a101c] shadow-2xl shadow-black/50"
                     >
                       <div className="mx-auto max-w-7xl px-6 py-10">
                         <div
@@ -226,7 +226,7 @@ export function MegaMenuNav() {
       <Link
         href={MEGA_MENU_STANDALONE_LINK.href}
         className={cn(
-          "inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold transition",
+          "inline-flex h-9 items-center rounded-full px-3.5 text-sm font-semibold transition",
           standaloneActive
             ? "bg-white/12 text-white"
             : "text-white/75 hover:bg-white/7 hover:text-white",

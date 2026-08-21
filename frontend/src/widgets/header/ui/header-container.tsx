@@ -20,13 +20,13 @@ export function HeaderContainer({ children }: HeaderContainerProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 border-b transition-all duration-300",
+        "sticky top-0 z-50 h-[var(--site-header-height)] border-b transition-[background-color,border-color,backdrop-filter] duration-300",
         scrolled
           ? "border-white/10 bg-[#060b14]/98 backdrop-blur-xl"
           : "border-white/6 bg-[#060b14]/90 backdrop-blur-lg",
       )}
     >
-      <div className="mx-auto flex min-h-[4.25rem] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {children}
       </div>
     </header>

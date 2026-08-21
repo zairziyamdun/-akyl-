@@ -10,7 +10,7 @@ export function MzhdTheorySubnavSection() {
   const pathname = usePathname();
 
   return (
-    <section className="sticky top-[4.25rem] z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
+    <section className="sticky top-[var(--site-header-height)] z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
       <Container className="py-3">
         <nav
           className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"

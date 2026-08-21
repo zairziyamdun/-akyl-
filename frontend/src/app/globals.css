@@ -10,9 +10,10 @@
   }
 
   :root {
-    --site-header-height: 5.25rem;
+    /* Single source of truth for sticky site header height */
+    --site-header-height: 4.25rem;
     /* Matches home HeroSection: viewport minus site header */
-    --page-hero-offset: 4.25rem;
+    --page-hero-offset: var(--site-header-height);
     --background: 0 0% 100%;
     --border: 214.3 31.8% 91.4%;
     --dash-canvas: #f6f7f9;
@@ -25,14 +26,7 @@
 
   @media (min-width: 640px) {
     :root {
-      --site-header-height: 5.75rem;
-      --page-hero-offset: 4.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    :root {
-      --page-hero-offset: 6.5rem;
+      --site-header-height: 4.5rem;
     }
   }
 }

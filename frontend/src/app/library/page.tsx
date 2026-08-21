@@ -1,13 +1,8 @@
-import {
-  LibraryFeaturedBook,
-  LibraryHero,
-  LibraryMain,
-} from "@/widgets/library-page";
+import { LibraryFeaturedBook, LibraryMain } from "@/widgets/library-page";
 
 export default function LibraryPage() {
   return (
-    <div>
-      <LibraryHero />
+    <div className="bg-white [overflow-x:clip]">
       <LibraryFeaturedBook />
       <LibraryMain />
     </div>

@@ -23,7 +23,7 @@ export function MobileNavigation() {
       <SheetTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white xl:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white xl:hidden"
           aria-label="Открыть меню"
         >
           <Menu className="h-5 w-5" />
