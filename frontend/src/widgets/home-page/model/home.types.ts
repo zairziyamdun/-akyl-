@@ -12,19 +12,6 @@ export type HomeHeroContent = {
   image: string;
 };
 
-export type HomeHeroDiagramItem = {
-  id:
-    | "kpi"
-    | "residents"
-    | "documents"
-    | "ecology"
-    | "security"
-    | "analytics"
-    | "processes";
-  label: string;
-  description: string;
-};
-
 export type HomeHeroMetric = {
   title: string;
   value?: string;

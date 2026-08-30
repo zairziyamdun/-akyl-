@@ -10,11 +10,11 @@ import {
   HomeImplementationPracticeSection,
   HomeJournalSpotlightSection,
   HomeKnowledgeLibrarySection,
+  HomeManagementTransitionSection,
   HomePlatformDirectionsSection,
   HomeProfessionalManagementSection,
   HomeSystemViewSection,
   HomeUrbanCaseSection,
-  HomeWhyNewSystemSection,
 } from "@/widgets/home-page";
 
 export const metadata: Metadata = {
@@ -88,7 +88,7 @@ export default function Page() {
     <main className="min-w-0 overflow-x-hidden bg-white">
       <JsonLd data={homeJsonLd} />
       <HeroSection />
-      <HomeWhyNewSystemSection />
+      <HomeManagementTransitionSection />
       <HomeProfessionalManagementSection />
       <HomeSystemViewSection />
       <HomePlatformDirectionsSection />

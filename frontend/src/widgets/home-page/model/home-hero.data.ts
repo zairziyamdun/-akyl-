@@ -1,8 +1,4 @@
-import type {
-  HomeHeroContent,
-  HomeHeroDiagramItem,
-  HomeHeroMetric,
-} from "./home.types";
+import type { HomeHeroContent, HomeHeroMetric } from "./home.types";
 
 export const homeHeroContent: HomeHeroContent = {
   eyebrow: "Методология AKYL",
@@ -19,44 +15,6 @@ export const homeHeroContent: HomeHeroContent = {
   },
   image: "https://photocentra.ru/images/main109/1092096_main.jpg",
 };
-
-export const homeHeroDiagramItems: ReadonlyArray<HomeHeroDiagramItem> = [
-  {
-    id: "kpi",
-    label: "KPI",
-    description: "Измеримые показатели эффективности",
-  },
-  {
-    id: "residents",
-    label: "Жители",
-    description: "Коммуникация, участие и обратная связь",
-  },
-  {
-    id: "documents",
-    label: "Документы",
-    description: "Регламенты, планы и отчётность",
-  },
-  {
-    id: "ecology",
-    label: "Экология",
-    description: "Устойчивость и бережное использование ресурсов",
-  },
-  {
-    id: "security",
-    label: "Безопасность",
-    description: "Контроль рисков и технического состояния",
-  },
-  {
-    id: "analytics",
-    label: "Аналитика",
-    description: "Данные для управленческих решений",
-  },
-  {
-    id: "processes",
-    label: "Процессы",
-    description: "Системное управление ежедневными задачами",
-  },
-];
 
 export const homeHeroMetrics: ReadonlyArray<HomeHeroMetric> = [
   {
