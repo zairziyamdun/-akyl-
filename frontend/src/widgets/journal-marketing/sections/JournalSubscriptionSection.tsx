@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowUpRight, Check } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -9,7 +10,6 @@ import {
   JournalSubscriptionApiError,
 } from "@/entities/journal-subscription";
 import { useJournalAccess } from "@/features/manage-journal-issue/model/useJournalAccess";
-import { Button } from "@/shared/ui/Button";
 import { Container } from "@/shared/ui/Container";
 import { Section } from "@/shared/ui/Section";
 import { journalReveal } from "../model/journalMotion";
@@ -66,9 +66,12 @@ export function JournalSubscriptionSection() {
 
   if (loading || accessLoading) {
     return (
-      <Section id="subscription" className="scroll-mt-24 bg-white pb-16 sm:pb-24">
+      <Section
+        id="subscription"
+        className="scroll-mt-24 border-t border-slate-200 bg-slate-950 pb-16 sm:pb-24"
+      >
         <Container className="px-4 sm:px-6">
-          <p className="text-center text-sm text-slate-500">
+          <p className="text-center text-sm text-white/45">
             Загрузка условий подписки…
           </p>
         </Container>
@@ -85,80 +88,105 @@ export function JournalSubscriptionSection() {
   const canSubscribe = settings.isActive && !hasOpenSubscription;
 
   return (
-    <Section id="subscription" className="scroll-mt-24 bg-white pb-16 sm:pb-24">
-      <Container className="px-4 sm:px-6">
+    <Section
+      id="subscription"
+      className="relative isolate scroll-mt-24 overflow-hidden border-t border-white/10 bg-slate-950 pb-16 text-white sm:pb-24"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_0%,rgba(56,189,248,0.12),transparent_55%)]"
+        aria-hidden
+      />
+
+      <Container className="relative px-4 sm:px-6">
         <motion.div
           {...journalReveal}
-          className="mx-auto max-w-3xl rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm sm:p-10"
+          className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-16"
         >
-          <p className="text-xs font-semibold tracking-wider text-sky-700 uppercase">
-            Подписка на журнал
-          </p>
-          <h2 className="mt-2 font-[family-name:var(--font-sora)] text-2xl font-semibold text-slate-900 sm:text-3xl">
-            {settings.title}
-          </h2>
-          {settings.description ? (
-            <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-              {settings.description}
-            </p>
-          ) : null}
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-300/90">
+              Подписка на журнал
+            </span>
+            <h2 className="mt-4 font-[family-name:var(--font-sora)] text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              {settings.title}
+            </h2>
+            {settings.description ? (
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-white/60">
+                {settings.description}
+              </p>
+            ) : null}
 
-          <div className="mt-6 flex flex-wrap items-end gap-x-6 gap-y-2">
-            <p className="font-[family-name:var(--font-sora)] text-3xl font-semibold text-slate-900 sm:text-4xl">
-              {formatPrice(settings.price, settings.currency)}
-            </p>
-            <p className="pb-1 text-sm text-slate-500">
-              на {formatDuration(settings.durationMonths)}
-            </p>
+            <div className="mt-8 flex flex-wrap items-end gap-x-5 gap-y-2 border-t border-white/10 pt-8">
+              <p className="font-[family-name:var(--font-sora)] text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                {formatPrice(settings.price, settings.currency)}
+              </p>
+              <p className="pb-1.5 text-sm text-white/45">
+                на {formatDuration(settings.durationMonths)}
+              </p>
+            </div>
+
+            <div className="mt-8">
+              {hasActiveAccess ? (
+                <div className="space-y-4">
+                  <p className="border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">
+                    У вас уже есть активная подписка.
+                  </p>
+                  <Link
+                    href="/app/subscriptions"
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition duration-300 hover:bg-sky-50 hover:pr-7"
+                  >
+                    Моя подписка
+                    <ArrowUpRight className="h-4 w-4 transition duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </Link>
+                </div>
+              ) : current?.status === "pending" ? (
+                <Link
+                  href="/app/subscriptions/checkout"
+                  className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition duration-300 hover:bg-sky-50 hover:pr-7"
+                >
+                  Продолжить оформление
+                  <ArrowUpRight className="h-4 w-4 transition duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              ) : canSubscribe ? (
+                <Link
+                  href="/app/subscriptions/checkout"
+                  className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 transition duration-300 hover:bg-sky-50 hover:pr-7"
+                >
+                  Оформить подписку
+                  <ArrowUpRight className="h-4 w-4 transition duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              ) : (
+                <p className="border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/55">
+                  Оформление подписки временно недоступно.
+                </p>
+              )}
+            </div>
           </div>
 
           {settings.benefits.length > 0 ? (
-            <ul className="mt-6 space-y-2">
-              {settings.benefits.map((benefit) => (
-                <li
+            <ul className="divide-y divide-white/10 border-y border-white/10">
+              {settings.benefits.map((benefit, i) => (
+                <motion.li
                   key={benefit}
-                  className="flex items-start gap-2 text-sm text-slate-700"
+                  initial={{ opacity: 0, x: 12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: i * 0.06,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="group flex items-start gap-3 py-4"
                 >
-                  <span
-                    className="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-semibold text-emerald-700"
-                    aria-hidden
-                  >
-                    ✓
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sky-400/15 text-sky-300 transition duration-300 group-hover:bg-sky-400/25 group-hover:text-sky-200">
+                    <Check className="h-3 w-3" strokeWidth={2.5} />
                   </span>
-                  {benefit}
-                </li>
+                  <span className="text-sm leading-relaxed text-white/70 transition duration-300 group-hover:text-white/90">
+                    {benefit}
+                  </span>
+                </motion.li>
               ))}
             </ul>
           ) : null}
-
-          <div className="mt-8">
-            {hasActiveAccess ? (
-              <div className="space-y-3">
-                <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                  У вас уже есть активная подписка.
-                </p>
-                <Button asChild variant="secondary">
-                  <Link href="/app/subscriptions">Моя подписка</Link>
-                </Button>
-              </div>
-            ) : current?.status === "pending" ? (
-              <Button asChild variant="secondary">
-                <Link href="/app/subscriptions/checkout">
-                  Продолжить оформление
-                </Link>
-              </Button>
-            ) : canSubscribe ? (
-              <Button asChild>
-                <Link href="/app/subscriptions/checkout">
-                  Оформить подписку
-                </Link>
-              </Button>
-            ) : (
-              <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                Оформление подписки временно недоступно.
-              </p>
-            )}
-          </div>
         </motion.div>
       </Container>
     </Section>

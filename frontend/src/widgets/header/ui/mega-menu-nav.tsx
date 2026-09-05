@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   MEGA_MENU_LINKS,
-  MEGA_MENU_STANDALONE_LINK,
+  MEGA_MENU_STANDALONE_LINKS,
 } from "@/shared/consts";
 import { cn } from "@/shared/lib";
 import {
@@ -44,11 +44,6 @@ export function MegaMenuNav() {
   const handleToggle = (id: string) => {
     setActiveCategoryId((prev) => (prev === id ? null : id));
   };
-
-  const standaloneActive = isStandaloneNavActive(
-    MEGA_MENU_STANDALONE_LINK.href,
-    pathname,
-  );
 
   return (
     <div ref={navRef} className="hidden xl:flex items-center gap-1">
@@ -223,17 +218,23 @@ export function MegaMenuNav() {
         })}
       </nav>
 
-      <Link
-        href={MEGA_MENU_STANDALONE_LINK.href}
-        className={cn(
-          "inline-flex h-9 items-center rounded-full px-3.5 text-sm font-semibold transition",
-          standaloneActive
-            ? "bg-white/12 text-white"
-            : "text-white/75 hover:bg-white/7 hover:text-white",
-        )}
-      >
-        {MEGA_MENU_STANDALONE_LINK.label}
-      </Link>
+      {MEGA_MENU_STANDALONE_LINKS.map((link) => {
+        const active = isStandaloneNavActive(link.href, pathname);
+        return (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={cn(
+              "inline-flex h-9 items-center rounded-full px-3.5 text-sm font-semibold transition",
+              active
+                ? "bg-white/12 text-white"
+                : "text-white/75 hover:bg-white/7 hover:text-white",
+            )}
+          >
+            {link.label}
+          </Link>
+        );
+      })}
     </div>
   );
 }

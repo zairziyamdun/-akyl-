@@ -15,7 +15,7 @@ export function HomeJournalSpotlightSection() {
   return (
     <section className="border-b border-slate-200/80 bg-slate-50">
       <Container className="py-20 lg:py-28">
-        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-8 border-b border-slate-200 pb-10 md:flex-row md:items-end">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -36,14 +36,14 @@ export function HomeJournalSpotlightSection() {
           </motion.div>
           <Link
             href={JOURNAL_URL}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900"
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-900 transition hover:text-sky-800"
           >
             Все материалы
-            <ArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="h-4 w-4 transition duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
+        <div className="mt-2 divide-y divide-slate-200">
           {posts.map((p, i) => (
             <motion.article
               key={p.title}
@@ -54,16 +54,18 @@ export function HomeJournalSpotlightSection() {
             >
               <Link
                 href={JOURNAL_URL}
-                className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-slate-300 hover:shadow-md"
+                className="group grid gap-3 py-6 transition duration-300 hover:bg-white/70 sm:grid-cols-[7.5rem_1fr_auto] sm:items-center sm:gap-8 sm:py-7"
               >
                 <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
                   {p.tag} · {p.date}
                 </span>
-                <h3 className="mt-4 flex-1 text-lg font-semibold leading-snug text-slate-900 group-hover:text-slate-700">
+                <h3 className="text-lg font-semibold leading-snug text-slate-900 transition duration-300 group-hover:text-sky-950">
                   {p.title}
+                  <span className="mt-2 block h-px max-w-0 bg-sky-500 transition-all duration-500 group-hover:max-w-[6rem]" />
                 </h3>
-                <span className="mt-6 text-sm font-medium text-slate-900 opacity-0 transition group-hover:opacity-100">
-                  Читать →
+                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 transition duration-300 group-hover:text-sky-700">
+                  Читать
+                  <ArrowUpRight className="h-4 w-4 transition duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
               </Link>
             </motion.article>

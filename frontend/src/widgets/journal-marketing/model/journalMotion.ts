@@ -30,3 +30,8 @@ export const journalStaggerItem: Variants = {
     transition: { duration: 0.45, ease: journalEase },
   },
 };
+
+export const journalHoverLift = {
+  y: -4,
+  transition: { duration: 0.35, ease: journalEase },
+};

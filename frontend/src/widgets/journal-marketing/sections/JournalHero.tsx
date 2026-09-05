@@ -128,7 +128,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
   );
 
   const arrowClass =
-    "absolute z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-lg backdrop-blur-md transition hover:scale-105 hover:bg-white/20 md:flex md:h-12 md:w-12 lg:h-14 lg:w-14";
+    "absolute z-20 hidden h-12 w-10 items-center justify-center border border-white/15 bg-slate-950/40 text-white backdrop-blur-sm transition duration-300 hover:border-sky-300/40 hover:bg-white/10 hover:text-sky-100 md:flex lg:h-14 lg:w-11";
 
   const bgSrc = useMemo(
     () => (activeSlide ? slideBackground(activeSlide) : journalIntroBackground),
@@ -232,13 +232,16 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                     <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
                       <Link
                         href="/journal#journal-all-issues"
-                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100 sm:min-h-[48px] sm:w-auto sm:px-6"
+                        className="group inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition duration-300 hover:bg-sky-50 hover:pr-6 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Все выпуски
+                        <span className="transition duration-300 group-hover:translate-x-0.5">
+                          →
+                        </span>
                       </Link>
                       <Link
                         href="#journal-editorial"
-                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition duration-300 hover:border-white/40 hover:bg-white/12 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         О журнале
                       </Link>
@@ -248,7 +251,7 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                             ? "/app/subscriptions"
                             : JOURNAL_ACCESS_HREF
                         }
-                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition duration-300 hover:border-sky-300/40 hover:bg-sky-400/10 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         {hasActiveAccess
                           ? "Моя подписка"
@@ -278,13 +281,16 @@ export function JournalHero({ slides, isLoading = false }: JournalHeroProps) {
                     <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-3">
                       <Link
                         href={getJournalIssuePath(activeSlide.id)}
-                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:scale-[1.02] hover:bg-slate-100 sm:min-h-[48px] sm:w-auto sm:px-6"
+                        className="group inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition duration-300 hover:bg-sky-50 hover:pr-6 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Читать
+                        <span className="transition duration-300 group-hover:translate-x-0.5">
+                          →
+                        </span>
                       </Link>
                       <Link
                         href="/journal#journal-all-issues"
-                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[48px] sm:w-auto sm:px-6"
+                        className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-medium text-white backdrop-blur-sm transition duration-300 hover:border-white/40 hover:bg-white/12 sm:min-h-[48px] sm:w-auto sm:px-6"
                       >
                         Все выпуски
                       </Link>

@@ -10,7 +10,6 @@ import {
   Layers,
   Library,
   type LucideIcon,
-  Newspaper,
   Route,
   Settings2,
   Users,
@@ -39,10 +38,13 @@ export interface MegaMenuCategory {
   columns?: MegaMenuColumn[];
 }
 
-export const MEGA_MENU_STANDALONE_LINK = {
-  label: "Инструменты",
-  href: "/tools",
-} as const;
+export const MEGA_MENU_STANDALONE_LINKS = [
+  { label: "Журнал", href: "/journal" },
+  { label: "Инструменты", href: "/tools" },
+] as const;
+
+/** @deprecated Prefer MEGA_MENU_STANDALONE_LINKS */
+export const MEGA_MENU_STANDALONE_LINK = MEGA_MENU_STANDALONE_LINKS[1];
 
 export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
   {
@@ -217,11 +219,6 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
             title: "Образовательные программы",
             href: "/education",
             icon: GraduationCap,
-          },
-          {
-            title: "Журнал AKYL",
-            href: "/journal",
-            icon: Newspaper,
           },
         ],
       },

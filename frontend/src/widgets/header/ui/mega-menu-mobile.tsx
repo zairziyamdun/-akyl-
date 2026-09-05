@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   MEGA_MENU_LINKS,
-  MEGA_MENU_STANDALONE_LINK,
+  MEGA_MENU_STANDALONE_LINKS,
 } from "@/shared/consts";
 import { cn } from "@/shared/lib";
 import { SheetClose } from "@/shared/ui";
@@ -26,11 +26,6 @@ export function MegaMenuMobile() {
   const handleToggle = (id: string) => {
     setExpandedCategoryId((prev) => (prev === id ? null : id));
   };
-
-  const standaloneActive = isStandaloneNavActive(
-    MEGA_MENU_STANDALONE_LINK.href,
-    pathname,
-  );
 
   return (
     <div className="flex flex-col gap-1">
@@ -148,19 +143,24 @@ export function MegaMenuMobile() {
         );
       })}
 
-      <SheetClose asChild>
-        <Link
-          href={MEGA_MENU_STANDALONE_LINK.href}
-          className={cn(
-            "rounded-xl px-4 py-3.5 text-[16px] font-medium transition",
-            standaloneActive
-              ? "bg-white/10 text-white"
-              : "text-white/75 hover:bg-white/6",
-          )}
-        >
-          {MEGA_MENU_STANDALONE_LINK.label}
-        </Link>
-      </SheetClose>
+      {MEGA_MENU_STANDALONE_LINKS.map((link) => {
+        const active = isStandaloneNavActive(link.href, pathname);
+        return (
+          <SheetClose asChild key={link.href}>
+            <Link
+              href={link.href}
+              className={cn(
+                "rounded-xl px-4 py-3.5 text-[16px] font-medium transition",
+                active
+                  ? "bg-white/10 text-white"
+                  : "text-white/75 hover:bg-white/6",
+              )}
+            >
+              {link.label}
+            </Link>
+          </SheetClose>
+        );
+      })}
     </div>
   );
 }

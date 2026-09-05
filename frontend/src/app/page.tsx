@@ -8,6 +8,7 @@ import {
   HomeClosingCtaSection,
   HomeEducationSpotlightSection,
   HomeImplementationPracticeSection,
+  HomeJournalBridgeSection,
   HomeJournalSpotlightSection,
   HomeKnowledgeLibrarySection,
   HomeManagementTransitionSection,
@@ -89,6 +90,7 @@ export default function Page() {
       <JsonLd data={homeJsonLd} />
       <HeroSection />
       <HomeManagementTransitionSection />
+      <HomeJournalBridgeSection />
       <HomeProfessionalManagementSection />
       <HomeSystemViewSection />
       <HomePlatformDirectionsSection />
