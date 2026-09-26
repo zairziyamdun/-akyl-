@@ -32,7 +32,6 @@ type CreateFormState = {
   email: string;
   password: string;
   full_name: string;
-  organization: string;
   phone: string;
   role: AdminUserRole;
   status: AdminUserStatus;
@@ -42,7 +41,6 @@ const EMPTY_CREATE_FORM: CreateFormState = {
   email: "",
   password: "",
   full_name: "",
-  organization: "",
   phone: "",
   role: "user",
   status: "active",
@@ -107,7 +105,10 @@ export default function AdminUsersPage() {
     setSuccess(null);
 
     try {
-      const created = await createAdminUser(createForm);
+      const created = await createAdminUser({
+        ...createForm,
+        phone: createForm.phone.trim() || undefined,
+      });
       setUsers((prev) => [created, ...prev]);
       setCreateForm(EMPTY_CREATE_FORM);
       setFormOpen(false);
@@ -320,31 +321,14 @@ export default function AdminUsersPage() {
             </div>
             <div className="block text-sm">
               <label
-                htmlFor="admin-create-organization"
-                className="mb-1.5 block font-medium text-slate-700"
-              >
-                Организация
-              </label>
-              <Input
-                id="admin-create-organization"
-                required
-                value={createForm.organization}
-                onChange={(event) =>
-                  handleCreateFieldChange("organization", event.target.value)
-                }
-                disabled={creating}
-              />
-            </div>
-            <div className="block text-sm">
-              <label
                 htmlFor="admin-create-phone"
                 className="mb-1.5 block font-medium text-slate-700"
               >
-                Телефон
+                Телефон (необязательно)
               </label>
               <Input
                 id="admin-create-phone"
-                required
+                type="tel"
                 value={createForm.phone}
                 onChange={(event) =>
                   handleCreateFieldChange("phone", event.target.value)
@@ -462,11 +446,6 @@ export default function AdminUsersPage() {
               key: "email",
               header: "Email",
               render: (user) => user.email ?? "—",
-            },
-            {
-              key: "organization",
-              header: "Организация",
-              render: (user) => user.organization ?? "—",
             },
             {
               key: "phone",

@@ -25,8 +25,8 @@ export const loginSchema = z.object({
 
 export const updateProfileSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
-  organization: z.string().min(1, "Organization is required"),
-  phone: z.string().min(1, "Phone is required"),
+  organization: z.string().optional(),
+  phone: z.string().trim().optional(),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

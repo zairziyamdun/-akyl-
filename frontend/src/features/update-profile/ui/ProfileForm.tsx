@@ -18,7 +18,6 @@ export function ProfileForm({
 }: ProfileFormProps) {
   const { user, role, profile, updateProfile } = useAuth();
   const [fullName, setFullName] = useState("");
-  const [organization, setOrganization] = useState("");
   const [phone, setPhone] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +26,6 @@ export function ProfileForm({
   useEffect(() => {
     if (!user) return;
     setFullName(user.name);
-    setOrganization(user.organization);
     setPhone(profile?.phone ?? user.phone ?? "");
   }, [user, profile]);
 
@@ -56,7 +54,7 @@ export function ProfileForm({
             setError("");
             setSuccess(false);
             try {
-              await updateProfile({ full_name: fullName, organization, phone });
+              await updateProfile({ full_name: fullName, phone: phone.trim() });
               setSuccess(true);
             } catch (err) {
               setError(
@@ -101,31 +99,16 @@ export function ProfileForm({
           </div>
           <div>
             <label
-              htmlFor="profile-organization"
-              className="mb-1.5 block text-sm font-medium text-slate-700"
-            >
-              Организация
-            </label>
-            <Input
-              id="profile-organization"
-              value={organization}
-              onChange={(e) => setOrganization(e.target.value)}
-              required
-              disabled={saving}
-            />
-          </div>
-          <div>
-            <label
               htmlFor="profile-phone"
               className="mb-1.5 block text-sm font-medium text-slate-700"
             >
-              Телефон
+              Телефон (необязательно)
             </label>
             <Input
               id="profile-phone"
+              type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              required
               disabled={saving}
             />
           </div>

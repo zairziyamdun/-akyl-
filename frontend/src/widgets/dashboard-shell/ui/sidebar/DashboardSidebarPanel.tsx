@@ -37,6 +37,11 @@ export function DashboardSidebarPanel({
     ? splitNavSections(sections)
     : { mainSections: sections, profileItem: null };
 
+  const activeHref = sections
+    .flatMap((section) => section.items)
+    .filter((item) => isNavItemActive(pathname, item.href))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+
   return (
     <div
       className="flex h-full flex-col overflow-hidden"
@@ -104,7 +109,7 @@ export function DashboardSidebarPanel({
                     href={item.href}
                     label={item.label}
                     icon={getNavIcon(item.href)}
-                    active={isNavItemActive(pathname, item.href)}
+                    active={activeHref === item.href}
                     collapsed={collapsed}
                     onNavigate={onNavigate}
                   />

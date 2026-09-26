@@ -44,8 +44,8 @@ export type RegisterPayload = {
 
 export type UpdateProfilePayload = {
   full_name: string;
-  organization: string;
-  phone: string;
+  organization?: string;
+  phone?: string;
 };
 
 export type LoginPayload = {

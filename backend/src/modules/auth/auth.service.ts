@@ -166,7 +166,7 @@ export async function logoutUser(): Promise<void> {
 
 export async function updateProfile(
   userId: string,
-  input: { full_name: string; organization: string; phone: string },
+  input: { full_name: string; organization?: string; phone?: string },
 ): Promise<Profile> {
   const supabase = getSupabaseAdmin();
 
@@ -175,7 +175,7 @@ export async function updateProfile(
     .update({
       full_name: input.full_name,
       organization: input.organization,
-      phone: input.phone,
+      phone: input.phone || null,
     })
     .eq("id", userId)
     .select("*")

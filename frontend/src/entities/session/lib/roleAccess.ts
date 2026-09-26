@@ -43,13 +43,6 @@ export function getRoleDashboardPath(role: PlatformRole): string {
 }
 
 /** Default destination after login (not the same as cabinet entry). */
-export function getPostLoginPath(role: PlatformRole): string {
-  switch (role) {
-    case "admin":
-      return "/admin";
-    case "journalist":
-      return "/studio";
-    case "user":
-      return "/";
-  }
+export function getPostLoginPath(): string {
+  return "/";
 }

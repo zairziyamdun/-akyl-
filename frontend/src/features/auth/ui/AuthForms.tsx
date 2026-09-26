@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { getPostLoginPath } from "@/entities/session";
 import { cn } from "@/shared/lib";
@@ -20,7 +20,6 @@ type FormState = "idle" | "loading" | "success" | "error";
 
 export function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { login } = useAuth();
   const { success: toastSuccess, error: toastError } = useToast();
   const [state, setState] = useState<FormState>("idle");
@@ -51,14 +50,12 @@ export function LoginForm() {
           setState("loading");
           setError("");
           try {
-            const { role } = await login({
+            await login({
               email,
               password,
             });
-            const returnUrl =
-              searchParams.get("returnUrl") ?? searchParams.get("next");
             toastSuccess("Вход выполнен");
-            router.push(returnUrl ?? getPostLoginPath(role));
+            router.replace(getPostLoginPath());
           } catch (err) {
             setState("error");
             const message =
@@ -195,7 +192,7 @@ export function RegisterForm() {
             setState("success");
             toastSuccess("Аккаунт создан. Войдите, чтобы получить доступ.");
             // Do not auto-login — user must sign in explicitly.
-            setTimeout(() => router.push("/login"), 1500);
+            setTimeout(() => router.replace(getPostLoginPath()), 1500);
           } catch (err) {
             setState("error");
             const message =

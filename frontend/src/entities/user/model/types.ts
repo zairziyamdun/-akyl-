@@ -22,8 +22,7 @@ export type CreateAdminUserPayload = {
   email: string;
   password: string;
   full_name: string;
-  organization: string;
-  phone: string;
+  phone?: string;
   role: AdminUserRole;
   status: AdminUserStatus;
 };

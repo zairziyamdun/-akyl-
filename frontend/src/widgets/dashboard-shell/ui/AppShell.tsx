@@ -3,11 +3,7 @@
 import { motion } from "framer-motion";
 import { type ReactNode, useEffect, useState } from "react";
 import type { PlatformRole } from "@/entities/session";
-import {
-  getNavForRole,
-  getShellTitle,
-  type NavSection,
-} from "@/features/auth";
+import { getNavForRole, getShellTitle, type NavSection } from "@/features/auth";
 import { useSidebarCollapsed } from "@/shared/hooks/useSidebarCollapsed";
 import { Sheet, SheetContent } from "@/shared/ui/sheet";
 import { TooltipProvider } from "@/shared/ui/tooltip";
@@ -50,14 +46,14 @@ export function AppShell({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="flex min-h-screen overflow-x-hidden bg-[#F4F7FB]">
+      <div className="flex min-h-screen overflow-x-clip bg-[#F4F7FB]">
         <motion.aside
           initial={false}
           animate={{
             width: hydrated ? sidebarWidth : SIDEBAR_WIDTH_EXPANDED_PX,
           }}
           transition={SIDEBAR_MOTION_TRANSITION}
-          className="relative sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r border-[#E2E8F0] bg-white md:flex"
+          className="sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r border-[#E2E8F0] bg-white md:flex"
         >
           <DashboardSidebarPanel
             sections={sections}

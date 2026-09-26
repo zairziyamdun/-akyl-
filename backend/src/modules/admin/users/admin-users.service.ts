@@ -203,8 +203,7 @@ export async function createAdminUser(input: {
   email: string;
   password: string;
   full_name: string;
-  organization: string;
-  phone: string;
+  phone?: string;
   role: ProfileRole;
   status: Extract<ProfileStatus, "active" | "blocked" | "pending">;
 }): Promise<AdminUser> {
@@ -216,8 +215,8 @@ export async function createAdminUser(input: {
     email_confirm: true,
     user_metadata: {
       full_name: input.full_name,
-      organization: input.organization,
-      phone: input.phone,
+      organization: null,
+      phone: input.phone || null,
     },
   });
 
@@ -243,8 +242,8 @@ export async function createAdminUser(input: {
     .upsert({
       id: userId,
       full_name: input.full_name,
-      organization: input.organization,
-      phone: input.phone,
+      organization: null,
+      phone: input.phone || null,
       role: input.role,
       status: input.status,
     })

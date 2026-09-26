@@ -54,8 +54,15 @@ export function Topbar({
         setMenuOpen(false);
       }
     };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
     document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, []);
 
   return (
@@ -96,7 +103,13 @@ export function Topbar({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            href="/"
+            className="whitespace-nowrap text-sm text-sky-700 hover:underline"
+          >
+            На главную
+          </Link>
           <Button
             variant="ghost"
             size="sm"
@@ -111,12 +124,14 @@ export function Topbar({
               <button
                 type="button"
                 onClick={() => setMenuOpen((v) => !v)}
+                aria-label="Меню пользователя"
+                aria-expanded={menuOpen}
                 className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-slate-100"
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-100 text-xs font-semibold text-sky-800">
                   {user.initials}
                 </span>
-                <span className="hidden text-sm text-slate-700 md:block">
+                <span className="hidden max-w-40 truncate text-sm text-slate-700 md:block">
                   {user.name}
                 </span>
               </button>
