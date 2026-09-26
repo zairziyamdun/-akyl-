@@ -76,7 +76,10 @@ export function FileDropzone({
           accept={accept}
           className="sr-only"
           disabled={disabled}
-          onChange={(e) => handleFile(e.target.files?.[0])}
+          onChange={(e) => {
+            handleFile(e.target.files?.[0]);
+            e.target.value = "";
+          }}
         />
 
         {previewType === "image" && previewUrl ? (
@@ -110,7 +113,7 @@ export function FileDropzone({
               />
             </div>
             <p className="mt-1 text-center text-xs text-slate-500">
-              Загрузка {progress}%
+              {progress === 100 ? "Загружено" : "Загрузка…"}
             </p>
           </div>
         ) : null}

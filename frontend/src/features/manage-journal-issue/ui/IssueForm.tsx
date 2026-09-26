@@ -65,7 +65,6 @@ export function JournalIssueForm({
   const [coverFileName, setCoverFileName] = useState(
     issue?.coverFileName ?? "",
   );
-  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState(issue?.coverUrl ?? "");
   const [pdfPath, setPdfPath] = useState(issue?.pdfUrl ?? "");
   const [pdfFileName, setPdfFileName] = useState(issue?.pdfFileName ?? "");
@@ -84,96 +83,103 @@ export function JournalIssueForm({
 
   useEffect(() => {
     return () => {
-      if (coverFile && coverPreview.startsWith("blob:")) {
+      if (coverPreview.startsWith("blob:")) {
         URL.revokeObjectURL(coverPreview);
       }
     };
-  }, [coverFile, coverPreview]);
+  }, [coverPreview]);
 
   const readOnly =
     !isAdmin && (issue?.status === "REVIEW" || issue?.status === "PUBLISHED");
 
+  const uploadingCover = coverProgress !== null && coverProgress < 100;
+  const uploadingPdf = pdfProgress !== null && pdfProgress < 100;
+  const filesBusy = uploadingCover || uploadingPdf;
+  const filesInvalid = !!coverError || !!pdfError;
   const canSubmitReview =
+    !filesBusy &&
+    !filesInvalid &&
     title.trim() &&
     issueNumber.trim() &&
     description.trim() &&
     coverUrl &&
     pdfPath;
 
-  const uploadFiles = async () => {
-    let nextCoverUrl = coverUrl;
-    let nextPdfPath = pdfPath;
-    let nextPdfFileName = pdfFileName;
-    let nextPdfSize = pdfSizeBytes;
-
-    if (coverFile) {
-      const validation = validateCoverFile(coverFile);
-      if (validation) throw new JournalApiError(validation, 400);
-      setCoverProgress(30);
-      const uploaded = await uploadCover(coverFile);
-      setCoverProgress(100);
-      nextCoverUrl = uploaded.url;
+  const handleCoverSelect = async (file: File) => {
+    const validation = validateCoverFile(file);
+    if (validation) {
+      setCoverError(validation);
+      return;
+    }
+    setCoverError("");
+    setCoverUrl("");
+    setCoverPreview(URL.createObjectURL(file));
+    setCoverFileName(file.name);
+    setCoverProgress(30);
+    try {
+      const uploaded = await uploadCover(file);
       setCoverUrl(uploaded.url);
-      setCoverFileName(coverFile.name);
-      setCoverFile(null);
+      setCoverProgress(100);
+    } catch (err) {
+      setCoverProgress(null);
+      setCoverError(
+        err instanceof JournalUploadError
+          ? err.userMessage
+          : err instanceof JournalApiError
+            ? err.message
+            : "Не удалось загрузить обложку. Выберите файл повторно.",
+      );
     }
+  };
 
-    if (pdfFile) {
-      const validation = validatePdfFile(pdfFile);
-      if (validation) throw new JournalApiError(validation, 400);
-      setPdfError("");
-      setPdfProgress(30);
-      try {
-        const uploaded = await uploadPdf(pdfFile);
-        setPdfProgress(100);
-        nextPdfPath = uploaded.path;
-        nextPdfFileName = uploaded.fileName;
-        nextPdfSize = uploaded.size;
-        setPdfPath(uploaded.path);
-        setPdfFileName(uploaded.fileName);
-        setPdfSizeBytes(uploaded.size);
-        setPdfFile(null);
-      } catch (err) {
-        const message =
-          err instanceof JournalUploadError
-            ? err.userMessage
-            : err instanceof JournalApiError
-              ? err.message
-              : "Не удалось загрузить PDF";
-        setPdfError(message);
-        throw err instanceof JournalApiError
-          ? err
-          : new JournalApiError(message, 0);
-      }
+  const handlePdfSelect = async (file: File) => {
+    const validation = validatePdfFile(file);
+    if (validation) {
+      setPdfError(validation);
+      return;
     }
-
-    return {
-      coverUrl: nextCoverUrl,
-      pdfPath: nextPdfPath,
-      pdfFileName: nextPdfFileName,
-      pdfSizeBytes: nextPdfSize,
-    };
+    setPdfError("");
+    setPdfPath("");
+    setPdfFile(file);
+    setPdfFileName(file.name);
+    setPdfSizeBytes(file.size);
+    setPdfProgress(30);
+    try {
+      const uploaded = await uploadPdf(file);
+      setPdfPath(uploaded.path);
+      setPdfFileName(uploaded.fileName);
+      setPdfSizeBytes(uploaded.size);
+      setPdfProgress(100);
+    } catch (err) {
+      setPdfProgress(null);
+      setPdfError(
+        err instanceof JournalUploadError
+          ? err.userMessage
+          : err instanceof JournalApiError
+            ? err.message
+            : "Не удалось загрузить PDF. Выберите файл повторно.",
+      );
+    }
   };
 
   const handleSaveDraft = async () => {
+    if (filesBusy || filesInvalid || submitting) return;
     setSubmitting(true);
     setFormError("");
     setCoverProgress(null);
     setPdfProgress(null);
 
     try {
-      const files = await uploadFiles();
-
       const payload = {
         title,
         issueNumber,
         description,
         accessType,
-        coverUrl: files.coverUrl,
+        coverUrl,
         coverFileName,
-        pdfUrl: files.pdfPath,
-        pdfFileName: files.pdfFileName,
-        pdfSizeBytes: files.pdfSizeBytes,
+        pdfUrl: pdfPath,
+        pdfFileName,
+        pdfSizeBytes,
       };
 
       if (mode === "create") {
@@ -204,22 +210,21 @@ export function JournalIssueForm({
   };
 
   const handleSubmitReview = async () => {
-    if (!canSubmitReview) return;
+    if (!canSubmitReview || submitting) return;
     setSubmitting(true);
     setFormError("");
 
     try {
-      const files = await uploadFiles();
       const payload = {
         title,
         issueNumber,
         description,
         accessType,
-        coverUrl: files.coverUrl,
+        coverUrl,
         coverFileName,
-        pdfUrl: files.pdfPath,
-        pdfFileName: files.pdfFileName,
-        pdfSizeBytes: files.pdfSizeBytes,
+        pdfUrl: pdfPath,
+        pdfFileName,
+        pdfSizeBytes,
       };
 
       if (mode === "create") {
@@ -258,22 +263,21 @@ export function JournalIssueForm({
   };
 
   const handlePublish = async () => {
-    if (!canSubmitReview || !isAdmin) return;
+    if (!canSubmitReview || !isAdmin || submitting) return;
     setSubmitting(true);
     setFormError("");
 
     try {
-      const files = await uploadFiles();
       const payload = {
         title,
         issueNumber,
         description,
         accessType,
-        coverUrl: files.coverUrl,
+        coverUrl,
         coverFileName,
-        pdfUrl: files.pdfPath,
-        pdfFileName: files.pdfFileName,
-        pdfSizeBytes: files.pdfSizeBytes,
+        pdfUrl: pdfPath,
+        pdfFileName,
+        pdfSizeBytes,
       };
 
       let issueId = issue?.id;
@@ -311,6 +315,15 @@ export function JournalIssueForm({
   };
 
   const handlePreview = async () => {
+    if (pdfFile) {
+      window.open(
+        URL.createObjectURL(pdfFile),
+        "_blank",
+        "noopener,noreferrer",
+      );
+      return;
+    }
+
     if (issue?.id && pdfPath) {
       try {
         await openIssuePdf(issue.id);
@@ -323,15 +336,6 @@ export function JournalIssueForm({
           variant: "error",
         });
       }
-      return;
-    }
-
-    if (pdfFile) {
-      window.open(
-        URL.createObjectURL(pdfFile),
-        "_blank",
-        "noopener,noreferrer",
-      );
       return;
     }
 
@@ -403,42 +407,22 @@ export function JournalIssueForm({
             previewType="image"
             previewUrl={coverPreview || undefined}
             fileName={coverFileName || undefined}
-            disabled={readOnly || submitting}
+            disabled={readOnly || submitting || uploadingCover}
             error={coverError}
             progress={coverProgress}
-            onFileSelect={(file) => {
-              const validation = validateCoverFile(file);
-              if (validation) {
-                setCoverError(validation);
-                return;
-              }
-              setCoverError("");
-              setCoverFile(file);
-              setCoverPreview(URL.createObjectURL(file));
-              setCoverFileName(file.name);
-            }}
+            onFileSelect={(file) => void handleCoverSelect(file)}
           />
 
           <FileDropzone
             accept={PDF_ACCEPT}
             label="PDF выпуска"
-            hint="PDF до 50 MB (напрямую в Supabase Storage, минуя Vercel 4.5 MB)"
+            hint="PDF до 50 MB"
             previewType="file"
             fileName={pdfFileName || undefined}
-            disabled={readOnly || submitting}
+            disabled={readOnly || submitting || uploadingPdf}
             error={pdfError}
             progress={pdfProgress}
-            onFileSelect={(file) => {
-              const validation = validatePdfFile(file);
-              if (validation) {
-                setPdfError(validation);
-                return;
-              }
-              setPdfError("");
-              setPdfFile(file);
-              setPdfFileName(file.name);
-              setPdfSizeBytes(file.size);
-            }}
+            onFileSelect={(file) => void handlePdfSelect(file)}
           />
 
           {formError ? (
@@ -451,7 +435,7 @@ export function JournalIssueForm({
             <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
               <Button
                 variant="secondary"
-                disabled={submitting}
+                disabled={submitting || filesBusy || filesInvalid}
                 onClick={() => void handleSaveDraft()}
               >
                 {submitting ? "Сохранение…" : "Сохранить черновик"}
