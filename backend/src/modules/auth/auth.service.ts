@@ -47,7 +47,7 @@ async function updateProfileAfterRegister(
     .update({
       full_name: input.full_name,
       organization: null,
-      phone: input.phone,
+      phone: input.phone || null,
       role: "user",
       status: "active",
     })
@@ -62,7 +62,7 @@ async function updateProfileAfterRegister(
         id: userId,
         full_name: input.full_name,
         organization: null,
-        phone: input.phone,
+        phone: input.phone || null,
         role: "user",
         status: "active",
       })
@@ -89,7 +89,7 @@ export async function registerUser(input: RegisterInput): Promise<void> {
     email_confirm: true,
     user_metadata: {
       full_name: input.full_name,
-      phone: input.phone,
+      phone: input.phone || null,
     },
   });
 

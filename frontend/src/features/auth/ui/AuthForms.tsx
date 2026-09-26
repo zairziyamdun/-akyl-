@@ -190,7 +190,7 @@ export function RegisterForm() {
               email,
               password,
               full_name: fullName,
-              phone,
+              phone: phone.trim() || undefined,
             });
             setState("success");
             toastSuccess("Аккаунт создан. Войдите, чтобы получить доступ.");
@@ -245,13 +245,12 @@ export function RegisterForm() {
             htmlFor="register-phone"
             className="mb-1.5 block text-sm font-medium text-slate-700"
           >
-            Телефон
+            Телефон (необязательно)
           </label>
           <Input
             id="register-phone"
             type="tel"
             placeholder="+7 777 000 0000"
-            required
             disabled={state === "loading" || state === "success"}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
