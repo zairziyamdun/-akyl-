@@ -1,198 +1,162 @@
-# AKYL Backend
+# AKYL Backend — инструкция
 
-Node.js + Express API for the AKYL platform.
+[Общий README](../README.md) · [Frontend](../frontend/README.md)
 
-## Stack
+Express API на TypeScript. Supabase используется для Auth, PostgreSQL и Storage; Zod проверяет входные данные, Vitest запускает тесты. Локальный адрес API — `http://localhost:4000`.
 
-- Node.js
-- TypeScript
-- Express
-- Supabase
-- Zod
-- CORS
+## Первый запуск в Windows PowerShell
 
-## Setup
+Команды выполняются из корня репозитория:
 
-1. Install dependencies:
-
-```bash
-pnpm install
+```powershell
+cd backend
+pnpm install --frozen-lockfile
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+notepad .env
 ```
 
-2. Create environment file:
-
-```bash
-cp .env.example .env
-```
-
-3. Fill in `.env`:
+Нужны Node.js 22, pnpm и доступ к проекту Supabase. Если `.env` уже существует, сохраните его настройки. Минимальное содержимое:
 
 ```env
 PORT=4000
 NODE_ENV=development
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_SERVICE_ROLE_KEY=replace-with-server-key
 FRONTEND_URL=http://localhost:3000
 ```
 
-## Development
+Замените примеры реальными значениями. Вместо `SUPABASE_SERVICE_ROLE_KEY` можно указать `SUPABASE_SECRET_KEY`. Неиспользуемые строки с пустыми ключами и Telegram удалите: текущая схема проверяет минимальную длину присутствующих значений.
 
-Start the dev server with hot reload:
-
-```bash
+```powershell
 pnpm dev
 ```
 
-The API runs at `http://localhost:4000` by default.
+Успешный запуск выводит `AKYL Backend running on port 4000`. Оставьте терминал открытым. `tsx watch` перезапускает сервер при изменениях кода; после редактирования `.env` остановите процесс через `Ctrl+C` и запустите заново. Запускайте команды именно из `backend`: `dotenv.config()` читает `.env` текущей рабочей папки.
 
-## Production build
+## Переменные окружения
 
-```bash
-pnpm build
-pnpm start
+| Переменная | Назначение |
+| --- | --- |
+| `SUPABASE_URL` | Обязательно: URL проекта, без `/rest/v1` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Серверный ключ; нужен он либо `SUPABASE_SECRET_KEY` |
+| `SUPABASE_SECRET_KEY` | Альтернатива service role key; при наличии обоих приоритет у service role |
+| `PORT` | Локальный порт, по умолчанию `4000` |
+| `NODE_ENV` | `development`, `production` или `test` |
+| `FRONTEND_URL` | Разрешённые CORS origin через запятую, по умолчанию `http://localhost:3000` |
+| `TELEGRAM_BOT_TOKEN` | Необязательный токен бота уведомлений |
+| `TELEGRAM_CHAT_ID` | Необязательный чат уведомлений; настраивается вместе с токеном |
+
+Origin — протокол, хост и порт, без пути и завершающего слеша. Например: `http://localhost:3000,https://example.com`. `localhost` и `127.0.0.1` — разные origin.
+
+Серверный ключ не помещают во frontend или переменные с префиксом `NEXT_PUBLIC_`. Локальный `.env` исключён из Git.
+
+### Если настройки уже сохранены в Vercel
+
+Откройте проект backend → Settings → Environment Variables. Скопируйте доступные значения `SUPABASE_URL` и одного серверного ключа в локальный `.env`. Production и Preview могут иметь разные значения. Переменные типа Sensitive повторно не раскрываются; такой ключ потребуется получить у владельца проекта Supabase или настроить новый.
+
+Источники: [переменные Vercel](https://vercel.com/docs/environment-variables), [Sensitive-переменные](https://vercel.com/academy/optimize-your-vercel-account/sensitive-env-vars).
+
+## База данных и Storage
+
+Для полного запуска нужны, в частности, таблицы `profiles`, `journal_issues`, `consultation_requests`, `journal_subscription_settings`, `journal_subscriptions`. Полного комплекта миграций для новой пустой базы в репозитории нет. Используйте подготовленный проект либо согласуйте недостающую схему с его владельцем; одного `.env` недостаточно.
+
+Доступные SQL-файлы выполняются вручную в Supabase SQL Editor после проверки существующей схемы:
+
+1. [consultation_requests.sql](docs/consultation_requests.sql) — заявки.
+2. [journal_subscription_settings.sql](docs/journal_subscription_settings.sql) — предложение подписки.
+3. [journal_subscriptions.sql](docs/journal_subscriptions.sql) — подписки пользователей, включая ограничение одной открытой подписки.
+
+[drop_jk_tables.sql](docs/drop_jk_tables.sql) удаляет старые таблицы. Это не обязательный шаг установки, не запускайте его как миграцию нового проекта.
+
+Storage должен содержать:
+
+| Bucket | Доступ | Файлы |
+| --- | --- | --- |
+| `journal-covers` | Public: обложка отображается по публичному URL | JPEG, PNG, WebP; ограничение приложения 10 MB |
+| `journal-pdfs` | Private: доступ через проверку прав и подписанные URL | PDF до 50 MB |
+
+Лимиты и разрешённые MIME-типы bucket должны допускать указанные файлы. PDF загружается из браузера напрямую в Storage по URL, который выдаёт `/api/journal/upload-pdf/init`. Обложка проходит через API; лимиты хостинга могут быть меньше лимита приложения.
+
+Роли профиля: `user`, `journalist`, `admin`. Обычная регистрация создаёт `user`; первого администратора назначает владелец базы в существующем профиле. Смена ролей через API доступна только администратору.
+
+## Проверка запуска
+
+В отдельном PowerShell:
+
+```powershell
+Invoke-RestMethod http://localhost:4000/health
+Invoke-RestMethod http://localhost:4000/health/supabase
 ```
 
-## API response format
+`/health` подтверждает работу процесса и возвращает `status: ok`. `/health/supabase` проверяет обращение к Supabase: результат `connected` не гарантирует наличие всех прикладных таблиц; `client_created` также не подтверждает полную готовность базы.
 
-All endpoints return a unified JSON shape.
+При отсутствующем обязательном env сервер падает до открытия порта, поэтому health endpoint недоступен. Ошибка credentials или сети на запущенном сервере диагностируется через `/health/supabase` и логи.
 
-Success:
+## Команды
 
-```json
-{
-  "success": true,
-  "message": "Optional message",
-  "data": {}
-}
-```
+В папке `backend`:
 
-Error:
+| Команда | Действие |
+| --- | --- |
+| `pnpm dev` | Запуск с наблюдением за кодом |
+| `pnpm exec tsc --noEmit` | Проверка типов без сборки |
+| `pnpm test` | Все Vitest-тесты |
+| `pnpm test:watch` | Тесты в режиме наблюдения |
+| `pnpm build` | Компиляция в `dist` |
+| `pnpm start` | Запуск `dist/src/index.js` после сборки |
 
-```json
-{
-  "success": false,
-  "message": "Error message",
-  "errors": [{ "path": "field", "message": "Details" }]
-}
-```
+## Основные API-маршруты
 
-## Health checks
+Защищённые запросы используют `Authorization: Bearer <access_token>`. Правила доступа проверяются backend.
 
-Basic health:
+| Метод | Путь | Назначение |
+| --- | --- | --- |
+| POST | `/api/auth/register` | Создать аккаунт; телефон необязателен |
+| POST | `/api/auth/login` | Получить сессию |
+| GET | `/api/auth/me` | Текущий пользователь |
+| PATCH | `/api/auth/profile` | Изменить профиль |
+| POST | `/api/auth/logout` | Выход |
+| GET / POST | `/api/journal/issues` | Список / создание выпуска |
+| GET / PATCH / DELETE | `/api/journal/issues/:id` | Чтение / изменение / удаление |
+| POST | `/api/journal/issues/:id/submit` | Отправить на проверку |
+| POST | `/api/journal/issues/:id/publish` | Опубликовать, admin |
+| POST | `/api/journal/issues/:id/archive` | Архивировать, admin |
+| POST | `/api/journal/issues/:id/revision` | Вернуть на доработку, admin |
+| POST | `/api/journal/upload-cover` | Загрузить обложку |
+| POST | `/api/journal/upload-pdf/init` | Получить параметры прямой загрузки PDF |
+| POST | `/api/journal/upload-pdf` | Серверная загрузка PDF, альтернативный маршрут |
+| GET | `/api/journal/issues/:id/pdf` | Получить URL PDF после проверки доступа |
+| GET / POST | `/api/consultation` | Список заявок для admin / публичная заявка |
+| PATCH | `/api/consultation/:id/status` | Изменить статус заявки |
+| GET | `/api/subscription` | Предложение подписки |
+| GET / POST | `/api/subscription/me` | Моя подписка / начало оформления |
+| GET / POST | `/api/admin/users` | Список / создание пользователей |
+| PATCH | `/api/admin/users/:id/role` | Роль пользователя |
+| PATCH | `/api/admin/users/:id/status` | Статус пользователя |
+| DELETE | `/api/admin/users/:id` | Удаление пользователя |
+| GET / PATCH | `/api/admin/subscription` | Настройки подписки |
+| GET | `/api/admin/subscription/subscribers` | Подписчики |
+| PATCH | `/api/admin/subscription/subscribers/:id` | Изменить подписку |
 
-```bash
-curl http://localhost:4000/health
-```
+Успех имеет поле `success: true`, данные — в `data`, если они возвращаются. Ошибка содержит `success: false` и `message`; ошибки валидации могут содержать `errors`.
 
-Expected response:
+## Развёртывание backend на Vercel
 
-```json
-{
-  "success": true,
-  "data": {
-    "status": "ok",
-    "service": "akyl-backend"
-  }
-}
-```
+Создайте отдельный проект из репозитория с Root Directory `backend`. В репозитории уже есть [vercel.json](vercel.json), направляющий запросы в [api/index.ts](api/index.ts); `pnpm dev` и `pnpm start` не являются командами запуска serverless-функции.
 
-Supabase health:
+В настройках проекта задайте URL и серверный ключ Supabase, `FRONTEND_URL` с HTTPS-origin frontend и, при необходимости, Telegram. После изменения env выполните новый deployment. Проверьте `/health` по адресу развёрнутого backend, затем укажите этот адрес в `NEXT_PUBLIC_API_URL` frontend.
 
-```bash
-curl http://localhost:4000/health/supabase
-```
+См. [Vercel: Root Directory для монорепозиториев](https://vercel.com/docs/monorepos).
 
-Expected response when Supabase credentials are valid:
+## Частые проблемы
 
-```json
-{
-  "success": true,
-  "data": {
-    "status": "ok",
-    "supabase": "connected"
-  }
-}
-```
-
-If Supabase env variables are missing or invalid, the endpoint returns HTTP 503 with a unified error response.
-
-## Database setup
-
-Before using consultation API, run SQL from:
-
-```bash
-backend/docs/consultation_requests.sql
-```
-
-For journal subscription settings (admin offer price/info):
-
-```bash
-backend/docs/journal_subscription_settings.sql
-```
-
-For real journal subscribers (`journal_subscriptions`, stores `price_paid` snapshot):
-
-```bash
-backend/docs/journal_subscriptions.sql
-```
-
-If the table already exists without the unique open-subscription index, run:
-
-```sql
-create unique index if not exists journal_subscriptions_one_open_per_user_uidx
-  on journal_subscriptions (user_id)
-  where status in ('pending', 'active');
-```
-
-Apply scripts manually in Supabase SQL Editor.
-
-Operational house tables (`houses`, `house_users`, `finance_records`) were removed from the product. Cleanup script (if an old project still has them):
-
-```bash
-backend/docs/drop_jk_tables.sql
-```
-
-## Consultation API
-
-Create a consultation request:
-
-```bash
-curl -X POST http://localhost:4000/api/consultation \
--H "Content-Type: application/json" \
--d '{
-  "name":"Test User",
-  "email":"test@test.com",
-  "organization":"ОСИ дома №12",
-  "message":"Test message"
-}'
-```
-
-Success response (HTTP 201):
-
-```json
-{
-  "success": true,
-  "message": "Consultation request created"
-}
-```
-
-Validation error (HTTP 400):
-
-```json
-{
-  "success": false,
-  "message": "Validation error",
-  "errors": [
-    { "path": "name", "message": "Name is required" }
-  ]
-}
-```
-
-Database error (HTTP 500):
-
-```json
-{
-  "success": false,
-  "message": "Database error"
-}
-```
+| Симптом | Что проверить |
+| --- | --- |
+| `SUPABASE_URL Required`, `ZodError` при старте | Есть ли именно `backend/.env`, а не `.env.txt`; заполнен ли URL; запуск из `backend` |
+| Ошибка на пустом ключе или Telegram | Удалите неиспользуемые пустые строки, оставьте один заполненный серверный ключ |
+| Frontend не может связаться с `localhost:4000` | Backend не завершился с ошибкой, порт совпадает, `/health` отвечает |
+| Health отвечает, браузер блокирует запрос | `FRONTEND_URL` точно совпадает с origin frontend; перезапустите backend |
+| Supabase authentication failed | Ключ серверный, действующий и принадлежит тому же проекту, что URL |
+| Table not found / profile not found | Подготовлена ли схема, существует ли профиль пользователя |
+| Bucket not found / ошибка загрузки | Имена bucket, доступ, размер и MIME-типы |
+| `EADDRINUSE` | Порт занят; остановите другой сервер либо поменяйте `PORT` и адрес API frontend |

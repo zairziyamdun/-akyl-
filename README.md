@@ -96,111 +96,92 @@ AKYL — веб-платформа для популяризации и внед
     └── package.json
 ```
 
-## Быстрый старт
+## Запуск и инструкции
 
-### Требования
+Подробные инструкции на русском:
 
-- Node.js 20+
-- pnpm (рекомендуется для frontend)
-- Проект Supabase с настроенными таблицами и Storage
+- [Backend: настройка Supabase, API, запуск и диагностика](backend/README.md).
+- [Frontend: переменные, запуск, структура и проверка интерфейса](frontend/README.md).
 
-### 1. Backend
+Используйте Node.js 22 и pnpm. У frontend и backend отдельные `package.json` и lock-файлы; команды выполняются в соответствующей папке. Корневой команды запуска обоих приложений нет.
 
-```bash
+### Быстрый старт в PowerShell
+
+Из корня репозитория, в первом терминале:
+
+```powershell
 cd backend
-cp .env.example .env
-# заполните переменные окружения
-pnpm install   # или npm install
-pnpm dev       # http://localhost:4000
+pnpm install --frozen-lockfile
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+notepad .env
 ```
 
-### 2. Frontend
+Заполните `SUPABASE_URL` и один серверный ключ: `SUPABASE_SERVICE_ROLE_KEY` либо `SUPABASE_SECRET_KEY`. Неиспользуемые пустые строки ключей и Telegram удалите из локального файла. Настройте `FRONTEND_URL=http://localhost:3000`. Затем:
 
-```bash
+```powershell
+pnpm dev
+```
+
+Во втором терминале, также из корня репозитория:
+
+```powershell
 cd frontend
-pnpm install
-# создайте .env.local (см. ниже)
-pnpm dev       # http://localhost:3000
+pnpm install --frozen-lockfile
+notepad .env.local
 ```
 
-### Переменные окружения
+Сохраните в `.env.local`:
 
-**Backend** (`backend/.env`):
-
-| Переменная | Описание |
-|------------|----------|
-| `PORT` | Порт API (по умолчанию `4000`) |
-| `NODE_ENV` | `development` / `production` |
-| `SUPABASE_URL` | URL проекта Supabase (без `/rest/v1`) |
-| `SUPABASE_SERVICE_ROLE_KEY` или `SUPABASE_SECRET_KEY` | Сервисный ключ Supabase |
-| `FRONTEND_URL` | Разрешённые origin для CORS (через запятую) |
-| `TELEGRAM_BOT_TOKEN` | Опционально: токен бота для уведомлений |
-| `TELEGRAM_CHAT_ID` | Опционально: ID чата для уведомлений |
-
-**Frontend** (`frontend/.env.local`):
-
-| Переменная | Описание |
-|------------|----------|
-| `NEXT_PUBLIC_API_URL` | URL backend API (например `http://localhost:4000`) |
-| `NEXT_PUBLIC_SUPABASE_URL` | URL Supabase для изображений из Storage |
-
-## API
-
-Базовый префикс: `/api`
-
-| Метод | Путь | Описание |
-|-------|------|----------|
-| `GET` | `/health` | Проверка состояния сервиса |
-| `POST` | `/api/auth/register` | Регистрация |
-| `POST` | `/api/auth/login` | Вход |
-| `GET` | `/api/auth/me` | Текущий пользователь |
-| `PATCH` | `/api/auth/profile` | Обновление профиля |
-| `POST` | `/api/auth/logout` | Выход |
-| `GET/POST/PATCH/DELETE` | `/api/journal/issues` | Выпуски журнала |
-| `POST` | `/api/journal/upload-cover` | Загрузка обложки |
-| `POST` | `/api/journal/upload-pdf` | Загрузка PDF |
-| `POST` | `/api/consultation` | Заявка на консультацию (публично) |
-| `GET` | `/api/consultation` | Список заявок (admin) |
-| `PATCH` | `/api/consultation/:id/status` | Смена статуса заявки (admin) |
-| `GET` | `/api/subscription` | Настройки подписки на журнал (публично; `isActive` управляет CTA) |
-| `GET` | `/api/subscription/me` | Моя подписка: оферта, текущая, история (auth) |
-| `POST` | `/api/subscription/me` | Начать оформление (`pending`, снимок `pricePaid`) |
-| `GET` | `/api/admin/subscription` | Настройки подписки (admin) |
-| `GET` | `/api/admin/subscription/subscribers` | Список подписок journal_subscriptions (admin) |
-| `PATCH` | `/api/admin/subscription/subscribers/:id` | Смена статуса/дат подписки (admin) |
-| `PATCH` | `/api/admin/subscription` | Обновление настроек подписки (admin) |
-| `GET` | `/api/admin/users` | Список пользователей (admin) |
-| `PATCH` | `/api/admin/users/:id/role` | Смена роли (admin) |
-| `PATCH` | `/api/admin/users/:id/status` | Смена статуса (admin) |
-
-## Скрипты
-
-**Frontend:**
-
-```bash
-pnpm dev          # dev-сервер
-pnpm build        # production-сборка
-pnpm start        # запуск production
-pnpm lint         # проверка Biome
-pnpm lint:fix     # автоисправление
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-**Backend:**
+Запустите:
 
-```bash
-pnpm dev          # tsx watch
-pnpm build        # компиляция TypeScript
-pnpm start        # node dist/src/index.js
-pnpm test         # vitest (auth / permissions / cabinet access)
+```powershell
+pnpm dev
 ```
 
-## Деплой
+Откройте сайт: <http://localhost:3000>. Проверка API: <http://localhost:4000/health>. Оба терминала должны оставаться запущенными; остановка — `Ctrl+C`.
 
-- **Frontend** — Next.js, совместим с Vercel и аналогичными платформами.
-- **Backend** — конфигурация `backend/vercel.json` для serverless-деплоя через `api/index.ts`.
+Одной установки зависимостей недостаточно: для регистрации, журнала и кабинетов нужен настроенный проект Supabase. Полной миграции для создания всех таблиц с нуля в репозитории нет; см. [подготовку базы](backend/README.md#база-данных-и-storage).
 
-При деплое убедитесь, что `NEXT_PUBLIC_API_URL` указывает на production API, а `FRONTEND_URL` на backend включает домен фронтенда.
+## Поведение аккаунтов и журнала
+
+- Регистрация: имя, email и пароль обязательны; телефон необязателен, поля организации нет.
+- Регистрация создаёт аккаунт без автоматического входа и переводит на главную. Для получения сессии нужно войти отдельно.
+- После входа любая роль переходит на `/`. Кабинеты открываются через меню пользователя; права доступа сохраняются.
+- В управлении пользователями и профиле организация не запрашивается; телефон необязателен. В заявках на консультацию организация остаётся отдельным полем.
+- Обложка и PDF выпуска загружаются сразу после выбора. Публикация доступна администратору после заполнения обязательных полей и завершения загрузок.
+- Восстановление пароля пока не подключено к API; страница содержит заглушку.
+
+## Проверки
+
+В папке `backend`:
+
+```powershell
+pnpm exec tsc --noEmit
+pnpm test
+pnpm build
+```
+
+В папке `frontend`:
+
+```powershell
+pnpm exec tsc --noEmit
+pnpm lint
+pnpm build
+```
+
+`pnpm start` запускают после `pnpm build` отдельно в каждой папке. У frontend нет отдельного test-скрипта.
+
+## Развёртывание
+
+Для Vercel используются два проекта одного репозитория: Root Directory `backend` и `frontend`. Backend использует [vercel.json](backend/vercel.json) и `api/index.ts`; frontend — Next.js.
+
+В production `NEXT_PUBLIC_API_URL` должен содержать HTTPS-адрес backend без `/api`, а `FRONTEND_URL` backend — origin сайта без завершающего слеша. Секрет Supabase хранится только на backend. После изменения переменных создайте новый deployment. См. [документацию Vercel о монорепозиториях](https://vercel.com/docs/monorepos) и [переменных окружения](https://vercel.com/docs/environment-variables).
 
 ## Лицензия
 
-Проект является частным (`private` в `package.json`). Уточняйте условия использования у правообладателя.
+Пакеты помечены `private`. Условия использования уточняйте у правообладателя.

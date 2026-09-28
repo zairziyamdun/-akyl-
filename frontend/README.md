@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AKYL Frontend — инструкция
 
-## Getting Started
+[Общий README](../README.md) · [Backend](../backend/README.md)
 
-First, run the development server:
+Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4. Интерфейс обращается к отдельному Express API; запуск Next.js не запускает backend.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Первый запуск в Windows PowerShell
+
+Нужны Node.js 22 и pnpm. Сначала настройте [backend](../backend/README.md) и проверьте <http://localhost:4000/health>.
+
+Во втором терминале из корня репозитория:
+
+```powershell
+cd frontend
+pnpm install --frozen-lockfile
+notepad .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Если файл уже существует, дополните его, сохранив действующие настройки. Для локального запуска:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Затем:
 
-## Learn More
+```powershell
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Откройте <http://localhost:3000>. Остановка — `Ctrl+C`. Если Next.js выбрал другой порт, обновите `FRONTEND_URL` backend под фактический origin и перезапустите backend.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Переменные окружения
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Файл: `frontend/.env.local`. После изменений перезапустите dev-сервер; для production выполните новую сборку.
 
-## Deploy on Vercel
+| Переменная | Назначение |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | Базовый URL backend без `/api`; по умолчанию `http://localhost:4000` |
+| `NEXT_PUBLIC_SITE_URL` | Публичный адрес сайта; по умолчанию `https://akyl.kz` |
+| `NEXT_PUBLIC_SUPABASE_URL` | Необязательно: добавляет хост изображений Storage в `next.config.mjs`; стандартный `*.supabase.co` уже разрешён |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Пример адреса API для опубликованного сайта: `https://your-backend.vercel.app`. Не используйте там `localhost`: для посетителя это его собственный компьютер. Не помещайте серверные ключи Supabase в frontend: значения `NEXT_PUBLIC_*` доступны браузеру.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Команды
+
+Все команды выполняются в папке `frontend`:
+
+| Команда | Действие |
+| --- | --- |
+| `pnpm dev` | Dev-сервер Next.js |
+| `pnpm exec tsc --noEmit` | Проверка типов |
+| `pnpm lint` | Biome: проверка форматирования и правил |
+| `pnpm lint:fix` | Biome с исправлениями |
+| `pnpm format` | Форматирование |
+| `pnpm build` | Production-сборка |
+| `pnpm start` | Запуск production-сборки |
+
+Отдельного test-скрипта в frontend пока нет. При установке `postinstall` запускает `scripts/copy-pdf-worker.mjs`, который подготавливает PDF worker в `public/pdfjs`. Если lifecycle-скрипты были отключены, выполните `pnpm run postinstall`.
+
+## Структура кода
+
+| Папка / файл | Назначение |
+| --- | --- |
+| `src/app` | Маршруты, страницы и layouts |
+| `src/widgets` | Крупные блоки страниц, навигация и оболочки кабинетов |
+| `src/features` | Вход, регистрация, профиль, управление журналом и другие сценарии |
+| `src/entities` | Типы сущностей, API-клиенты и доменные утилиты |
+| `src/shared` | UI-компоненты, конфигурация и общие функции |
+| `public` | Статические изображения и PDF worker |
+| `middleware.ts` | Проверка сессии и роли для `/app`, `/studio`, `/admin` через backend |
+| `next.config.mjs` | Next.js, изображения и redirects |
+
+Главные места для изменений: `src/features/auth/ui/AuthForms.tsx` — формы входа; `src/entities/session/lib/roleAccess.ts` — доступ и переход после входа; `src/features/auth/lib/dashboardNav.ts` — пункты меню; `src/widgets/dashboard-shell` — интерфейс кабинетов; `src/features/manage-journal-issue/ui/IssueForm.tsx` — форма журнала.
+
+## Аккаунты и навигация
+
+- Регистрация требует имя, email и пароль; телефон необязателен, организации в форме нет.
+- Пароль: минимум 8 символов, заглавная и строчная буквы, цифра и специальный символ.
+- После регистрации пользователь попадает на главную без автоматического входа. Для получения сессии нужно войти отдельно.
+- После успешного входа все роли попадают на `/`, включая вход со страницы защищённого раздела.
+- Кабинеты доступны через меню пользователя: `/app` для пользователя, `/studio` для журналиста, `/admin` для администратора. Администратор также имеет доступ к другим кабинетам.
+- В админском управлении пользователями и форме профиля организация не запрашивается, телефон необязателен. Организация в заявке на консультацию остаётся.
+- Страница восстановления пароля пока является заглушкой; отправка письма не реализована.
+
+## Работа с журналом
+
+В `/studio/journal` или `/admin/journal` создайте выпуск, заполните название, номер, описание и тип доступа. Выбор обложки и PDF сразу запускает их загрузку. Дождитесь успешного завершения обоих запросов. Для PDF используется прямая загрузка в Supabase Storage с параметрами от backend.
+
+Журналист отправляет выпуск на проверку; администратор может опубликовать. Ошибка загрузки отображается рядом с файлом — можно выбрать его повторно. Публикация и отправка на проверку недоступны до заполнения обязательных полей и завершения загрузки.
+
+## Проверка после изменений
+
+1. Запустите frontend и backend; откройте главную и убедитесь, что в консоли браузера нет ошибок API.
+2. На тестовом аккаунте проверьте регистрацию без телефона, затем вход: оба сценария должны завершаться на главной.
+3. Откройте кабинет из меню пользователя; проверьте доступ для соответствующей роли.
+4. В админке проверьте создание тестового пользователя без телефона и организации, сохранение профиля, подсветку текущего пункта меню.
+5. Проверьте мобильное меню, длинное имя пользователя и прокрутку страницы.
+6. В тестовом выпуске проверьте немедленную загрузку файлов и обработку ошибки. Публикация изменяет данные, поэтому используйте тестовую среду.
+
+## Развёртывание frontend на Vercel
+
+Создайте проект того же репозитория с Root Directory `frontend`, выберите Next.js. Команда сборки — `pnpm build`. Настройте `NEXT_PUBLIC_API_URL` с HTTPS-адресом backend и `NEXT_PUBLIC_SITE_URL` с адресом сайта.
+
+На backend добавьте origin frontend в `FRONTEND_URL`. После изменения переменных выполните новый deployment: значения используются новой сборкой. Локальный `.env.local` не заменяет настройки Vercel.
+
+Источники: [монорепозитории Vercel](https://vercel.com/docs/monorepos), [переменные окружения Vercel](https://vercel.com/docs/environment-variables).
+
+## Частые проблемы
+
+| Симптом | Действие |
+| --- | --- |
+| «Не удалось связаться с API» | Проверьте `NEXT_PUBLIC_API_URL`, терминал backend и `/health` |
+| CORS в консоли | Проверьте точный origin в `FRONTEND_URL` backend, включая порт |
+| `/api/api/...` или 404 | Уберите `/api` из `NEXT_PUBLIC_API_URL` |
+| Опубликованный сайт обращается к localhost | Задайте production API в Vercel и пересоберите frontend |
+| После изменения env используется старый адрес | Перезапустите `pnpm dev` либо выполните новую production-сборку |
+| Обложка не отображается | Проверьте публичный bucket `journal-covers`, URL файла и `images.remotePatterns` |
+| PDF worker не найден | Выполните `pnpm run postinstall`, затем перезапустите frontend |
+| После входа нет доступа к админке | Проверьте роль и статус профиля на backend; переход на главную после входа — ожидаемое поведение |
