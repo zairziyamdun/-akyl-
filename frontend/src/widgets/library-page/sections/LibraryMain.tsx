@@ -25,7 +25,6 @@ import { Button } from "@/shared/ui/Button";
 import {
   contentTypes,
   type LibraryItemType,
-  libraryItems,
   topics,
   typeLabelsRu,
 } from "@/widgets/library-page";
@@ -85,14 +84,9 @@ function fromMaterial(material: LibraryMaterial): LibraryCard {
   };
 }
 
-/** Demo cards are shown until the first article is published in the admin. */
-const demoCards: LibraryCard[] = libraryItems.map((item) => ({
-  ...item,
-  key: `demo-${item.id}`,
-}));
-
 export function LibraryMain() {
-  const [materials, setMaterials] = useState<LibraryMaterial[]>([]);
+  const [materials, setMaterials] = useState<LibraryMaterial[] | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [activeType, setActiveType] = useState("all");
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -104,17 +98,17 @@ export function LibraryMain() {
         if (!cancelled) setMaterials(data);
       })
       .catch(() => {
-        // API unavailable — keep demo materials
+        if (!cancelled) {
+          setMaterials([]);
+          setLoadFailed(true);
+        }
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const items = useMemo(
-    () => (materials.length > 0 ? materials.map(fromMaterial) : demoCards),
-    [materials],
-  );
+  const items = useMemo(() => (materials ?? []).map(fromMaterial), [materials]);
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
@@ -276,7 +270,21 @@ export function LibraryMain() {
           )}
         </div>
         {/* Список материалов */}
-        {filteredItems.length > 0 ? (
+        {materials === null ? (
+          <div
+            className="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+            role="status"
+            aria-busy="true"
+            aria-label="Загрузка материалов"
+          >
+            {["s1", "s2", "s3"].map((id) => (
+              <div
+                key={id}
+                className="h-64 animate-pulse rounded-2xl border border-border bg-muted/60"
+              />
+            ))}
+          </div>
+        ) : filteredItems.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredItems.map((item) => {
               const TypeIcon = getTypeIcon(item.type);
@@ -370,11 +378,18 @@ export function LibraryMain() {
           <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-16 text-center">
             <BookOpen className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
             <h3 className="text-lg font-semibold text-foreground">
-              Ничего не найдено
+              {loadFailed
+                ? "Не удалось загрузить материалы"
+                : items.length === 0
+                  ? "Материалы скоро появятся"
+                  : "Ничего не найдено"}
             </h3>
             <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              Попробуйте изменить поисковый запрос, сбросить фильтры или выбрать
-              другую тему материалов.
+              {loadFailed
+                ? "Проверьте подключение и обновите страницу."
+                : items.length === 0
+                  ? "Мы готовим статьи, исследования и шаблоны для библиотеки AKYL."
+                  : "Попробуйте изменить поисковый запрос, сбросить фильтры или выбрать другую тему материалов."}
             </p>
           </div>
         )}
