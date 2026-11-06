@@ -1,3 +1,4 @@
+import { invalidateUserSessions } from "../../../common/session-cache.js";
 import { getSupabaseAdmin } from "../../../config/supabase.js";
 import {
   DatabaseError,
@@ -87,6 +88,7 @@ export async function updateUserRole(
   userId: string,
   role: ProfileRole,
 ): Promise<AdminUser> {
+  invalidateUserSessions(userId);
   const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase
@@ -121,6 +123,7 @@ export async function updateUserStatus(
   userId: string,
   status: Extract<ProfileStatus, "active" | "blocked" | "pending">,
 ): Promise<AdminUser> {
+  invalidateUserSessions(userId);
   const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase
@@ -155,6 +158,7 @@ export async function deleteAdminUser(
   targetUserId: string,
   actorUserId: string,
 ): Promise<void> {
+  invalidateUserSessions(targetUserId);
   if (targetUserId === actorUserId) {
     throw new ForbiddenError("Нельзя удалить собственный аккаунт");
   }

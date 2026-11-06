@@ -1,3 +1,6 @@
+import type { LucideIcon } from "lucide-react";
+import { Download, FileText, Folder, ScrollText, Video } from "lucide-react";
+
 export type LibraryMaterialType =
   | "article"
   | "research"
@@ -13,7 +16,7 @@ export type LibraryMaterial = {
   type: LibraryMaterialType;
   topic: string;
   description: string;
-  /** Plain text with light markup: `## heading`, `- list`, `![alt](url)`. */
+  /** JSON document from the visual editor (or legacy text markup). */
   content: string;
   cover_url: string | null;
   read_time: string | null;
@@ -24,6 +27,9 @@ export type LibraryMaterial = {
   created_at: string;
   updated_at: string;
 };
+
+/** List endpoints omit the article body. */
+export type LibraryMaterialSummary = Omit<LibraryMaterial, "content">;
 
 export type LibraryMaterialPayload = {
   title: string;
@@ -45,6 +51,30 @@ export const LIBRARY_TYPE_LABELS: Record<LibraryMaterialType, string> = {
   video: "Видео",
 };
 
+export const LIBRARY_TYPE_PLURAL: Record<LibraryMaterialType, string> = {
+  article: "Статьи",
+  research: "Исследования",
+  regulation: "Нормативные документы",
+  template: "Шаблоны",
+  video: "Видео",
+};
+
+export const LIBRARY_TYPE_ICONS: Record<LibraryMaterialType, LucideIcon> = {
+  article: FileText,
+  research: ScrollText,
+  regulation: Folder,
+  template: Download,
+  video: Video,
+};
+
+export const LIBRARY_TYPE_ORDER: LibraryMaterialType[] = [
+  "article",
+  "research",
+  "regulation",
+  "template",
+  "video",
+];
+
 export const LIBRARY_STATUS_LABELS: Record<LibraryMaterialStatus, string> = {
   draft: "Черновик",
   published: "Опубликовано",
@@ -63,7 +93,35 @@ export const LIBRARY_TOPICS = [
 export const LIBRARY_IMAGE_MAX_BYTES = 10 * 1024 * 1024;
 export const LIBRARY_IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,image/gif";
 
-/** YYYY-MM-DD for cards; falls back to creation date for drafts. */
-export function formatMaterialDate(material: LibraryMaterial): string {
-  return (material.published_at ?? material.created_at).slice(0, 10);
+const MONTHS = [
+  "января",
+  "февраля",
+  "марта",
+  "апреля",
+  "мая",
+  "июня",
+  "июля",
+  "августа",
+  "сентября",
+  "октября",
+  "ноября",
+  "декабря",
+];
+
+function materialIsoDate(material: LibraryMaterialSummary): string {
+  return material.published_at ?? material.created_at;
+}
+
+/** YYYY-MM-DD; falls back to creation date for drafts. */
+export function formatMaterialDate(material: LibraryMaterialSummary): string {
+  return materialIsoDate(material).slice(0, 10);
+}
+
+/** "6 ноября 2026" */
+export function formatMaterialDateLong(
+  material: LibraryMaterialSummary,
+): string {
+  const date = new Date(materialIsoDate(material));
+  if (Number.isNaN(date.getTime())) return formatMaterialDate(material);
+  return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }

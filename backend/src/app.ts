@@ -26,7 +26,8 @@ app.use(
     },
   }),
 );
-app.use(express.json());
+app.disable("x-powered-by");
+app.use(express.json({ limit: "2mb" }));
 
 app.use("/health", healthRoutes);
 app.use("/api/auth", authRoutes);

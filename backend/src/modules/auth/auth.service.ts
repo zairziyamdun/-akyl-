@@ -1,3 +1,4 @@
+import { invalidateUserSessions } from "../../common/session-cache.js";
 import { createSupabaseAuthClient, getSupabaseAdmin } from "../../config/supabase.js";
 import { env } from "../../config/env.js";
 import {
@@ -168,6 +169,7 @@ export async function updateProfile(
   userId: string,
   input: { full_name: string; organization?: string; phone?: string },
 ): Promise<Profile> {
+  invalidateUserSessions(userId);
   const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase

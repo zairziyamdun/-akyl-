@@ -55,6 +55,46 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+const SESSION_CACHE_KEY = "akyl_session_cache";
+
+/** The cache is bound to the current token so a new login never reuses it. */
+function tokenFingerprint(token: string): string {
+  return token.slice(-24);
+}
+
+function readSessionCache(): SessionPayload | null {
+  try {
+    const token = getAccessToken();
+    const raw = localStorage.getItem(SESSION_CACHE_KEY);
+    if (!token || !raw) return null;
+    const parsed = JSON.parse(raw) as { fp: string; data: SessionPayload };
+    return parsed.fp === tokenFingerprint(token) ? parsed.data : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSessionCache(data: SessionPayload): void {
+  try {
+    const token = getAccessToken();
+    if (!token) return;
+    localStorage.setItem(
+      SESSION_CACHE_KEY,
+      JSON.stringify({ fp: tokenFingerprint(token), data }),
+    );
+  } catch {
+    // storage unavailable — cache is optional
+  }
+}
+
+function clearSessionCache(): void {
+  try {
+    localStorage.removeItem(SESSION_CACHE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(profileToAuthUser(me.user, me.profile));
     setProfile(me.profile);
     setRole(me.role);
+    writeSessionCache(me);
   }, []);
 
   const clearSession = useCallback(() => {
@@ -73,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
     setRole(null);
     clearAccessToken();
+    clearSessionCache();
   }, []);
 
   const refresh = useCallback(async () => {
@@ -85,8 +127,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const me = await meRequest();
       applySession(me);
-    } catch {
-      clearSession();
+    } catch (error) {
+      // Keep the cached session on network hiccups; drop it only when the
+      // backend rejects the token or the account.
+      const status =
+        error instanceof Error && "status" in error
+          ? Number((error as { status: unknown }).status)
+          : 0;
+      if (status === 401 || status === 403 || !readSessionCache()) {
+        clearSession();
+      }
     }
   }, [applySession, clearSession]);
 
@@ -94,6 +144,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = getAccessToken();
     if (token) {
       setAccessToken(token);
+      // Render the cabinet immediately from the last known session and
+      // re-validate it in the background instead of showing a spinner.
+      const cached = readSessionCache();
+      if (cached) {
+        setUser(profileToAuthUser(cached.user, cached.profile));
+        setProfile(cached.profile);
+        setRole(cached.role);
+        setIsLoading(false);
+      }
     }
     void (async () => {
       await refresh();

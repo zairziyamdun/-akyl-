@@ -1,97 +1,177 @@
 "use client";
 
-import {
-  ArrowRight,
-  BookOpen,
-  Check,
-  Download,
-  FileText,
-  Folder,
-  ScrollText,
-  Search,
-  Video,
-} from "lucide-react";
-import Image from "next/image";
+import { ArrowRight, BookOpen, Check, Clock, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import {
   fetchPublishedMaterials,
-  formatMaterialDate,
-  type LibraryMaterial,
+  formatMaterialDateLong,
+  LIBRARY_TYPE_ICONS,
+  LIBRARY_TYPE_LABELS,
+  LIBRARY_TYPE_ORDER,
+  LIBRARY_TYPE_PLURAL,
+  type LibraryMaterialSummary,
+  type LibraryMaterialType,
+  MaterialCover,
 } from "@/entities/library-material";
+import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 
-import {
-  contentTypes,
-  type LibraryItemType,
-  topics,
-  typeLabelsRu,
-} from "@/widgets/library-page";
+const chipBase =
+  "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200";
+const chipActive = "bg-foreground text-background shadow-sm";
+const chipInactive =
+  "border border-border bg-background text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground";
 
-const filterChipBase =
-  "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-[color,background-color,border-color,box-shadow] duration-200";
-
-const filterChipActive =
-  "border-2 border-foreground/80 bg-foreground text-background shadow-sm";
-
-const filterChipInactive =
-  "border border-border bg-background text-muted-foreground hover:border-muted-foreground/30 hover:bg-muted hover:text-foreground";
-
-function getTypeIcon(type: LibraryItemType) {
-  switch (type) {
-    case "article":
-      return FileText;
-    case "research":
-      return ScrollText;
-    case "regulation":
-      return Folder;
-    case "template":
-      return Download;
-    case "video":
-      return Video;
-    default:
-      return FileText;
-  }
+function MaterialMeta({ material }: { material: LibraryMaterialSummary }) {
+  return (
+    <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+      <span>{formatMaterialDateLong(material)}</span>
+      {material.read_time ? (
+        <>
+          <span aria-hidden>·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="size-3.5" aria-hidden />
+            {material.read_time}
+          </span>
+        </>
+      ) : null}
+      {material.format ? (
+        <>
+          <span aria-hidden>·</span>
+          <span>{material.format}</span>
+        </>
+      ) : null}
+    </p>
+  );
 }
 
-type LibraryCard = {
-  key: string;
-  type: LibraryItemType;
-  title: string;
-  topic: string;
-  description: string;
-  date: string;
-  readTime?: string;
-  duration?: string;
-  format?: string;
-  coverUrl?: string;
-  href?: string;
-};
-
-function fromMaterial(material: LibraryMaterial): LibraryCard {
-  return {
-    key: material.id,
-    type: material.type,
-    title: material.title,
-    topic: material.topic,
-    description: material.description,
-    date: formatMaterialDate(material),
-    readTime: material.read_time ?? undefined,
-    format: material.format ?? undefined,
-    coverUrl: material.cover_url ?? undefined,
-    href: `/library/${material.id}`,
-  };
+function TypeLabel({ material }: { material: LibraryMaterialSummary }) {
+  const Icon = LIBRARY_TYPE_ICONS[material.type];
+  return (
+    <p className="flex items-center gap-1.5 text-xs font-medium text-accent">
+      <Icon className="size-3.5 shrink-0" aria-hidden />
+      <span>{LIBRARY_TYPE_LABELS[material.type]}</span>
+      <span className="truncate text-muted-foreground">· {material.topic}</span>
+    </p>
+  );
 }
 
-export function LibraryMain() {
-  const [materials, setMaterials] = useState<LibraryMaterial[] | null>(null);
+function FeaturedCard({ material }: { material: LibraryMaterialSummary }) {
+  return (
+    <article className="group relative mb-8 grid overflow-hidden rounded-3xl border border-border bg-card transition hover:border-accent/40 lg:grid-cols-[1.35fr_1fr]">
+      <div className="aspect-[16/9] overflow-hidden lg:aspect-auto lg:min-h-[340px]">
+        <MaterialCover
+          src={material.cover_url}
+          type={material.type}
+          priority
+          className="transition duration-500 group-hover:scale-[1.02]"
+          iconClassName="size-14"
+        />
+      </div>
+      <div className="flex flex-col justify-center gap-4 p-6 md:p-8">
+        <span className="w-fit rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+          Новое в библиотеке
+        </span>
+        <TypeLabel material={material} />
+        <h2 className="text-2xl font-semibold leading-tight tracking-tight text-foreground md:text-3xl">
+          <Link
+            href={`/library/${material.id}`}
+            className="after:absolute after:inset-0 focus-visible:outline-none"
+          >
+            {material.title}
+          </Link>
+        </h2>
+        {material.description ? (
+          <p className="line-clamp-3 text-sm leading-6 text-muted-foreground md:text-base">
+            {material.description}
+          </p>
+        ) : null}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <MaterialMeta material={material} />
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground">
+            Читать
+            <ArrowRight
+              className="size-4 transition group-hover:translate-x-1"
+              aria-hidden
+            />
+          </span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function MaterialCard({ material }: { material: LibraryMaterialSummary }) {
+  return (
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lg hover:shadow-slate-900/5">
+      <div className="aspect-[16/9] overflow-hidden">
+        <MaterialCover
+          src={material.cover_url}
+          type={material.type}
+          className="transition duration-500 group-hover:scale-[1.03]"
+        />
+      </div>
+      <div className="flex flex-1 flex-col gap-3 p-5">
+        <TypeLabel material={material} />
+        <h3 className="line-clamp-3 text-lg font-semibold leading-snug text-foreground">
+          <Link
+            href={`/library/${material.id}`}
+            className="after:absolute after:inset-0 focus-visible:outline-none"
+          >
+            {material.title}
+          </Link>
+        </h3>
+        {material.description ? (
+          <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
+            {material.description}
+          </p>
+        ) : null}
+        <div className="mt-auto pt-2">
+          <MaterialMeta material={material} />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function GridSkeleton() {
+  return (
+    <div
+      role="status"
+      aria-label="Загрузка материалов"
+      className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+    >
+      {["s1", "s2", "s3"].map((id) => (
+        <div
+          key={id}
+          className="h-[360px] animate-pulse rounded-2xl border border-border bg-muted/60"
+        />
+      ))}
+    </div>
+  );
+}
+
+export function LibraryMain({
+  initialMaterials,
+}: {
+  /** Server-rendered list; null when the API was unreachable at render time. */
+  initialMaterials?: LibraryMaterialSummary[] | null;
+}) {
+  const [materials, setMaterials] = useState<LibraryMaterialSummary[] | null>(
+    initialMaterials ?? null,
+  );
   const [loadFailed, setLoadFailed] = useState(false);
-  const [activeType, setActiveType] = useState("all");
+  const [activeType, setActiveType] = useState<LibraryMaterialType | "all">(
+    "all",
+  );
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Client fallback only when the server could not load the list.
   useEffect(() => {
+    if (initialMaterials) return;
     let cancelled = false;
     fetchPublishedMaterials()
       .then((data) => {
@@ -106,277 +186,208 @@ export function LibraryMain() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialMaterials]);
 
-  const items = useMemo(() => (materials ?? []).map(fromMaterial), [materials]);
+  const items = useMemo(() => materials ?? [], [materials]);
+
+  const typeCounts = useMemo(() => {
+    const counts = new Map<LibraryMaterialType, number>();
+    for (const item of items) {
+      counts.set(item.type, (counts.get(item.type) ?? 0) + 1);
+    }
+    return counts;
+  }, [items]);
+
+  const topics = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of items) {
+      counts.set(item.topic, (counts.get(item.topic) ?? 0) + 1);
+    }
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [items]);
+
+  const filtersActive =
+    activeType !== "all" || activeTopic !== null || searchQuery.trim() !== "";
 
   const filteredItems = useMemo(() => {
-    return items.filter((item) => {
-      const matchesType = activeType === "all" || item.type === activeType;
-      const matchesTopic = !activeTopic || item.topic === activeTopic;
-      const query = searchQuery.trim().toLowerCase();
-
-      const matchesSearch =
-        query.length === 0 ||
-        item.title.toLowerCase().includes(query) ||
-        item.description.toLowerCase().includes(query) ||
-        item.topic.toLowerCase().includes(query);
-
-      return matchesType && matchesTopic && matchesSearch;
-    });
+    const query = searchQuery.trim().toLowerCase();
+    return items.filter(
+      (item) =>
+        (activeType === "all" || item.type === activeType) &&
+        (!activeTopic || item.topic === activeTopic) &&
+        (!query ||
+          item.title.toLowerCase().includes(query) ||
+          item.description.toLowerCase().includes(query) ||
+          item.topic.toLowerCase().includes(query)),
+    );
   }, [items, activeType, activeTopic, searchQuery]);
 
+  const showFeatured = !filtersActive && filteredItems.length >= 3;
+  const featured = showFeatured ? filteredItems[0] : null;
+  const gridItems = showFeatured ? filteredItems.slice(1) : filteredItems;
+
+  const resetFilters = () => {
+    setActiveType("all");
+    setActiveTopic(null);
+    setSearchQuery("");
+  };
+
   return (
-    <section className="bg-background">
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div className="mb-10 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card via-card to-muted/40">
-          <div className="grid gap-8 px-6 py-8 md:px-8 md:py-10 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
-            <div>
-              <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground">
-                Библиотека знаний AKYL
-              </span>
-
-              <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-                Материалы, исследования и инструменты для профессионального
-                управления МЖД
-              </h1>
-
-              <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
-                Единое пространство для теории и практики, аналитики,
-                нормативных материалов, шаблонов и практических решений. Всё,
-                что помогает перейти от хаотичного управления к системной
-                модели.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-background/80 p-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-2xl font-semibold text-foreground">
-                    {items.length}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    материалов в библиотеке
-                  </p>
-                </div>
-                <div>
-                  <p className="text-2xl font-semibold text-foreground">
-                    {topics.length}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    тематических направлений
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-8 rounded-2xl border border-border bg-card p-4 md:p-5">
-          <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr] lg:items-start">
-            <div>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Поиск по библиотеке, темам и материалам…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none transition focus:border-accent"
-                />
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {contentTypes.map((type) => {
-                  const isActive = activeType === type.id;
-
-                  return (
-                    <button
-                      key={type.id}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setActiveType(type.id)}
-                      className={`${filterChipBase} ${
-                        isActive ? filterChipActive : filterChipInactive
-                      }`}
-                    >
-                      {isActive ? (
-                        <Check
-                          className="size-3.5 shrink-0 stroke-[2.5]"
-                          aria-hidden
-                        />
-                      ) : null}
-                      {type.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex flex-wrap gap-2">
-                {topics.map((topic) => {
-                  const isActive = activeTopic === topic.name;
-
-                  return (
-                    <button
-                      key={topic.name}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() =>
-                        setActiveTopic(isActive ? null : topic.name)
-                      }
-                      className={`${filterChipBase} ${
-                        isActive ? filterChipActive : filterChipInactive
-                      }`}
-                    >
-                      {isActive ? (
-                        <Check
-                          className="size-3.5 shrink-0 stroke-[2.5]"
-                          aria-hidden
-                        />
-                      ) : null}
-                      {topic.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-6 flex flex-col gap-3 border-b border-border pb-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              Найдено материалов:{" "}
-              <span className="font-medium text-foreground">
-                {filteredItems.length}
-              </span>
+    <section className="bg-background" id="materials">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground">
+              Библиотека знаний AKYL
+            </span>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+              Статьи, исследования и инструменты для управления МЖД
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground md:text-base">
+              Теория и практика, аналитика, нормативные материалы и шаблоны —
+              всё, что помогает перейти от хаотичного управления к системной
+              модели.
             </p>
           </div>
-
-          {(activeType !== "all" || activeTopic || searchQuery) && (
-            <button
-              type="button"
-              onClick={() => {
-                setActiveType("all");
-                setActiveTopic(null);
-                setSearchQuery("");
-              }}
-              className="text-sm font-medium text-accent hover:underline"
-            >
-              Сбросить фильтры
-            </button>
-          )}
+          {items.length > 0 ? (
+            <dl className="flex gap-8 text-sm">
+              <div>
+                <dt className="text-muted-foreground">Материалов</dt>
+                <dd className="text-2xl font-semibold text-foreground">
+                  {items.length}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Тем</dt>
+                <dd className="text-2xl font-semibold text-foreground">
+                  {topics.length}
+                </dd>
+              </div>
+            </dl>
+          ) : null}
         </div>
-        {/* Список материалов */}
-        {materials === null ? (
-          <div
-            className="grid gap-4 md:grid-cols-2 xl:grid-cols-3"
-            role="status"
-            aria-busy="true"
-            aria-label="Загрузка материалов"
-          >
-            {["s1", "s2", "s3"].map((id) => (
-              <div
-                key={id}
-                className="h-64 animate-pulse rounded-2xl border border-border bg-muted/60"
+
+        {items.length > 0 ? (
+          <div className="mb-8 space-y-4">
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
               />
-            ))}
-          </div>
-        ) : filteredItems.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {filteredItems.map((item) => {
-              const TypeIcon = getTypeIcon(item.type);
+              <input
+                type="search"
+                placeholder="Поиск по статьям и темам…"
+                aria-label="Поиск по библиотеке"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-12 w-full rounded-2xl border border-border bg-card pl-11 pr-4 text-sm outline-none transition focus:border-accent"
+              />
+            </div>
 
-              return (
-                <article
-                  key={item.key}
-                  className="group relative flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40"
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+              <button
+                type="button"
+                aria-pressed={activeType === "all"}
+                onClick={() => setActiveType("all")}
+                className={cn(
+                  chipBase,
+                  "shrink-0",
+                  activeType === "all" ? chipActive : chipInactive,
+                )}
+              >
+                Все
+                <span className="opacity-60">{items.length}</span>
+              </button>
+              {LIBRARY_TYPE_ORDER.filter((type) => typeCounts.has(type)).map(
+                (type) => {
+                  const Icon = LIBRARY_TYPE_ICONS[type];
+                  const isActive = activeType === type;
+                  return (
+                    <button
+                      key={type}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => setActiveType(isActive ? "all" : type)}
+                      className={cn(
+                        chipBase,
+                        "shrink-0",
+                        isActive ? chipActive : chipInactive,
+                      )}
+                    >
+                      <Icon className="size-3.5" aria-hidden />
+                      {LIBRARY_TYPE_PLURAL[type]}
+                      <span className="opacity-60">{typeCounts.get(type)}</span>
+                    </button>
+                  );
+                },
+              )}
+            </div>
+
+            {topics.length > 1 ? (
+              <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
+                {topics.map(([topic, count]) => {
+                  const isActive = activeTopic === topic;
+                  return (
+                    <button
+                      key={topic}
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => setActiveTopic(isActive ? null : topic)}
+                      className={cn(
+                        "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition",
+                        isActive
+                          ? "bg-accent text-white"
+                          : "bg-muted text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {isActive ? (
+                        <Check className="size-3" aria-hidden />
+                      ) : null}
+                      {topic}
+                      <span className="opacity-60">{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+
+            {filtersActive ? (
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <p className="text-muted-foreground">
+                  Найдено:{" "}
+                  <span className="font-medium text-foreground">
+                    {filteredItems.length}
+                  </span>
+                </p>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-1 font-medium text-accent hover:underline"
                 >
-                  {item.coverUrl ? (
-                    <Image
-                      src={item.coverUrl}
-                      alt=""
-                      width={640}
-                      height={360}
-                      unoptimized
-                      className="-mx-5 -mt-5 mb-5 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none rounded-t-2xl object-cover"
-                    />
-                  ) : null}
-
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted transition group-hover:bg-accent/10">
-                      <TypeIcon className="h-5 w-5 text-accent" />
-                    </div>
-
-                    <span className="rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-                      {typeLabelsRu[item.type]}
-                    </span>
-                  </div>
-
-                  <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    <span>{item.topic}</span>
-                    <span>•</span>
-                    <span>{item.date}</span>
-                  </div>
-
-                  <h3 className="text-base font-semibold leading-6 text-foreground transition group-hover:text-accent">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
-                    {item.description}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {item.readTime ? (
-                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
-                        {item.readTime}
-                      </span>
-                    ) : null}
-
-                    {item.duration ? (
-                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
-                        {item.duration}
-                      </span>
-                    ) : null}
-
-                    {item.format ? (
-                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
-                        {item.format}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-auto pt-6">
-                    {item.href ? (
-                      <Link
-                        href={item.href}
-                        className="inline-flex items-center gap-2 text-sm font-medium text-accent after:absolute after:inset-0 after:rounded-2xl hover:underline"
-                      >
-                        Открыть материал
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
-                      >
-                        {item.type === "template"
-                          ? "Скачать материал"
-                          : "Открыть материал"}
-                        <ArrowRight className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
+                  <X className="size-3.5" aria-hidden />
+                  Сбросить фильтры
+                </button>
+              </div>
+            ) : null}
           </div>
+        ) : null}
+
+        {materials === null ? (
+          <GridSkeleton />
+        ) : filteredItems.length > 0 ? (
+          <>
+            {featured ? <FeaturedCard material={featured} /> : null}
+            {gridItems.length > 0 ? (
+              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {gridItems.map((item) => (
+                  <MaterialCard key={item.id} material={item} />
+                ))}
+              </div>
+            ) : null}
+          </>
         ) : (
           <div className="rounded-3xl border border-dashed border-border bg-card px-6 py-16 text-center">
-            <BookOpen className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <BookOpen className="mx-auto mb-4 size-12 text-muted-foreground" />
             <h3 className="text-lg font-semibold text-foreground">
               {loadFailed
                 ? "Не удалось загрузить материалы"
@@ -389,12 +400,21 @@ export function LibraryMain() {
                 ? "Проверьте подключение и обновите страницу."
                 : items.length === 0
                   ? "Мы готовим статьи, исследования и шаблоны для библиотеки AKYL."
-                  : "Попробуйте изменить поисковый запрос, сбросить фильтры или выбрать другую тему материалов."}
+                  : "Попробуйте изменить поисковый запрос или сбросить фильтры."}
             </p>
+            {filtersActive && items.length > 0 ? (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="mt-5 text-sm font-medium text-accent hover:underline"
+              >
+                Сбросить фильтры
+              </button>
+            ) : null}
           </div>
         )}
-        {/* Подписка на обновления */}
-        <div className="mt-10 rounded-3xl border border-border bg-muted/50 p-6 md:p-8">
+
+        <div className="mt-12 rounded-3xl border border-border bg-muted/50 p-6 md:p-8">
           <div className="grid gap-6 lg:grid-cols-[1fr_340px] lg:items-center">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight text-foreground">
@@ -412,6 +432,7 @@ export function LibraryMain() {
                 <input
                   type="email"
                   placeholder="Ваш email"
+                  aria-label="Email для подписки"
                   className="h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none transition focus:border-accent"
                 />
                 <Button className="h-11 w-full" size="sm">

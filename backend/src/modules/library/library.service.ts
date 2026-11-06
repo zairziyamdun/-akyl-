@@ -42,18 +42,23 @@ function assertId(id: string): void {
   }
 }
 
+/** List views never need the article body — skipping it keeps responses small. */
+const SUMMARY_COLUMNS =
+  "id, title, type, topic, description, cover_url, read_time, format, status, published_at, created_by, created_at, updated_at";
+
+export type LibraryMaterialSummary = Omit<LibraryMaterial, "content">;
+
 export async function listLibraryMaterials(options: {
   includeDrafts: boolean;
-}): Promise<LibraryMaterial[]> {
-  let query = getSupabaseAdmin()
-    .from(TABLE)
-    .select("*")
-    .order("published_at", { ascending: false, nullsFirst: true })
-    .order("created_at", { ascending: false });
+}): Promise<LibraryMaterialSummary[]> {
+  const base = getSupabaseAdmin().from(TABLE).select(SUMMARY_COLUMNS);
 
-  if (!options.includeDrafts) {
-    query = query.eq("status", "published");
-  }
+  const query = options.includeDrafts
+    ? base.order("updated_at", { ascending: false })
+    : base
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .order("created_at", { ascending: false });
 
   const { data, error } = await query;
 
@@ -61,7 +66,7 @@ export async function listLibraryMaterials(options: {
     throwDbError("Failed to list library materials", error);
   }
 
-  return (data ?? []) as LibraryMaterial[];
+  return (data ?? []) as unknown as LibraryMaterialSummary[];
 }
 
 export async function getLibraryMaterial(

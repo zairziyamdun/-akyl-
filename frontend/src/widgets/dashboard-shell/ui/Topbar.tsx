@@ -9,6 +9,30 @@ import { useAuth } from "@/features/auth";
 import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 
+const SEGMENT_LABELS: Record<string, string> = {
+  admin: "Админка",
+  studio: "Редакция",
+  app: "Кабинет",
+  library: "Библиотека",
+  journal: "Журнал",
+  users: "Пользователи",
+  roles: "Роли",
+  requests: "Заявки",
+  subscription: "Подписка",
+  subscriptions: "Подписки",
+  settings: "Настройки",
+  profile: "Профиль",
+  articles: "Статьи",
+  issues: "Выпуски",
+  media: "Медиа",
+  materials: "Материалы",
+  checkout: "Оформление",
+  new: "Новая запись",
+};
+
+const ID_SEGMENT =
+  /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|\d+)$/i;
+
 function buildBreadcrumbs(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
   const crumbs: { label: string; href: string }[] = [];
@@ -16,17 +40,10 @@ function buildBreadcrumbs(pathname: string) {
   let path = "";
   for (const segment of segments) {
     path += `/${segment}`;
-    const label =
-      segment === "admin"
-        ? "Admin"
-        : segment === "studio"
-          ? "Studio"
-          : segment === "app"
-            ? "Кабинет"
-            : segment === "articles" && segments.includes("new")
-              ? "Новая статья"
-              : segment.charAt(0).toUpperCase() +
-                segment.slice(1).replace(/-/g, " ");
+    const label = ID_SEGMENT.test(segment)
+      ? "Редактирование"
+      : (SEGMENT_LABELS[segment] ??
+        segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " "));
     crumbs.push({ label, href: path });
   }
 

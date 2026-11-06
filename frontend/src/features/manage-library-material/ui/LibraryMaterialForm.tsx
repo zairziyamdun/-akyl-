@@ -1,48 +1,68 @@
 "use client";
 
 import {
-  Eye,
-  Heading2,
-  ImagePlus,
-  List,
+  ArrowLeft,
+  Check,
+  CircleAlert,
+  ExternalLink,
+  ImageUp,
   Loader2,
-  PenLine,
+  RefreshCw,
   Trash2,
-  Upload,
+  X,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ChangeEvent, type FormEvent, useRef, useState } from "react";
+import {
+  type DragEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
+  countImages,
+  countWords,
   createMaterial,
   deleteMaterial,
+  estimateReadTime,
   LIBRARY_IMAGE_ACCEPT,
   LIBRARY_IMAGE_MAX_BYTES,
-  LIBRARY_STATUS_LABELS,
   LIBRARY_TOPICS,
+  LIBRARY_TYPE_ICONS,
   LIBRARY_TYPE_LABELS,
+  LIBRARY_TYPE_ORDER,
   type LibraryMaterial,
   type LibraryMaterialPayload,
   type LibraryMaterialStatus,
   type LibraryMaterialType,
-  MaterialContent,
+  MaterialCover,
+  parseRichContent,
+  type RichDoc,
+  serializeRichContent,
   updateMaterial,
   uploadLibraryImage,
 } from "@/entities/library-material";
 import { cn } from "@/shared/lib";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-import { PageHeader } from "@/widgets/dashboard-shell";
+
+import { RichTextEditor } from "./RichTextEditor";
 
 const LIST_PATH = "/admin/library";
+const DESCRIPTION_RECOMMENDED = 200;
 
-const fieldLabel = "mb-1.5 block text-sm font-medium text-slate-700";
-const textareaClass =
-  "w-full rounded-xl bg-white px-4 py-3 text-sm text-slate-900 ring-1 ring-black/10 outline-none placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-slate-400";
-
-type FormState = LibraryMaterialPayload;
+type FormState = {
+  title: string;
+  type: LibraryMaterialType;
+  topic: string;
+  description: string;
+  cover_url: string | null;
+  read_time: string;
+  format: string;
+  status: LibraryMaterialStatus;
+};
 
 function toFormState(material?: LibraryMaterial): FormState {
   return {
@@ -50,7 +70,6 @@ function toFormState(material?: LibraryMaterial): FormState {
     type: material?.type ?? "article",
     topic: material?.topic ?? LIBRARY_TOPICS[0],
     description: material?.description ?? "",
-    content: material?.content ?? "",
     cover_url: material?.cover_url ?? null,
     read_time: material?.read_time ?? "",
     format: material?.format ?? "",
@@ -60,12 +79,230 @@ function toFormState(material?: LibraryMaterial): FormState {
 
 function validateImage(file: File): string | null {
   if (!LIBRARY_IMAGE_ACCEPT.split(",").includes(file.type)) {
-    return "Допустимы изображения JPEG, PNG, WebP или GIF";
+    return "Можно загрузить только JPEG, PNG, WebP или GIF";
   }
   if (file.size > LIBRARY_IMAGE_MAX_BYTES) {
-    return "Размер изображения — не больше 10 МБ";
+    return `Файл «${file.name}» больше 10 МБ — уменьшите его и попробуйте снова`;
   }
   return null;
+}
+
+function AutoGrowTextarea({
+  value,
+  onChange,
+  className,
+  ...props
+}: Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: resize when value changes
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [value]);
+  return (
+    <textarea
+      ref={ref}
+      rows={1}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      className={cn(
+        "w-full resize-none overflow-hidden bg-transparent outline-none",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function SideCard({
+  title,
+  children,
+  className,
+}: {
+  title: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={cn(
+        "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm",
+        className,
+      )}
+    >
+      <h2 className="mb-4 text-sm font-semibold text-slate-900">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition",
+        active
+          ? "border-slate-900 bg-slate-900 text-white"
+          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function CoverPicker({
+  url,
+  uploading,
+  onFile,
+  onRemove,
+}: {
+  url: string | null;
+  uploading: boolean;
+  onFile: (file: File) => void;
+  onRemove: () => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleDrop = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    setDragOver(false);
+    const file = event.dataTransfer.files?.[0];
+    if (file) onFile(file);
+  };
+
+  const dragProps = {
+    onDragOver: (event: DragEvent<HTMLElement>) => {
+      event.preventDefault();
+      setDragOver(true);
+    },
+    onDragLeave: () => setDragOver(false),
+    onDrop: handleDrop,
+  };
+
+  return (
+    <div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={LIBRARY_IMAGE_ACCEPT}
+        className="hidden"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          event.target.value = "";
+          if (file) onFile(file);
+        }}
+      />
+      {url ? (
+        <div
+          className={cn(
+            "group relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100",
+            dragOver && "ring-4 ring-sky-200",
+          )}
+          {...dragProps}
+        >
+          <MaterialCover src={url} type="article" alt="Обложка статьи" />
+          {uploading ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/70">
+              <Loader2 className="size-6 animate-spin text-slate-600" />
+            </div>
+          ) : null}
+          <div className="absolute right-3 top-3 flex gap-2">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-white/95 px-3 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-white"
+            >
+              <RefreshCw className="size-4" aria-hidden />
+              Заменить
+            </button>
+            <button
+              type="button"
+              onClick={onRemove}
+              aria-label="Убрать обложку"
+              className="inline-flex size-9 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-sm transition hover:bg-white hover:text-red-600"
+            >
+              <X className="size-4" aria-hidden />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          className={cn(
+            "flex aspect-[16/9] w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 text-center transition hover:border-slate-400 hover:bg-slate-100 sm:aspect-[21/9]",
+            dragOver && "border-sky-400 bg-sky-50",
+          )}
+          {...dragProps}
+        >
+          {uploading ? (
+            <Loader2
+              className="size-7 animate-spin text-slate-500"
+              aria-hidden
+            />
+          ) : (
+            <ImageUp className="size-7 text-slate-400" aria-hidden />
+          )}
+          <span className="text-sm font-medium text-slate-700">
+            {uploading ? "Загружаем обложку…" : "Добавить обложку"}
+          </span>
+          <span className="text-xs text-slate-500">
+            Перетащите фото сюда или нажмите. Лучше горизонтальное, от 1200 px ·
+            до 10 МБ
+          </span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ChecklistItem({
+  done,
+  children,
+}: {
+  done: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <li className="flex items-start gap-2.5 text-sm">
+      <span
+        className={cn(
+          "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full",
+          done
+            ? "bg-emerald-100 text-emerald-700"
+            : "bg-slate-100 text-slate-400",
+        )}
+      >
+        {done ? (
+          <Check className="size-3.5" aria-hidden />
+        ) : (
+          <span className="size-1.5 rounded-full bg-current" />
+        )}
+      </span>
+      <span className={done ? "text-slate-700" : "text-slate-500"}>
+        {children}
+      </span>
+    </li>
+  );
 }
 
 export function LibraryMaterialForm({
@@ -74,494 +311,573 @@ export function LibraryMaterialForm({
   material?: LibraryMaterial;
 }) {
   const router = useRouter();
-  const isEdit = Boolean(material);
   const [form, setForm] = useState<FormState>(() => toFormState(material));
-  const [tab, setTab] = useState<"write" | "preview">("write");
+  const [doc, setDoc] = useState<RichDoc>(() =>
+    parseRichContent(material?.content),
+  );
+  const [savedSnapshot, setSavedSnapshot] = useState<string>(() =>
+    JSON.stringify({
+      ...toFormState(material),
+      doc: parseRichContent(material?.content),
+    }),
+  );
+  const [savedAt, setSavedAt] = useState<Date | null>(
+    material ? new Date(material.updated_at) : null,
+  );
   const [saving, setSaving] = useState<LibraryMaterialStatus | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
-  const [inlineUploading, setInlineUploading] = useState(false);
+  const [bodyUploads, setBodyUploads] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
-  const contentRef = useRef<HTMLTextAreaElement>(null);
-  const coverInputRef = useRef<HTMLInputElement>(null);
-  const inlineInputRef = useRef<HTMLInputElement>(null);
+  const isEdit = Boolean(material);
+  const dirty = useMemo(
+    () => JSON.stringify({ ...form, doc }) !== savedSnapshot,
+    [form, doc, savedSnapshot],
+  );
+
+  const words = useMemo(() => countWords(doc), [doc]);
+  const images = useMemo(() => countImages(doc), [doc]);
+  const autoReadTime = useMemo(() => estimateReadTime(doc), [doc]);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  /** Inserts a snippet at the cursor as its own paragraph. */
-  const insertIntoContent = (snippet: string) => {
-    const el = contentRef.current;
-    setForm((prev) => {
-      const start = el?.selectionStart ?? prev.content.length;
-      const end = el?.selectionEnd ?? prev.content.length;
-      const before = prev.content.slice(0, start);
-      const after = prev.content.slice(end);
-      const lead =
-        before.length === 0 || before.endsWith("\n\n")
-          ? ""
-          : before.endsWith("\n")
-            ? "\n"
-            : "\n\n";
-      const trail = after.startsWith("\n") ? "\n" : "\n\n";
-      const next = `${before}${lead}${snippet}${trail}${after}`;
-      const caret = (before + lead + snippet + trail).length;
-      requestAnimationFrame(() => {
-        el?.focus();
-        el?.setSelectionRange(caret, caret);
-      });
-      return { ...prev, content: next };
-    });
-  };
+  // Toast after redirect from "new" to the edit page.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const created = params.get("created");
+    if (!created) return;
+    setToast(
+      created === "published" ? "Статья опубликована" : "Черновик сохранён",
+    );
+    params.delete("created");
+    const query = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${query ? `?${query}` : ""}`,
+    );
+  }, []);
 
-  const handleCoverChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    const problem = validateImage(file);
-    if (problem) {
-      setError(problem);
-      return;
-    }
-    setError(null);
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  // Warn before leaving the page with unsaved changes.
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
+
+  const uploadImage = useCallback(
+    async (file: File): Promise<string | null> => {
+      const problem = validateImage(file);
+      if (problem) {
+        setError(problem);
+        return null;
+      }
+      setError(null);
+      try {
+        const { url } = await uploadLibraryImage(file);
+        return url;
+      } catch (e) {
+        setError(
+          e instanceof Error
+            ? `Фото не загрузилось: ${e.message}`
+            : "Фото не загрузилось",
+        );
+        return null;
+      }
+    },
+    [],
+  );
+
+  const uploadBodyImage = useCallback(
+    async (file: File) => {
+      setBodyUploads((n) => n + 1);
+      try {
+        return await uploadImage(file);
+      } finally {
+        setBodyUploads((n) => n - 1);
+      }
+    },
+    [uploadImage],
+  );
+
+  const handleCover = async (file: File) => {
     setCoverUploading(true);
-    try {
-      const { url } = await uploadLibraryImage(file);
-      set("cover_url", url);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Не удалось загрузить фото");
-    } finally {
-      setCoverUploading(false);
-    }
-  };
-
-  const handleInlineImage = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    const problem = validateImage(file);
-    if (problem) {
-      setError(problem);
-      return;
-    }
-    setError(null);
-    setInlineUploading(true);
-    try {
-      const { url } = await uploadLibraryImage(file);
-      const alt = file.name.replace(/\.[^.]+$/, "").replace(/[[\]]/g, "");
-      setTab("write");
-      insertIntoContent(`![${alt}](${url})`);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Не удалось загрузить фото");
-    } finally {
-      setInlineUploading(false);
-    }
+    const url = await uploadImage(file);
+    if (url) set("cover_url", url);
+    setCoverUploading(false);
   };
 
   const save = async (status: LibraryMaterialStatus) => {
-    if (!form.title.trim() || !form.topic.trim()) {
-      setError("Заполните заголовок и тему");
+    if (!form.title.trim()) {
+      setError("Добавьте заголовок — без него статью нельзя сохранить");
+      document.getElementById("material-title")?.focus();
       return;
     }
+    if (!form.topic.trim()) {
+      setError("Выберите тему статьи");
+      return;
+    }
+    if (status === "published" && words === 0 && images === 0) {
+      setError("Нельзя опубликовать пустую статью — добавьте текст");
+      return;
+    }
+
     setError(null);
-    setNotice(null);
     setSaving(status);
-    const payload: LibraryMaterialPayload = { ...form, status };
+    const payload: LibraryMaterialPayload = {
+      title: form.title.trim(),
+      type: form.type,
+      topic: form.topic.trim(),
+      description: form.description.trim(),
+      content: serializeRichContent(doc),
+      cover_url: form.cover_url,
+      read_time: form.read_time.trim() || autoReadTime,
+      format: form.format.trim() || null,
+      status,
+    };
+
     try {
       if (material) {
         const updated = await updateMaterial(material.id, payload);
-        setForm(toFormState(updated));
-        setNotice(
+        const nextForm = { ...toFormState(updated), read_time: form.read_time };
+        setForm(nextForm);
+        setSavedSnapshot(JSON.stringify({ ...nextForm, doc }));
+        setSavedAt(new Date());
+        setToast(
           status === form.status
             ? "Изменения сохранены"
             : status === "published"
               ? "Статья опубликована"
-              : "Статья снята с публикации",
+              : "Статья снята с публикации — теперь это черновик",
         );
-        router.refresh();
       } else {
         const created = await createMaterial(payload);
-        router.replace(`${LIST_PATH}/${created.id}`);
+        setSavedSnapshot(JSON.stringify({ ...form, doc }));
+        router.replace(`${LIST_PATH}/${created.id}?created=${status}`);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Не удалось сохранить");
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Не удалось сохранить. Попробуйте ещё раз",
+      );
     } finally {
       setSaving(null);
     }
   };
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    void save(form.status);
-  };
+  // Ctrl/Cmd + S saves without changing the publication status.
+  const saveRef = useRef(save);
+  saveRef.current = save;
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        void saveRef.current(form.status);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [form.status]);
 
   const handleDelete = async () => {
     if (!material) return;
     if (
-      !window.confirm(`Удалить «${material.title}»? Это действие необратимо.`)
+      !window.confirm(
+        `Удалить «${material.title}»? Восстановить статью будет нельзя.`,
+      )
     ) {
       return;
     }
     setDeleting(true);
     try {
       await deleteMaterial(material.id);
-      router.replace(LIST_PATH);
+      setSavedSnapshot(JSON.stringify({ ...form, doc }));
+      router.replace(`${LIST_PATH}?deleted=1`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Не удалось удалить");
       setDeleting(false);
     }
   };
 
-  const busy = saving !== null || deleting || coverUploading || inlineUploading;
+  const confirmLeave = (event: React.MouseEvent) => {
+    if (
+      dirty &&
+      !window.confirm("Есть несохранённые изменения. Уйти без сохранения?")
+    ) {
+      event.preventDefault();
+    }
+  };
+
+  const busy = saving !== null || deleting || coverUploading || bodyUploads > 0;
+  const isPublished = form.status === "published";
+
+  const saveState = saving ? (
+    <span className="inline-flex items-center gap-1.5 text-slate-500">
+      <Loader2 className="size-3.5 animate-spin" aria-hidden />
+      Сохранение…
+    </span>
+  ) : dirty ? (
+    <span className="inline-flex items-center gap-1.5 text-amber-600">
+      <span className="size-2 rounded-full bg-amber-500" aria-hidden />
+      Есть несохранённые изменения
+    </span>
+  ) : savedAt ? (
+    <span className="inline-flex items-center gap-1.5 text-emerald-600">
+      <Check className="size-3.5" aria-hidden />
+      Сохранено в{" "}
+      {savedAt.toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}
+    </span>
+  ) : (
+    <span className="text-slate-400">Не сохранено</span>
+  );
+
+  const primaryLabel =
+    saving === "published"
+      ? "Публикуем…"
+      : isPublished
+        ? "Сохранить"
+        : "Опубликовать";
+  const secondaryLabel =
+    saving === "draft"
+      ? "Сохраняем…"
+      : isPublished
+        ? "В черновики"
+        : "Сохранить черновик";
+
+  const actions = (
+    <>
+      <button
+        type="button"
+        onClick={() => void save("draft")}
+        disabled={busy}
+        className="inline-flex h-10 items-center justify-center rounded-xl px-4 text-sm font-medium text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:opacity-50"
+      >
+        {secondaryLabel}
+      </button>
+      <button
+        type="button"
+        onClick={() => void save("published")}
+        disabled={busy}
+        className="inline-flex h-10 items-center justify-center rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+      >
+        {primaryLabel}
+      </button>
+    </>
+  );
+
+  const TypeIcon = LIBRARY_TYPE_ICONS[form.type];
+  const checklist = [
+    {
+      done: form.title.trim().length >= 10,
+      label: "Заголовок (от 10 символов)",
+    },
+    { done: Boolean(form.cover_url), label: "Обложка" },
+    {
+      done: form.description.trim().length >= 60,
+      label: "Краткое описание (от 60 символов)",
+    },
+    { done: words >= 150, label: `Текст от 150 слов (сейчас ${words})` },
+    { done: images > 0, label: "Хотя бы одно фото в тексте" },
+  ];
+  const readyCount = checklist.filter((item) => item.done).length;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <PageHeader
-        title={isEdit ? "Редактирование статьи" : "Новая статья"}
-        description={
-          isEdit
-            ? `Статус: ${LIBRARY_STATUS_LABELS[form.status]}`
-            : "Материал для базы знаний AKYL"
-        }
-        actions={
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="ghost" size="sm">
-              <Link href={LIST_PATH}>К списку</Link>
-            </Button>
-            {material?.status === "published" ? (
-              <Button asChild variant="secondary" size="sm">
-                <Link href={`/library/${material.id}`} target="_blank">
-                  Открыть на сайте
-                </Link>
-              </Button>
-            ) : null}
+    <div className="-mx-4 -mt-4 pb-24 md:-mx-8 md:-mt-8 md:pb-10">
+      {/* Action bar */}
+      <div className="sticky top-14 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="flex h-16 items-center gap-3 px-4 md:px-8">
+          <Link
+            href={LIST_PATH}
+            onClick={confirmLeave}
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+            aria-label="К списку статей"
+          >
+            <ArrowLeft className="size-5" />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-slate-900">
+              {isEdit ? form.title || "Без названия" : "Новая статья"}
+            </p>
+            <p className="truncate text-xs">
+              <span
+                className={cn(
+                  "mr-2 inline-flex rounded-full px-2 py-px font-medium",
+                  isPublished
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "bg-slate-100 text-slate-600",
+                )}
+              >
+                {isPublished ? "Опубликовано" : "Черновик"}
+              </span>
+              {saveState}
+            </p>
           </div>
-        }
-      />
-
-      {error ? (
-        <div
-          role="alert"
-          className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-        >
-          {error}
+          {material && isPublished ? (
+            <Link
+              href={`/library/${material.id}`}
+              target="_blank"
+              className="hidden h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 lg:inline-flex"
+            >
+              <ExternalLink className="size-4" aria-hidden />
+              На сайте
+            </Link>
+          ) : null}
+          <div className="hidden items-center gap-2 md:flex">{actions}</div>
         </div>
-      ) : null}
-      {notice ? (
+      </div>
+
+      {/* Mobile action bar */}
+      <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-2 border-t border-slate-200 bg-white/95 p-3 backdrop-blur md:hidden">
+        {actions}
+      </div>
+
+      {toast ? (
         <div
           role="status"
-          className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+          className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-lg md:bottom-6"
         >
-          {notice}
+          {toast}
         </div>
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div>
-            <label htmlFor="material-title" className={fieldLabel}>
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 pt-6 md:px-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="min-w-0 space-y-6">
+          {error ? (
+            <div
+              role="alert"
+              className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
+              <span className="flex-1">{error}</span>
+              <button
+                type="button"
+                onClick={() => setError(null)}
+                aria-label="Закрыть"
+                className="text-red-500 hover:text-red-700"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          ) : null}
+
+          <CoverPicker
+            url={form.cover_url}
+            uploading={coverUploading}
+            onFile={(file) => void handleCover(file)}
+            onRemove={() => set("cover_url", null)}
+          />
+
+          <div className="space-y-3">
+            <label htmlFor="material-title" className="sr-only">
               Заголовок
             </label>
-            <Input
+            <AutoGrowTextarea
               id="material-title"
-              placeholder="Например: Внедрение систем цифрового мониторинга"
               value={form.title}
+              onChange={(value) => set("title", value.replace(/\n/g, " "))}
               maxLength={300}
-              onChange={(e) => set("title", e.target.value)}
-              required
+              placeholder="Заголовок статьи"
+              className="text-3xl font-semibold leading-tight tracking-tight text-slate-900 placeholder:text-slate-300 md:text-4xl"
             />
-          </div>
-
-          <div>
-            <label htmlFor="material-description" className={fieldLabel}>
+            <label htmlFor="material-description" className="sr-only">
               Краткое описание
             </label>
-            <textarea
+            <AutoGrowTextarea
               id="material-description"
-              className={cn(textareaClass, "min-h-[80px]")}
-              placeholder="1–2 предложения для карточки в библиотеке"
               value={form.description}
+              onChange={(value) => set("description", value)}
               maxLength={1000}
-              onChange={(e) => set("description", e.target.value)}
+              placeholder="Краткое описание: 1–2 предложения о том, чем статья полезна. Показывается в карточке и в поиске"
+              className="text-lg leading-8 text-slate-600 placeholder:text-slate-300"
             />
+            <p
+              className={cn(
+                "text-xs",
+                form.description.length > DESCRIPTION_RECOMMENDED
+                  ? "text-amber-600"
+                  : "text-slate-400",
+              )}
+            >
+              {form.description.length} / {DESCRIPTION_RECOMMENDED} символов —{" "}
+              {form.description.length > DESCRIPTION_RECOMMENDED
+                ? "длинное описание обрежется в карточке"
+                : "оптимально для карточки"}
+            </p>
           </div>
 
-          <div>
-            <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
-              <label
-                htmlFor="material-content"
-                className="text-sm font-medium text-slate-700"
-              >
-                Текст статьи
-              </label>
-              <div className="flex flex-wrap items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => insertIntoContent("## Подзаголовок")}
-                  disabled={tab !== "write"}
-                  title="Добавить подзаголовок"
-                >
-                  <Heading2 className="size-4" aria-hidden />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => insertIntoContent("- Пункт списка")}
-                  disabled={tab !== "write"}
-                  title="Добавить список"
-                >
-                  <List className="size-4" aria-hidden />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => inlineInputRef.current?.click()}
-                  disabled={inlineUploading}
-                >
-                  {inlineUploading ? (
-                    <Loader2 className="size-4 animate-spin" aria-hidden />
-                  ) : (
-                    <ImagePlus className="size-4" aria-hidden />
-                  )}
-                  Вставить фото
-                </Button>
-                <input
-                  ref={inlineInputRef}
-                  type="file"
-                  accept={LIBRARY_IMAGE_ACCEPT}
-                  className="hidden"
-                  onChange={handleInlineImage}
-                />
-                <div className="ml-2 inline-flex rounded-lg bg-slate-100 p-0.5">
-                  {(
-                    [
-                      ["write", "Текст", PenLine],
-                      ["preview", "Просмотр", Eye],
-                    ] as const
-                  ).map(([value, label, Icon]) => (
-                    <button
-                      key={value}
-                      type="button"
-                      aria-pressed={tab === value}
-                      onClick={() => setTab(value)}
-                      className={cn(
-                        "inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium transition",
-                        tab === value
-                          ? "bg-white text-slate-900 shadow-sm"
-                          : "text-slate-500 hover:text-slate-900",
-                      )}
-                    >
-                      <Icon className="size-3.5" aria-hidden />
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {tab === "write" ? (
-              <>
-                <textarea
-                  id="material-content"
-                  ref={contentRef}
-                  className={cn(
-                    textareaClass,
-                    "min-h-[420px] font-mono leading-6",
-                  )}
-                  placeholder={
-                    "Пишите текст абзацами, разделяя их пустой строкой.\n\n## Подзаголовок\n- пункт списка\n**жирный текст**\n\nФото вставляется кнопкой «Вставить фото»."
-                  }
-                  value={form.content}
-                  onChange={(e) => set("content", e.target.value)}
-                />
-                <p className="mt-2 text-xs text-slate-500">
-                  Разметка: пустая строка — новый абзац, <code>## </code>—
-                  подзаголовок, <code>- </code>— список, <code>**текст**</code>{" "}
-                  — жирный, <code>&gt; </code>— цитата. Фото добавляются в
-                  позицию курсора.
-                </p>
-              </>
-            ) : (
-              <div className="min-h-[420px] rounded-xl border border-slate-200 bg-white px-6 py-5">
-                {form.content.trim() ? (
-                  <MaterialContent content={form.content} />
-                ) : (
-                  <p className="text-sm text-slate-400">Текст пока пуст.</p>
-                )}
-              </div>
-            )}
-          </div>
+          <RichTextEditor
+            initialDoc={doc}
+            onChange={setDoc}
+            onUploadImage={uploadBodyImage}
+            uploading={bodyUploads > 0}
+          />
+          <p className="text-xs text-slate-400">
+            {words} слов · {images} фото · примерно {autoReadTime} чтения ·{" "}
+            <kbd className="rounded border border-slate-200 px-1">Ctrl</kbd>+
+            <kbd className="rounded border border-slate-200 px-1">S</kbd> —
+            сохранить
+          </p>
         </div>
 
         <aside className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold text-slate-900">
-              Обложка
-            </h3>
-            {form.cover_url ? (
-              <div className="space-y-2">
-                <Image
-                  src={form.cover_url}
-                  alt="Обложка статьи"
-                  width={600}
-                  height={360}
-                  unoptimized
-                  className="aspect-[5/3] w-full rounded-xl border border-slate-200 object-cover"
-                />
-                <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => coverInputRef.current?.click()}
-                    disabled={coverUploading}
-                  >
-                    Заменить
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => set("cover_url", null)}
-                    title="Убрать обложку"
-                  >
-                    <Trash2 className="size-4" aria-hidden />
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => coverInputRef.current?.click()}
-                disabled={coverUploading}
-                className="flex aspect-[5/3] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 text-sm text-slate-500 transition hover:border-slate-400 hover:bg-slate-100"
-              >
-                {coverUploading ? (
-                  <Loader2 className="size-5 animate-spin" aria-hidden />
-                ) : (
-                  <Upload className="size-5" aria-hidden />
-                )}
-                {coverUploading ? "Загрузка…" : "Загрузить фото"}
-                <span className="text-xs text-slate-400">
-                  JPEG, PNG, WebP, GIF · до 10 МБ
-                </span>
-              </button>
-            )}
-            <input
-              ref={coverInputRef}
-              type="file"
-              accept={LIBRARY_IMAGE_ACCEPT}
-              className="hidden"
-              onChange={handleCoverChange}
-            />
-          </div>
-
-          <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-900">Параметры</h3>
-            <div>
-              <label htmlFor="material-type" className={fieldLabel}>
-                Тип материала
-              </label>
-              <select
-                id="material-type"
-                className="h-11 w-full rounded-xl bg-white px-3 text-sm ring-1 ring-black/10 outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-                value={form.type}
-                onChange={(e) =>
-                  set("type", e.target.value as LibraryMaterialType)
-                }
-              >
-                {Object.entries(LIBRARY_TYPE_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="material-topic" className={fieldLabel}>
-                Тема
-              </label>
-              <Input
-                id="material-topic"
-                list="material-topics"
-                value={form.topic}
-                maxLength={120}
-                onChange={(e) => set("topic", e.target.value)}
-                required
+          <SideCard title={`Готовность · ${readyCount} из ${checklist.length}`}>
+            <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-slate-100">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{ width: `${(readyCount / checklist.length) * 100}%` }}
               />
-              <datalist id="material-topics">
-                {LIBRARY_TOPICS.map((topic) => (
-                  <option key={topic} value={topic} />
-                ))}
-              </datalist>
             </div>
+            <ul className="space-y-2.5">
+              {checklist.map((item) => (
+                <ChecklistItem key={item.label} done={item.done}>
+                  {item.label}
+                </ChecklistItem>
+              ))}
+            </ul>
+            <p className="mt-4 text-xs leading-5 text-slate-500">
+              Опубликовать можно и без всех пунктов — это подсказки, чтобы
+              статья выглядела хорошо.
+            </p>
+          </SideCard>
+
+          <SideCard title="Тип материала">
+            <div className="flex flex-wrap gap-2">
+              {LIBRARY_TYPE_ORDER.map((type) => {
+                const Icon = LIBRARY_TYPE_ICONS[type];
+                return (
+                  <Chip
+                    key={type}
+                    active={form.type === type}
+                    onClick={() => set("type", type)}
+                  >
+                    <Icon className="size-3.5" aria-hidden />
+                    {LIBRARY_TYPE_LABELS[type]}
+                  </Chip>
+                );
+              })}
+            </div>
+          </SideCard>
+
+          <SideCard title="Тема">
+            <div className="flex flex-wrap gap-2">
+              {LIBRARY_TOPICS.map((topic) => (
+                <Chip
+                  key={topic}
+                  active={form.topic === topic}
+                  onClick={() => set("topic", topic)}
+                >
+                  {topic}
+                </Chip>
+              ))}
+            </div>
+            <label
+              htmlFor="material-topic"
+              className="mb-1.5 mt-4 block text-xs font-medium text-slate-500"
+            >
+              Или своя тема
+            </label>
+            <input
+              id="material-topic"
+              value={form.topic}
+              maxLength={120}
+              onChange={(event) => set("topic", event.target.value)}
+              className="h-10 w-full rounded-xl px-3 text-sm text-slate-900 ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-slate-400"
+            />
+          </SideCard>
+
+          <SideCard title="Дополнительно">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="material-read-time" className={fieldLabel}>
+                <label
+                  htmlFor="material-read-time"
+                  className="mb-1.5 block text-xs font-medium text-slate-500"
+                >
                   Время чтения
                 </label>
-                <Input
+                <input
                   id="material-read-time"
-                  placeholder="15 мин"
-                  value={form.read_time ?? ""}
+                  value={form.read_time}
                   maxLength={100}
-                  onChange={(e) => set("read_time", e.target.value)}
+                  placeholder={`Авто: ${autoReadTime}`}
+                  onChange={(event) => set("read_time", event.target.value)}
+                  className="h-10 w-full rounded-xl px-3 text-sm text-slate-900 ring-1 ring-slate-200 outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-slate-400"
                 />
               </div>
               <div>
-                <label htmlFor="material-format" className={fieldLabel}>
-                  Формат
+                <label
+                  htmlFor="material-format"
+                  className="mb-1.5 block text-xs font-medium text-slate-500"
+                >
+                  Формат файла
                 </label>
-                <Input
+                <input
                   id="material-format"
-                  placeholder="PDF"
-                  value={form.format ?? ""}
+                  value={form.format}
                   maxLength={100}
-                  onChange={(e) => set("format", e.target.value)}
+                  placeholder="PDF, XLSX…"
+                  onChange={(event) => set("format", event.target.value)}
+                  className="h-10 w-full rounded-xl px-3 text-sm text-slate-900 ring-1 ring-slate-200 outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-slate-400"
                 />
               </div>
             </div>
-          </div>
+            <p className="mt-2 text-xs text-slate-400">
+              Время чтения считается автоматически, если поле пустое.
+            </p>
+          </SideCard>
 
-          <div className="space-y-2 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <Button
-              className="w-full"
-              onClick={() => void save("published")}
+          <SideCard title="Так статья выглядит в библиотеке">
+            <div className="overflow-hidden rounded-xl border border-slate-200">
+              <div className="aspect-[16/9]">
+                <MaterialCover
+                  src={form.cover_url}
+                  type={form.type}
+                  iconClassName="size-8"
+                />
+              </div>
+              <div className="p-4">
+                <p className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <TypeIcon className="size-3.5" aria-hidden />
+                  {LIBRARY_TYPE_LABELS[form.type]} · {form.topic || "Тема"}
+                </p>
+                <p className="mt-2 line-clamp-2 font-semibold leading-snug text-slate-900">
+                  {form.title || "Заголовок статьи"}
+                </p>
+                <p className="mt-1.5 line-clamp-2 text-sm text-slate-500">
+                  {form.description || "Краткое описание появится здесь"}
+                </p>
+              </div>
+            </div>
+          </SideCard>
+
+          {material ? (
+            <button
+              type="button"
+              onClick={() => void handleDelete()}
               disabled={busy}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50"
             >
-              {saving === "published"
-                ? "Публикация…"
-                : form.status === "published"
-                  ? "Сохранить изменения"
-                  : "Опубликовать"}
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => void save("draft")}
-              disabled={busy}
-            >
-              {saving === "draft"
-                ? "Сохранение…"
-                : form.status === "published"
-                  ? "Снять с публикации"
-                  : "Сохранить черновик"}
-            </Button>
-            {material ? (
-              <Button
-                variant="ghost"
-                className="w-full text-red-600 hover:bg-red-50"
-                onClick={() => void handleDelete()}
-                disabled={busy}
-              >
-                {deleting ? "Удаление…" : "Удалить статью"}
-              </Button>
-            ) : null}
-          </div>
+              <Trash2 className="size-4" aria-hidden />
+              {deleting ? "Удаление…" : "Удалить статью"}
+            </button>
+          ) : null}
         </aside>
       </div>
-    </form>
+    </div>
   );
 }

@@ -1,16 +1,20 @@
 import { API_URL, apiFetch } from "@/shared/api";
 
-import type { LibraryMaterial, LibraryMaterialPayload } from "../model/types";
+import type {
+  LibraryMaterial,
+  LibraryMaterialPayload,
+  LibraryMaterialSummary,
+} from "../model/types";
 
 const BASE = "/api/library";
 
-export function fetchPublishedMaterials(): Promise<LibraryMaterial[]> {
-  return apiFetch<LibraryMaterial[]>(`${BASE}/materials`);
+export function fetchPublishedMaterials(): Promise<LibraryMaterialSummary[]> {
+  return apiFetch<LibraryMaterialSummary[]>(`${BASE}/materials`);
 }
 
 /** Admin only: includes drafts. */
-export function fetchAllMaterials(): Promise<LibraryMaterial[]> {
-  return apiFetch<LibraryMaterial[]>(`${BASE}/materials?all=1`);
+export function fetchAllMaterials(): Promise<LibraryMaterialSummary[]> {
+  return apiFetch<LibraryMaterialSummary[]>(`${BASE}/materials?all=1`);
 }
 
 export function fetchMaterial(id: string): Promise<LibraryMaterial> {
@@ -56,25 +60,34 @@ export function uploadLibraryImage(
   });
 }
 
-/**
- * Server-side fetch for the public article page (no auth, ISR-friendly).
- * Returns null when the material does not exist or is not published.
- */
-export async function fetchPublishedMaterialOnServer(
-  id: string,
-): Promise<LibraryMaterial | null> {
+async function serverGet<T>(path: string): Promise<T | null> {
   try {
-    const response = await fetch(
-      `${API_URL}${BASE}/materials/${encodeURIComponent(id)}`,
-      { next: { revalidate: 60 } },
-    );
+    const response = await fetch(`${API_URL}${path}`, {
+      next: { revalidate: 60 },
+    });
     if (!response.ok) return null;
-    const body = (await response.json()) as {
-      success: boolean;
-      data?: LibraryMaterial;
-    };
-    return body.success && body.data ? body.data : null;
+    const body = (await response.json()) as { success: boolean; data?: T };
+    return body.success && body.data !== undefined ? body.data : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Server-side fetch for the public article page (no auth, cached for 60s).
+ * Returns null when the material does not exist or is not published.
+ */
+export function fetchPublishedMaterialOnServer(
+  id: string,
+): Promise<LibraryMaterial | null> {
+  return serverGet<LibraryMaterial>(
+    `${BASE}/materials/${encodeURIComponent(id)}`,
+  );
+}
+
+/** Server-side list for the public library (null when the API is down). */
+export function fetchPublishedMaterialsOnServer(): Promise<
+  LibraryMaterialSummary[] | null
+> {
+  return serverGet<LibraryMaterialSummary[]>(`${BASE}/materials`);
 }

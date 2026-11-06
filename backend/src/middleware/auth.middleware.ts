@@ -2,6 +2,11 @@ import type { NextFunction, Request, Response } from "express";
 
 import { asyncHandler } from "../common/async-handler.js";
 import { ForbiddenError, UnauthorizedError } from "../common/errors.js";
+import {
+  type CachedSession,
+  getCachedSession,
+  setCachedSession,
+} from "../common/session-cache.js";
 import { getSupabaseAdmin } from "../config/supabase.js";
 import { getProfileByUserId } from "../modules/auth/auth.service.js";
 import { toAuthUser, type ProfileRole, isActiveProfileStatus } from "../modules/auth/auth.types.js";
@@ -14,6 +19,24 @@ function extractBearerToken(req: Request): string | null {
   return header.slice(7).trim();
 }
 
+/** Verifies the token with Supabase (or the short-lived cache). Null if invalid. */
+async function resolveSession(token: string): Promise<CachedSession | null> {
+  const cached = getCachedSession(token);
+  if (cached) return cached;
+
+  const { data, error } = await getSupabaseAdmin().auth.getUser(token);
+  if (error || !data.user) {
+    return null;
+  }
+
+  const session: CachedSession = {
+    user: toAuthUser(data.user),
+    profile: await getProfileByUserId(data.user.id),
+  };
+  setCachedSession(token, session);
+  return session;
+}
+
 export const authMiddleware = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {
     const token = extractBearerToken(req);
@@ -22,20 +45,18 @@ export const authMiddleware = asyncHandler(
       throw new UnauthorizedError("Missing authorization token");
     }
 
-    const { data, error } = await getSupabaseAdmin().auth.getUser(token);
+    const session = await resolveSession(token);
 
-    if (error || !data.user) {
+    if (!session) {
       throw new UnauthorizedError("Invalid or expired token");
     }
 
-    const profile = await getProfileByUserId(data.user.id);
-
-    if (!isActiveProfileStatus(profile.status)) {
+    if (!isActiveProfileStatus(session.profile.status)) {
       throw new ForbiddenError("Account is not active");
     }
 
-    req.user = toAuthUser(data.user);
-    req.profile = profile;
+    req.user = session.user;
+    req.profile = session.profile;
     req.accessToken = token;
 
     next();
@@ -68,15 +89,11 @@ export const optionalAuthMiddleware = asyncHandler(
     }
 
     try {
-      const { data, error } = await getSupabaseAdmin().auth.getUser(token);
-
-      if (!error && data.user) {
-        const profile = await getProfileByUserId(data.user.id);
-        if (isActiveProfileStatus(profile.status)) {
-          req.user = toAuthUser(data.user);
-          req.profile = profile;
-          req.accessToken = token;
-        }
+      const session = await resolveSession(token);
+      if (session && isActiveProfileStatus(session.profile.status)) {
+        req.user = session.user;
+        req.profile = session.profile;
+        req.accessToken = token;
       }
     } catch {
       // invalid token — treat as guest for public routes
