@@ -10,8 +10,6 @@ import {
  * title, in the same style as the site's other Open Graph images.
  */
 
-export const revalidate = 3600;
-
 const SIZE = { width: 1200, height: 630 };
 
 export async function GET(

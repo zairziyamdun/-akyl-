@@ -14,7 +14,11 @@ import { SITE_URL } from "@/shared/config";
 import { JsonLd } from "@/shared/seo";
 import { LibraryArticle } from "@/widgets/library-article";
 
-export const revalidate = 60;
+/**
+ * Always rendered on request: a deleted or unpublished article must disappear
+ * immediately (see fetchPublishedMaterialOnServer).
+ */
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ id: string }>;

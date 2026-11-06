@@ -23,6 +23,12 @@ export interface MegaMenuLink {
   hasArrow?: boolean;
   icon?: LucideIcon;
   external?: boolean;
+  /**
+   * Shortcut to a section owned by another menu item. It is still highlighted
+   * inside the dropdown, but never marks this category as the current one —
+   * otherwise two top-level items light up on the same page.
+   */
+  crossLink?: boolean;
 }
 
 export interface MegaMenuColumn {
@@ -106,6 +112,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
           {
             title: "Чек-листы аудита процессов",
             href: "/tools/checklists",
+            crossLink: true,
             icon: ClipboardCheck,
           },
         ],
@@ -117,26 +124,31 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
           {
             title: "Индекс эффективности (IEU)",
             href: "/tools/index-efficiency",
+            crossLink: true,
             icon: BarChart3,
           },
           {
             title: "Анализ бюджета дома",
             href: "/tools/budget-analysis",
+            crossLink: true,
             icon: Calculator,
           },
           {
             title: "Конструктор управленческого отчёта",
             href: "/tools/management-report",
+            crossLink: true,
             icon: FileText,
           },
           {
             title: "Шаблоны KPI для МЖД",
             href: "/tools/kpi-templates",
+            crossLink: true,
             icon: ClipboardCheck,
           },
           {
             title: "Каталог цифровых инструментов",
             href: "/tools",
+            crossLink: true,
             icon: Wrench,
             hasArrow: true,
           },
@@ -167,6 +179,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
           {
             title: "Сценарии для УО и ОСИ",
             href: "/implementation",
+            crossLink: true,
             icon: Users,
           },
         ],
@@ -178,11 +191,13 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
           {
             title: "Материалы для жителей",
             href: "/library",
+            crossLink: true,
             icon: BookOpen,
           },
           {
             title: "Персональная консультация",
             href: "/consultation",
+            crossLink: true,
             icon: FileText,
             hasArrow: true,
           },
@@ -229,6 +244,7 @@ export const MEGA_MENU_LINKS: MegaMenuCategory[] = [
           {
             title: "Заявка на консультацию",
             href: "/consultation",
+            crossLink: true,
             icon: FileText,
           },
           {

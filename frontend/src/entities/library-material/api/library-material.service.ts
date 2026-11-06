@@ -74,15 +74,30 @@ async function serverGet<T>(path: string): Promise<T | null> {
 }
 
 /**
- * Server-side fetch for the public article page (no auth, cached for 60s).
- * Returns null when the material does not exist or is not published.
+ * Server-side fetch for the public article page.
+ *
+ * Never cached: Next.js keeps only 200 responses in its data cache, so once an
+ * article was deleted or unpublished (API answers 404) a cached copy would keep
+ * being served forever. Returns null only when the API says the material does
+ * not exist or is not published; other failures throw, so an API outage shows
+ * an error page instead of telling visitors and crawlers "not found".
  */
-export function fetchPublishedMaterialOnServer(
+export async function fetchPublishedMaterialOnServer(
   id: string,
 ): Promise<LibraryMaterial | null> {
-  return serverGet<LibraryMaterial>(
-    `${BASE}/materials/${encodeURIComponent(id)}`,
+  const response = await fetch(
+    `${API_URL}${BASE}/materials/${encodeURIComponent(id)}`,
+    { cache: "no-store" },
   );
+  if (response.status === 404) return null;
+  if (!response.ok) {
+    throw new Error(`Library API responded with ${response.status}`);
+  }
+  const body = (await response.json()) as {
+    success: boolean;
+    data?: LibraryMaterial;
+  };
+  return body.success && body.data ? body.data : null;
 }
 
 /** Server-side list for the public library (null when the API is down). */
