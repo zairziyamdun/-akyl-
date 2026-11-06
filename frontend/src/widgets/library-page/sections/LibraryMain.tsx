@@ -11,8 +11,15 @@ import {
   Search,
   Video,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
+import {
+  fetchPublishedMaterials,
+  formatMaterialDate,
+  type LibraryMaterial,
+} from "@/entities/library-material";
 import { Button } from "@/shared/ui/Button";
 
 import {
@@ -49,13 +56,68 @@ function getTypeIcon(type: LibraryItemType) {
   }
 }
 
+type LibraryCard = {
+  key: string;
+  type: LibraryItemType;
+  title: string;
+  topic: string;
+  description: string;
+  date: string;
+  readTime?: string;
+  duration?: string;
+  format?: string;
+  coverUrl?: string;
+  href?: string;
+};
+
+function fromMaterial(material: LibraryMaterial): LibraryCard {
+  return {
+    key: material.id,
+    type: material.type,
+    title: material.title,
+    topic: material.topic,
+    description: material.description,
+    date: formatMaterialDate(material),
+    readTime: material.read_time ?? undefined,
+    format: material.format ?? undefined,
+    coverUrl: material.cover_url ?? undefined,
+    href: `/library/${material.id}`,
+  };
+}
+
+/** Demo cards are shown until the first article is published in the admin. */
+const demoCards: LibraryCard[] = libraryItems.map((item) => ({
+  ...item,
+  key: `demo-${item.id}`,
+}));
+
 export function LibraryMain() {
+  const [materials, setMaterials] = useState<LibraryMaterial[]>([]);
   const [activeType, setActiveType] = useState("all");
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  useEffect(() => {
+    let cancelled = false;
+    fetchPublishedMaterials()
+      .then((data) => {
+        if (!cancelled) setMaterials(data);
+      })
+      .catch(() => {
+        // API unavailable — keep demo materials
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const items = useMemo(
+    () => (materials.length > 0 ? materials.map(fromMaterial) : demoCards),
+    [materials],
+  );
+
   const filteredItems = useMemo(() => {
-    return libraryItems.filter((item) => {
+    return items.filter((item) => {
       const matchesType = activeType === "all" || item.type === activeType;
       const matchesTopic = !activeTopic || item.topic === activeTopic;
       const query = searchQuery.trim().toLowerCase();
@@ -68,7 +130,7 @@ export function LibraryMain() {
 
       return matchesType && matchesTopic && matchesSearch;
     });
-  }, [activeType, activeTopic, searchQuery]);
+  }, [items, activeType, activeTopic, searchQuery]);
 
   return (
     <section className="bg-background">
@@ -97,7 +159,7 @@ export function LibraryMain() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-2xl font-semibold text-foreground">
-                    {libraryItems.length}
+                    {items.length}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     материалов в библиотеке
@@ -221,9 +283,20 @@ export function LibraryMain() {
 
               return (
                 <article
-                  key={item.id}
-                  className="group flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40"
+                  key={item.key}
+                  className="group relative flex h-full flex-col rounded-2xl border border-border bg-card p-5 transition duration-200 hover:-translate-y-0.5 hover:border-accent/40"
                 >
+                  {item.coverUrl ? (
+                    <Image
+                      src={item.coverUrl}
+                      alt=""
+                      width={640}
+                      height={360}
+                      unoptimized
+                      className="-mx-5 -mt-5 mb-5 aspect-[16/9] w-[calc(100%+2.5rem)] max-w-none rounded-t-2xl object-cover"
+                    />
+                  ) : null}
+
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted transition group-hover:bg-accent/10">
                       <TypeIcon className="h-5 w-5 text-accent" />
@@ -269,15 +342,25 @@ export function LibraryMain() {
                   </div>
 
                   <div className="mt-auto pt-6">
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
-                    >
-                      {item.type === "template"
-                        ? "Скачать материал"
-                        : "Открыть материал"}
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-accent after:absolute after:inset-0 after:rounded-2xl hover:underline"
+                      >
+                        Открыть материал
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+                      >
+                        {item.type === "template"
+                          ? "Скачать материал"
+                          : "Открыть материал"}
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </article>
               );
