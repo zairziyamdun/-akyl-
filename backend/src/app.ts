@@ -8,6 +8,7 @@ import adminSubscriptionRoutes from "./modules/admin/subscription/subscription.r
 import consultationRoutes from "./modules/consultation/consultation.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import journalRoutes from "./modules/journal/journal.routes.js";
+import libraryRoutes from "./modules/library/library.routes.js";
 import subscriptionRoutes from "./modules/subscription/subscription.routes.js";
 import healthRoutes from "./routes/health.routes.js";
 
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use("/health", healthRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/journal", journalRoutes);
+app.use("/api/library", libraryRoutes);
 app.use("/api/subscription", subscriptionRoutes);
 app.use("/api/admin/users", adminUsersRoutes);
 app.use("/api/admin/subscription", adminSubscriptionRoutes);
