@@ -37,10 +37,10 @@ export function ArticleReadingProgress({ targetId }: { targetId: string }) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-1 bg-transparent"
+      className="pointer-events-none fixed inset-x-0 top-[var(--site-header-height)] z-40 h-[3px] bg-transparent"
     >
       <div
-        className="h-full origin-left bg-sky-500 transition-transform duration-150 ease-out"
+        className="h-full origin-left bg-gradient-to-r from-sky-500 to-sky-400 transition-transform duration-150 ease-out"
         style={{ transform: `scaleX(${progress})` }}
       />
     </div>

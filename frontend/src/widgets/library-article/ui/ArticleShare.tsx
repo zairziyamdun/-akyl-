@@ -6,7 +6,7 @@ import { useState } from "react";
 import { cn } from "@/shared/lib";
 
 const buttonClass =
-  "inline-flex h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900";
+  "inline-flex h-9 items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600";
 
 export function ArticleShare({
   url,
@@ -34,7 +34,9 @@ export function ArticleShare({
 
   return (
     <div className={cn("flex flex-wrap items-center gap-2", className)}>
-      <span className="mr-1 text-sm text-slate-500">Поделиться:</span>
+      <span className="basis-full text-sm text-slate-500 sm:mr-1 sm:basis-auto">
+        Поделиться
+      </span>
       <a
         href={`https://t.me/share/url?url=${link}&text=${text}`}
         target="_blank"

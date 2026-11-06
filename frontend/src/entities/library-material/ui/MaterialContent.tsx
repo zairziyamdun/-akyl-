@@ -100,7 +100,7 @@ function renderBlock(
         <h2
           key={key}
           id={id}
-          className="scroll-mt-28 pt-6 text-2xl font-semibold leading-tight tracking-tight text-slate-900 md:text-[28px]"
+          className="mb-4 scroll-mt-28 pt-8 text-[24px] font-semibold leading-[1.25] tracking-tight text-slate-900 first:pt-0 sm:text-[28px]"
         >
           {renderInline(node.content, key)}
         </h2>
@@ -108,7 +108,7 @@ function renderBlock(
         <h3
           key={key}
           id={id}
-          className="scroll-mt-28 pt-4 text-xl font-semibold leading-snug text-slate-900"
+          className="mb-3 scroll-mt-28 pt-4 text-xl font-semibold leading-snug text-slate-900 first:pt-0 sm:text-[21px]"
         >
           {renderInline(node.content, key)}
         </h3>
@@ -132,14 +132,14 @@ function renderBlock(
       return node.type === "bulletList" ? (
         <ul
           key={key}
-          className="list-disc space-y-2 pl-6 marker:text-slate-400"
+          className="list-disc space-y-2.5 pl-6 marker:text-sky-600"
         >
           {items}
         </ul>
       ) : (
         <ol
           key={key}
-          className="list-decimal space-y-2 pl-6 marker:text-slate-400"
+          className="list-decimal space-y-2.5 pl-6 marker:font-semibold marker:text-slate-500"
         >
           {items}
         </ol>
@@ -149,7 +149,7 @@ function renderBlock(
       return (
         <blockquote
           key={key}
-          className="border-l-4 border-sky-500 bg-sky-50/60 py-3 pl-5 pr-4 text-lg italic text-slate-700"
+          className="!my-10 space-y-3 border-l-[3px] border-sky-600 py-1 pl-6 text-[1.15em] font-medium leading-relaxed text-slate-900"
         >
           {(node.content ?? []).map((child, index) =>
             renderBlock(child, `${key}-${index}`, headingIds),
@@ -161,17 +161,17 @@ function renderBlock(
       if (!isSafeHttpUrl(src, true)) return null;
       const alt = typeof node.attrs?.alt === "string" ? node.attrs.alt : "";
       return (
-        <figure key={key} className="my-8">
+        <figure key={key} className="!my-10">
           <Image
             src={src as string}
             alt={alt}
             width={1200}
             height={800}
             unoptimized
-            className="h-auto w-full rounded-2xl border border-slate-200 bg-slate-50"
+            className="h-auto max-h-[760px] w-full rounded-2xl border border-slate-200 bg-slate-50 object-contain"
           />
           {alt ? (
-            <figcaption className="mt-3 text-center text-sm text-slate-500">
+            <figcaption className="mt-3 text-center text-sm leading-6 text-slate-500">
               {alt}
             </figcaption>
           ) : null}
@@ -179,7 +179,7 @@ function renderBlock(
       );
     }
     case "horizontalRule":
-      return <hr key={key} className="my-10 border-slate-200" />;
+      return <hr key={key} className="mx-auto !my-12 w-24 border-slate-300" />;
     case "codeBlock":
       return (
         <pre
@@ -225,7 +225,7 @@ export function MaterialContent({
   return (
     <div
       className={cn(
-        "space-y-5 break-words text-[17px] leading-8 text-slate-700",
+        "space-y-6 break-words text-[17px] leading-[1.75] text-slate-700 sm:text-[18px]",
         className,
       )}
     >
