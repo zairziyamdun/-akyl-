@@ -5,6 +5,7 @@ import {
   Check,
   CircleAlert,
   ExternalLink,
+  Eye,
   ImageUp,
   Loader2,
   RefreshCw,
@@ -31,6 +32,8 @@ import {
   estimateReadTime,
   LIBRARY_IMAGE_ACCEPT,
   LIBRARY_IMAGE_MAX_BYTES,
+  LIBRARY_PREVIEW_PATH,
+  LIBRARY_PREVIEW_WINDOW,
   LIBRARY_TOPICS,
   LIBRARY_TYPE_ICONS,
   LIBRARY_TYPE_LABELS,
@@ -45,6 +48,7 @@ import {
   serializeRichContent,
   updateMaterial,
   uploadLibraryImage,
+  writeLibraryPreview,
 } from "@/entities/library-material";
 import { cn } from "@/shared/lib";
 
@@ -64,6 +68,19 @@ type FormState = {
   status: LibraryMaterialStatus;
 };
 
+/**
+ * The read time is saved as text, so an automatically estimated value looks
+ * the same as a typed one. If the stored value matches the estimate for the
+ * stored text, treat it as automatic (empty field) so it keeps updating while
+ * the article is edited.
+ */
+function manualReadTime(material?: LibraryMaterial): string {
+  const stored = material?.read_time?.trim() ?? "";
+  if (!stored || !material) return "";
+  const estimated = estimateReadTime(parseRichContent(material.content));
+  return stored === estimated ? "" : stored;
+}
+
 function toFormState(material?: LibraryMaterial): FormState {
   return {
     title: material?.title ?? "",
@@ -71,7 +88,7 @@ function toFormState(material?: LibraryMaterial): FormState {
     topic: material?.topic ?? LIBRARY_TOPICS[0],
     description: material?.description ?? "",
     cover_url: material?.cover_url ?? null,
-    read_time: material?.read_time ?? "",
+    read_time: manualReadTime(material),
     format: material?.format ?? "",
     status: material?.status ?? "draft",
   };
@@ -512,6 +529,32 @@ export function LibraryMaterialForm({
     }
   };
 
+  /** Opens the current form state, saved or not, in the public article layout. */
+  const openPreview = () => {
+    const now = new Date().toISOString();
+    const stored = writeLibraryPreview({
+      id: material?.id ?? "preview",
+      title: form.title.trim() || "Без названия",
+      type: form.type,
+      topic: form.topic.trim(),
+      description: form.description.trim(),
+      content: serializeRichContent(doc),
+      cover_url: form.cover_url,
+      read_time: form.read_time.trim() || autoReadTime,
+      format: form.format.trim() || null,
+      status: form.status,
+      published_at: material?.published_at ?? null,
+      created_by: material?.created_by ?? null,
+      created_at: material?.created_at ?? now,
+      updated_at: material?.updated_at ?? now,
+    });
+    if (!stored) {
+      setError("Не удалось открыть предпросмотр: браузер запретил хранилище");
+      return;
+    }
+    window.open(LIBRARY_PREVIEW_PATH, LIBRARY_PREVIEW_WINDOW);
+  };
+
   const confirmLeave = (event: React.MouseEvent) => {
     if (
       dirty &&
@@ -628,6 +671,16 @@ export function LibraryMaterialForm({
               {saveState}
             </p>
           </div>
+          <button
+            type="button"
+            onClick={openPreview}
+            disabled={bodyUploads > 0 || coverUploading}
+            className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
+            aria-label="Предпросмотр статьи"
+          >
+            <Eye className="size-4" aria-hidden />
+            <span className="hidden sm:inline">Предпросмотр</span>
+          </button>
           {material && isPublished ? (
             <Link
               href={`/library/${material.id}`}

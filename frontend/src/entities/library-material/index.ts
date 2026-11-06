@@ -25,11 +25,19 @@ export {
   serializeRichContent,
 } from "./model/content";
 export {
+  LIBRARY_PREVIEW_PATH,
+  LIBRARY_PREVIEW_STORAGE_KEY,
+  LIBRARY_PREVIEW_WINDOW,
+  readLibraryPreview,
+  writeLibraryPreview,
+} from "./model/preview";
+export {
   formatMaterialDate,
   formatMaterialDateLong,
   LIBRARY_IMAGE_ACCEPT,
   LIBRARY_IMAGE_MAX_BYTES,
   LIBRARY_STATUS_LABELS,
+  LIBRARY_TOPIC_PARAM,
   LIBRARY_TOPICS,
   LIBRARY_TYPE_ICONS,
   LIBRARY_TYPE_LABELS,
@@ -40,6 +48,7 @@ export {
   type LibraryMaterialStatus,
   type LibraryMaterialSummary,
   type LibraryMaterialType,
+  libraryTopicHref,
 } from "./model/types";
 export { MaterialContent } from "./ui/MaterialContent";
 export { MaterialCover } from "./ui/MaterialCover";

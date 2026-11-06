@@ -7,6 +7,7 @@ import {
   fetchPublishedMaterialOnServer,
   fetchPublishedMaterialsOnServer,
   type LibraryMaterialSummary,
+  libraryTopicHref,
   parseRichContent,
 } from "@/entities/library-material";
 import { SITE_URL } from "@/shared/config";
@@ -29,6 +30,11 @@ function pickRelated(
   const sameTopic = others.filter((item) => item.topic === current.topic);
   const rest = others.filter((item) => item.topic !== current.topic);
   return [...sameTopic, ...rest].slice(0, 3);
+}
+
+/** Cover photo, or the generated branded card when there is none. */
+function shareImage(material: { id: string; cover_url: string | null }) {
+  return material.cover_url ?? `${SITE_URL}/library/${material.id}/og-image`;
 }
 
 function describe(material: { description: string; content: string }) {
@@ -60,7 +66,13 @@ export async function generateMetadata({
       type: "article",
       publishedTime: material.published_at ?? undefined,
       modifiedTime: material.updated_at,
-      images: material.cover_url ? [material.cover_url] : undefined,
+      images: [shareImage(material)],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: material.title,
+      description,
+      images: [shareImage(material)],
     },
   };
 }
@@ -86,11 +98,30 @@ export default async function LibraryMaterialPage({ params }: PageProps) {
           "@type": "Article",
           headline: material.title,
           description: describe(material),
-          image: material.cover_url ? [material.cover_url] : undefined,
+          image: [shareImage(material)],
           datePublished: material.published_at ?? material.created_at,
           dateModified: material.updated_at,
           mainEntityOfPage: url,
           publisher: { "@type": "Organization", name: "AKYL" },
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { name: "Главная", item: SITE_URL },
+            { name: "База знаний", item: `${SITE_URL}/library` },
+            {
+              name: material.topic,
+              item: `${SITE_URL}${libraryTopicHref(material.topic)}`,
+            },
+            { name: material.title, item: url },
+          ].map((crumb, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            ...crumb,
+          })),
         }}
       />
       <LibraryArticle

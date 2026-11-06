@@ -125,3 +125,11 @@ export function formatMaterialDateLong(
   if (Number.isNaN(date.getTime())) return formatMaterialDate(material);
   return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }
+
+/** Query parameter that pre-selects a topic on the public library page. */
+export const LIBRARY_TOPIC_PARAM = "topic";
+
+/** Link to the library list filtered by one topic: `/library?topic=…`. */
+export function libraryTopicHref(topic: string): string {
+  return `/library?${new URLSearchParams({ [LIBRARY_TOPIC_PARAM]: topic })}`;
+}

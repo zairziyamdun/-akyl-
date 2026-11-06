@@ -16,6 +16,7 @@ import {
   LIBRARY_TYPE_LABELS,
   type LibraryMaterial,
   type LibraryMaterialSummary,
+  libraryTopicHref,
   MaterialContent,
   MaterialCover,
   parseRichContent,
@@ -23,6 +24,7 @@ import {
 import { cn } from "@/shared/lib";
 import { Container } from "@/shared/ui/Container";
 
+import { ArticleConsultationCta } from "./ArticleConsultationCta";
 import { ArticleReadingProgress } from "./ArticleReadingProgress";
 import { ArticleShare } from "./ArticleShare";
 import { ArticleToc } from "./ArticleToc";
@@ -120,7 +122,14 @@ export function LibraryArticle({
               <li aria-hidden className="shrink-0 text-slate-300">
                 <ChevronRight className="size-3.5" />
               </li>
-              <li className="truncate text-slate-400">{material.topic}</li>
+              <li className="min-w-0 truncate">
+                <Link
+                  href={`${libraryTopicHref(material.topic)}#materials`}
+                  className="text-slate-400 transition hover:text-slate-900"
+                >
+                  {material.topic}
+                </Link>
+              </li>
             </ol>
           </nav>
 
@@ -213,7 +222,9 @@ export function LibraryArticle({
 
           <MaterialContent doc={doc} />
 
-          <footer className="mt-14 flex flex-col gap-5 border-t border-slate-200 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <ArticleConsultationCta />
+
+          <footer className="mt-10 flex flex-col gap-5 border-t border-slate-200 pt-8 sm:flex-row sm:items-center sm:justify-between">
             <ArticleShare url={url} title={material.title} />
             <Link
               href="/library"

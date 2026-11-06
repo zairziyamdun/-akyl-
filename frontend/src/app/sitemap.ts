@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { fetchPublishedMaterialsOnServer } from "@/entities/library-material";
 import { SITE_URL } from "@/shared/config";
 
 const PUBLIC_ROUTES: ReadonlyArray<{
@@ -24,7 +25,11 @@ const PUBLIC_ROUTES: ReadonlyArray<{
   { path: "/library/books", changeFrequency: "weekly", priority: 0.6 },
   { path: "/journal", changeFrequency: "weekly", priority: 0.7 },
   { path: "/tools", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/tools/index-efficiency", changeFrequency: "monthly", priority: 0.7 },
+  {
+    path: "/tools/index-efficiency",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
   { path: "/tools/budget-analysis", changeFrequency: "monthly", priority: 0.7 },
   {
     path: "/tools/management-report",
@@ -35,13 +40,26 @@ const PUBLIC_ROUTES: ReadonlyArray<{
   { path: "/tools/checklists", changeFrequency: "monthly", priority: 0.7 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/** Library articles are added on the fly; the list is refreshed hourly. */
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
 
-  return PUBLIC_ROUTES.map((route) => ({
+  const pages: MetadataRoute.Sitemap = PUBLIC_ROUTES.map((route) => ({
     url: `${SITE_URL}${route.path === "/" ? "" : route.path}`,
     lastModified,
     changeFrequency: route.changeFrequency,
     priority: route.priority,
   }));
+
+  const materials = (await fetchPublishedMaterialsOnServer()) ?? [];
+  const articles: MetadataRoute.Sitemap = materials.map((material) => ({
+    url: `${SITE_URL}/library/${material.id}`,
+    lastModified: new Date(material.updated_at),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  return [...pages, ...articles];
 }

@@ -20,9 +20,9 @@ import { Button } from "@/shared/ui/Button";
 
 const chipBase =
   "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200";
-const chipActive = "bg-foreground text-background shadow-sm";
+const chipActive = "bg-slate-900 text-white shadow-sm";
 const chipInactive =
-  "border border-border bg-background text-muted-foreground hover:border-muted-foreground/30 hover:text-foreground";
+  "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900";
 
 function MaterialMeta({ material }: { material: LibraryMaterialSummary }) {
   return (
@@ -155,9 +155,14 @@ function GridSkeleton() {
 
 export function LibraryMain({
   initialMaterials,
+  topic,
+  onTopicChange,
 }: {
   /** Server-rendered list; null when the API was unreachable at render time. */
   initialMaterials?: LibraryMaterialSummary[] | null;
+  /** Controlled topic filter (kept in the URL by `LibraryMainRouted`). */
+  topic?: string | null;
+  onTopicChange?: (topic: string | null) => void;
 }) {
   const [materials, setMaterials] = useState<LibraryMaterialSummary[] | null>(
     initialMaterials ?? null,
@@ -166,7 +171,10 @@ export function LibraryMain({
   const [activeType, setActiveType] = useState<LibraryMaterialType | "all">(
     "all",
   );
-  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [localTopic, setLocalTopic] = useState<string | null>(null);
+  const controlled = onTopicChange !== undefined;
+  const activeTopic = controlled ? (topic ?? null) : localTopic;
+  const setActiveTopic = controlled ? onTopicChange : setLocalTopic;
   const [searchQuery, setSearchQuery] = useState("");
 
   // Client fallback only when the server could not load the list.
@@ -336,8 +344,8 @@ export function LibraryMain({
                       className={cn(
                         "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition",
                         isActive
-                          ? "bg-accent text-white"
-                          : "bg-muted text-muted-foreground hover:text-foreground",
+                          ? "bg-sky-700 text-white"
+                          : "bg-slate-100 text-slate-600 hover:text-slate-900",
                       )}
                     >
                       {isActive ? (
